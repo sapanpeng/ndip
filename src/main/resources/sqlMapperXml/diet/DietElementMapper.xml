@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tenghong.ndip.mapper.diet.DietElementMapper">
+  <resultMap id="BaseResultMap" type="com.tenghong.ndip.model.diet.DietElement">
+    <id column="element_id" jdbcType="INTEGER" property="elementId" />
+    <result column="goal_type" jdbcType="INTEGER" property="goalType" />
+    <result column="goal_id" jdbcType="INTEGER" property="goalId" />
+    <result column="DEPARTMENT" jdbcType="VARCHAR" property="department" />
+    <result column="ENERGY" jdbcType="VARCHAR" property="energy" />
+    <result column="PROTEIN" jdbcType="VARCHAR" property="protein" />
+    <result column="FAT" jdbcType="VARCHAR" property="fat" />
+    <result column="CARBOHYDRATE" jdbcType="VARCHAR" property="carbohydrate" />
+    <result column="DF" jdbcType="VARCHAR" property="df" />
+    <result column="Ca" jdbcType="VARCHAR" property="ca" />
+    <result column="Fe" jdbcType="VARCHAR" property="fe" />
+    <result column="Zn" jdbcType="VARCHAR" property="zn" />
+    <result column="Se" jdbcType="VARCHAR" property="se" />
+    <result column="Cu" jdbcType="VARCHAR" property="cu" />
+    <result column="Mn" jdbcType="VARCHAR" property="mn" />
+    <result column="Mg" jdbcType="VARCHAR" property="mg" />
+    <result column="Na" jdbcType="VARCHAR" property="na" />
+    <result column="K" jdbcType="VARCHAR" property="k" />
+    <result column="P" jdbcType="VARCHAR" property="p" />
+    <result column="VITA" jdbcType="VARCHAR" property="vita" />
+    <result column="VITE" jdbcType="VARCHAR" property="vite" />
+    <result column="VITB1" jdbcType="VARCHAR" property="vitb1" />
+    <result column="VITB2" jdbcType="VARCHAR" property="vitb2" />
+    <result column="VITC" jdbcType="VARCHAR" property="vitc" />
+    <result column="VITPP" jdbcType="VARCHAR" property="vitpp" />
+    <result column="ASP" jdbcType="VARCHAR" property="asp" />
+    <result column="WATER" jdbcType="VARCHAR" property="water" />
+    <result column="VPP" jdbcType="VARCHAR" property="vpp" />
+    <result column="I" jdbcType="VARCHAR" property="i" />
+    <result column="PURINE" jdbcType="VARCHAR" property="purine" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    element_id, goal_type, goal_id, DEPARTMENT, ENERGY, PROTEIN, FAT, CARBOHYDRATE, DF, 
+    Ca, Fe, Zn, Se, Cu, Mn, Mg, Na, K, P, VITA, VITE, VITB1, VITB2, VITC, VITPP, ASP, 
+    WATER, VPP, I, PURINE
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from diet_element
+    where element_id = #{elementId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from diet_element
+    where element_id = #{elementId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tenghong.ndip.model.diet.DietElement">
+    <selectKey keyProperty="elementId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into diet_element (goal_type, goal_id, DEPARTMENT, 
+      ENERGY, PROTEIN, FAT, 
+      CARBOHYDRATE, DF, Ca, 
+      Fe, Zn, Se, Cu, 
+      Mn, Mg, Na, K, 
+      P, VITA, VITE, VITB1, 
+      VITB2, VITC, VITPP, 
+      ASP, WATER, VPP, I, 
+      PURINE)
+    values (#{goalType,jdbcType=INTEGER}, #{goalId,jdbcType=INTEGER}, #{department,jdbcType=VARCHAR}, 
+      #{energy,jdbcType=VARCHAR}, #{protein,jdbcType=VARCHAR}, #{fat,jdbcType=VARCHAR}, 
+      #{carbohydrate,jdbcType=VARCHAR}, #{df,jdbcType=VARCHAR}, #{ca,jdbcType=VARCHAR}, 
+      #{fe,jdbcType=VARCHAR}, #{zn,jdbcType=VARCHAR}, #{se,jdbcType=VARCHAR}, #{cu,jdbcType=VARCHAR}, 
+      #{mn,jdbcType=VARCHAR}, #{mg,jdbcType=VARCHAR}, #{na,jdbcType=VARCHAR}, #{k,jdbcType=VARCHAR}, 
+      #{p,jdbcType=VARCHAR}, #{vita,jdbcType=VARCHAR}, #{vite,jdbcType=VARCHAR}, #{vitb1,jdbcType=VARCHAR}, 
+      #{vitb2,jdbcType=VARCHAR}, #{vitc,jdbcType=VARCHAR}, #{vitpp,jdbcType=VARCHAR}, 
+      #{asp,jdbcType=VARCHAR}, #{water,jdbcType=VARCHAR}, #{vpp,jdbcType=VARCHAR}, #{i,jdbcType=VARCHAR}, 
+      #{purine,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tenghong.ndip.model.diet.DietElement">
+    <selectKey keyProperty="elementId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into diet_element
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="goalType != null">
+        goal_type,
+      </if>
+      <if test="goalId != null">
+        goal_id,
+      </if>
+      <if test="department != null">
+        DEPARTMENT,
+      </if>
+      <if test="energy != null">
+        ENERGY,
+      </if>
+      <if test="protein != null">
+        PROTEIN,
+      </if>
+      <if test="fat != null">
+        FAT,
+      </if>
+      <if test="carbohydrate != null">
+        CARBOHYDRATE,
+      </if>
+      <if test="df != null">
+        DF,
+      </if>
+      <if test="ca != null">
+        Ca,
+      </if>
+      <if test="fe != null">
+        Fe,
+      </if>
+      <if test="zn != null">
+        Zn,
+      </if>
+      <if test="se != null">
+        Se,
+      </if>
+      <if test="cu != null">
+        Cu,
+      </if>
+      <if test="mn != null">
+        Mn,
+      </if>
+      <if test="mg != null">
+        Mg,
+      </if>
+      <if test="na != null">
+        Na,
+      </if>
+      <if test="k != null">
+        K,
+      </if>
+      <if test="p != null">
+        P,
+      </if>
+      <if test="vita != null">
+        VITA,
+      </if>
+      <if test="vite != null">
+        VITE,
+      </if>
+      <if test="vitb1 != null">
+        VITB1,
+      </if>
+      <if test="vitb2 != null">
+        VITB2,
+      </if>
+      <if test="vitc != null">
+        VITC,
+      </if>
+      <if test="vitpp != null">
+        VITPP,
+      </if>
+      <if test="asp != null">
+        ASP,
+      </if>
+      <if test="water != null">
+        WATER,
+      </if>
+      <if test="vpp != null">
+        VPP,
+      </if>
+      <if test="i != null">
+        I,
+      </if>
+      <if test="purine != null">
+        PURINE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="goalType != null">
+        #{goalType,jdbcType=INTEGER},
+      </if>
+      <if test="goalId != null">
+        #{goalId,jdbcType=INTEGER},
+      </if>
+      <if test="department != null">
+        #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="energy != null">
+        #{energy,jdbcType=VARCHAR},
+      </if>
+      <if test="protein != null">
+        #{protein,jdbcType=VARCHAR},
+      </if>
+      <if test="fat != null">
+        #{fat,jdbcType=VARCHAR},
+      </if>
+      <if test="carbohydrate != null">
+        #{carbohydrate,jdbcType=VARCHAR},
+      </if>
+      <if test="df != null">
+        #{df,jdbcType=VARCHAR},
+      </if>
+      <if test="ca != null">
+        #{ca,jdbcType=VARCHAR},
+      </if>
+      <if test="fe != null">
+        #{fe,jdbcType=VARCHAR},
+      </if>
+      <if test="zn != null">
+        #{zn,jdbcType=VARCHAR},
+      </if>
+      <if test="se != null">
+        #{se,jdbcType=VARCHAR},
+      </if>
+      <if test="cu != null">
+        #{cu,jdbcType=VARCHAR},
+      </if>
+      <if test="mn != null">
+        #{mn,jdbcType=VARCHAR},
+      </if>
+      <if test="mg != null">
+        #{mg,jdbcType=VARCHAR},
+      </if>
+      <if test="na != null">
+        #{na,jdbcType=VARCHAR},
+      </if>
+      <if test="k != null">
+        #{k,jdbcType=VARCHAR},
+      </if>
+      <if test="p != null">
+        #{p,jdbcType=VARCHAR},
+      </if>
+      <if test="vita != null">
+        #{vita,jdbcType=VARCHAR},
+      </if>
+      <if test="vite != null">
+        #{vite,jdbcType=VARCHAR},
+      </if>
+      <if test="vitb1 != null">
+        #{vitb1,jdbcType=VARCHAR},
+      </if>
+      <if test="vitb2 != null">
+        #{vitb2,jdbcType=VARCHAR},
+      </if>
+      <if test="vitc != null">
+        #{vitc,jdbcType=VARCHAR},
+      </if>
+      <if test="vitpp != null">
+        #{vitpp,jdbcType=VARCHAR},
+      </if>
+      <if test="asp != null">
+        #{asp,jdbcType=VARCHAR},
+      </if>
+      <if test="water != null">
+        #{water,jdbcType=VARCHAR},
+      </if>
+      <if test="vpp != null">
+        #{vpp,jdbcType=VARCHAR},
+      </if>
+      <if test="i != null">
+        #{i,jdbcType=VARCHAR},
+      </if>
+      <if test="purine != null">
+        #{purine,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tenghong.ndip.model.diet.DietElement">
+    update diet_element
+    <set>
+      <if test="goalType != null">
+        goal_type = #{goalType,jdbcType=INTEGER},
+      </if>
+      <if test="goalId != null">
+        goal_id = #{goalId,jdbcType=INTEGER},
+      </if>
+      <if test="department != null">
+        DEPARTMENT = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="energy != null">
+        ENERGY = #{energy,jdbcType=VARCHAR},
+      </if>
+      <if test="protein != null">
+        PROTEIN = #{protein,jdbcType=VARCHAR},
+      </if>
+      <if test="fat != null">
+        FAT = #{fat,jdbcType=VARCHAR},
+      </if>
+      <if test="carbohydrate != null">
+        CARBOHYDRATE = #{carbohydrate,jdbcType=VARCHAR},
+      </if>
+      <if test="df != null">
+        DF = #{df,jdbcType=VARCHAR},
+      </if>
+      <if test="ca != null">
+        Ca = #{ca,jdbcType=VARCHAR},
+      </if>
+      <if test="fe != null">
+        Fe = #{fe,jdbcType=VARCHAR},
+      </if>
+      <if test="zn != null">
+        Zn = #{zn,jdbcType=VARCHAR},
+      </if>
+      <if test="se != null">
+        Se = #{se,jdbcType=VARCHAR},
+      </if>
+      <if test="cu != null">
+        Cu = #{cu,jdbcType=VARCHAR},
+      </if>
+      <if test="mn != null">
+        Mn = #{mn,jdbcType=VARCHAR},
+      </if>
+      <if test="mg != null">
+        Mg = #{mg,jdbcType=VARCHAR},
+      </if>
+      <if test="na != null">
+        Na = #{na,jdbcType=VARCHAR},
+      </if>
+      <if test="k != null">
+        K = #{k,jdbcType=VARCHAR},
+      </if>
+      <if test="p != null">
+        P = #{p,jdbcType=VARCHAR},
+      </if>
+      <if test="vita != null">
+        VITA = #{vita,jdbcType=VARCHAR},
+      </if>
+      <if test="vite != null">
+        VITE = #{vite,jdbcType=VARCHAR},
+      </if>
+      <if test="vitb1 != null">
+        VITB1 = #{vitb1,jdbcType=VARCHAR},
+      </if>
+      <if test="vitb2 != null">
+        VITB2 = #{vitb2,jdbcType=VARCHAR},
+      </if>
+      <if test="vitc != null">
+        VITC = #{vitc,jdbcType=VARCHAR},
+      </if>
+      <if test="vitpp != null">
+        VITPP = #{vitpp,jdbcType=VARCHAR},
+      </if>
+      <if test="asp != null">
+        ASP = #{asp,jdbcType=VARCHAR},
+      </if>
+      <if test="water != null">
+        WATER = #{water,jdbcType=VARCHAR},
+      </if>
+      <if test="vpp != null">
+        VPP = #{vpp,jdbcType=VARCHAR},
+      </if>
+      <if test="i != null">
+        I = #{i,jdbcType=VARCHAR},
+      </if>
+      <if test="purine != null">
+        PURINE = #{purine,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where element_id = #{elementId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tenghong.ndip.model.diet.DietElement">
+    update diet_element
+    set goal_type = #{goalType,jdbcType=INTEGER},
+      goal_id = #{goalId,jdbcType=INTEGER},
+      DEPARTMENT = #{department,jdbcType=VARCHAR},
+      ENERGY = #{energy,jdbcType=VARCHAR},
+      PROTEIN = #{protein,jdbcType=VARCHAR},
+      FAT = #{fat,jdbcType=VARCHAR},
+      CARBOHYDRATE = #{carbohydrate,jdbcType=VARCHAR},
+      DF = #{df,jdbcType=VARCHAR},
+      Ca = #{ca,jdbcType=VARCHAR},
+      Fe = #{fe,jdbcType=VARCHAR},
+      Zn = #{zn,jdbcType=VARCHAR},
+      Se = #{se,jdbcType=VARCHAR},
+      Cu = #{cu,jdbcType=VARCHAR},
+      Mn = #{mn,jdbcType=VARCHAR},
+      Mg = #{mg,jdbcType=VARCHAR},
+      Na = #{na,jdbcType=VARCHAR},
+      K = #{k,jdbcType=VARCHAR},
+      P = #{p,jdbcType=VARCHAR},
+      VITA = #{vita,jdbcType=VARCHAR},
+      VITE = #{vite,jdbcType=VARCHAR},
+      VITB1 = #{vitb1,jdbcType=VARCHAR},
+      VITB2 = #{vitb2,jdbcType=VARCHAR},
+      VITC = #{vitc,jdbcType=VARCHAR},
+      VITPP = #{vitpp,jdbcType=VARCHAR},
+      ASP = #{asp,jdbcType=VARCHAR},
+      WATER = #{water,jdbcType=VARCHAR},
+      VPP = #{vpp,jdbcType=VARCHAR},
+      I = #{i,jdbcType=VARCHAR},
+      PURINE = #{purine,jdbcType=VARCHAR}
+    where element_id = #{elementId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByCondition"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from diet_element
+    where goal_id = #{goalId}
+    AND
+    goal_type = #{goalType}
+    limit 1
+  </select>
+</mapper>

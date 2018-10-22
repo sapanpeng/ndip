@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tenghong.ndip.mapper.his.HisOrderOvenRelationMapper">
+  <resultMap id="BaseResultMap" type="com.tenghong.ndip.model.his.HisOrderOvenRelation">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_name" jdbcType="VARCHAR" property="orderName" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="memo" jdbcType="VARCHAR" property="memo" />
+    <result column="oven_name" jdbcType="VARCHAR" property="ovenName" />
+    <result column="oven_id" jdbcType="INTEGER" property="ovenId" />
+    <result column="oven_type_name" jdbcType="VARCHAR" property="ovenTypeName" />
+    <result column="oven_type_id" jdbcType="INTEGER" property="ovenTypeId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_name, order_code, memo, oven_name, oven_id, oven_type_name, oven_type_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from his_order_oven_relation
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from his_order_oven_relation
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tenghong.ndip.model.his.HisOrderOvenRelation">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into his_order_oven_relation (order_name, order_code, memo, 
+      oven_name, oven_id, oven_type_name, 
+      oven_type_id)
+    values (#{orderName,jdbcType=VARCHAR}, #{orderCode,jdbcType=VARCHAR}, #{memo,jdbcType=VARCHAR}, 
+      #{ovenName,jdbcType=VARCHAR}, #{ovenId,jdbcType=INTEGER}, #{ovenTypeName,jdbcType=VARCHAR}, 
+      #{ovenTypeId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tenghong.ndip.model.his.HisOrderOvenRelation">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into his_order_oven_relation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderName != null">
+        order_name,
+      </if>
+      <if test="orderCode != null">
+        order_code,
+      </if>
+      <if test="memo != null">
+        memo,
+      </if>
+      <if test="ovenName != null">
+        oven_name,
+      </if>
+      <if test="ovenId != null">
+        oven_id,
+      </if>
+      <if test="ovenTypeName != null">
+        oven_type_name,
+      </if>
+      <if test="ovenTypeId != null">
+        oven_type_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderName != null">
+        #{orderName,jdbcType=VARCHAR},
+      </if>
+      <if test="orderCode != null">
+        #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null">
+        #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="ovenName != null">
+        #{ovenName,jdbcType=VARCHAR},
+      </if>
+      <if test="ovenId != null">
+        #{ovenId,jdbcType=INTEGER},
+      </if>
+      <if test="ovenTypeName != null">
+        #{ovenTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="ovenTypeId != null">
+        #{ovenTypeId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tenghong.ndip.model.his.HisOrderOvenRelation">
+    update his_order_oven_relation
+    <set>
+      <if test="orderName != null">
+        order_name = #{orderName,jdbcType=VARCHAR},
+      </if>
+      <if test="orderCode != null">
+        order_code = #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="memo != null">
+        memo = #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="ovenName != null">
+        oven_name = #{ovenName,jdbcType=VARCHAR},
+      </if>
+      <if test="ovenId != null">
+        oven_id = #{ovenId,jdbcType=INTEGER},
+      </if>
+      <if test="ovenTypeName != null">
+        oven_type_name = #{ovenTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="ovenTypeId != null">
+        oven_type_id = #{ovenTypeId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tenghong.ndip.model.his.HisOrderOvenRelation">
+    update his_order_oven_relation
+    set order_name = #{orderName,jdbcType=VARCHAR},
+      order_code = #{orderCode,jdbcType=VARCHAR},
+      memo = #{memo,jdbcType=VARCHAR},
+      oven_name = #{ovenName,jdbcType=VARCHAR},
+      oven_id = #{ovenId,jdbcType=INTEGER},
+      oven_type_name = #{ovenTypeName,jdbcType=VARCHAR},
+      oven_type_id = #{ovenTypeId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="findPageCondition"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    his_order_oven_relation
+    <where>
+    <if test="condition.ovenId != null and condition.ovenId != '' " >
+      and oven_id = #{condition.ovenId}
+    </if>
+    <if test="condition.ovenTypeId != null and condition.ovenTypeId != '' " >
+      and oven_type_id = #{condition.ovenTypeId}
+    </if>
+    </where>
+    ORDER BY ${sort} ${order}
+    LIMIT #{from}, #{size}
+  </select>
+
+  <select id="findPageCount" resultType="int" parameterType="com.tenghong.ndip.utils.PageInfo">
+    SELECT COUNT(1)
+    FROM
+    his_order_oven_relation
+  </select>
+</mapper>

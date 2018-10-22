@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tenghong.ndip.mapper.his.HisOmsDetailsMapper">
+  <resultMap id="BaseResultMap" type="com.tenghong.ndip.model.his.HisOmsDetails">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="oms_id" jdbcType="INTEGER" property="omsId" />
+    <result column="meal_id" jdbcType="INTEGER" property="mealId" />
+    <result column="meal_name" jdbcType="VARCHAR" property="mealName" />
+    <result column="current_price" jdbcType="DOUBLE" property="currentPrice" />
+    <result column="oven_id" jdbcType="INTEGER" property="ovenId" />
+    <result column="oven_name" jdbcType="VARCHAR" property="ovenName" />
+    <result column="goal_id" jdbcType="INTEGER" property="goalId" />
+    <result column="goal_name" jdbcType="VARCHAR" property="goalName" />
+    <result column="goal_price" jdbcType="DOUBLE" property="goalPrice" />
+    <result column="goal_num" jdbcType="INTEGER" property="goalNum" />
+    <result column="goal_type" jdbcType="INTEGER" property="goalType" />
+    <result column="memo" jdbcType="VARCHAR" property="memo" />
+    <result column="diningTime" jdbcType="TIMESTAMP" property="diningTime" />
+    <result column="omsType" jdbcType="INTEGER" property="omsType" />
+    <association property="element" javaType="com.tenghong.ndip.model.diet.DietElement">
+      <id column="element_id" jdbcType="INTEGER" property="elementId" />
+      <result column="goal_type1" jdbcType="INTEGER" property="goalType" />
+      <result column="goal_id1" jdbcType="INTEGER" property="goalId" />
+      <result column="DEPARTMENT" jdbcType="VARCHAR" property="department" />
+      <result column="ENERGY" jdbcType="VARCHAR" property="energy" />
+      <result column="PROTEIN" jdbcType="VARCHAR" property="protein" />
+      <result column="FAT" jdbcType="VARCHAR" property="fat" />
+      <result column="CARBOHYDRATE" jdbcType="VARCHAR" property="carbohydrate" />
+      <result column="DF" jdbcType="VARCHAR" property="df" />
+      <result column="Ca" jdbcType="VARCHAR" property="ca" />
+      <result column="Fe" jdbcType="VARCHAR" property="fe" />
+      <result column="Zn" jdbcType="VARCHAR" property="zn" />
+      <result column="Se" jdbcType="VARCHAR" property="se" />
+      <result column="Cu" jdbcType="VARCHAR" property="cu" />
+      <result column="Mn" jdbcType="VARCHAR" property="mn" />
+      <result column="Mg" jdbcType="VARCHAR" property="mg" />
+      <result column="Na" jdbcType="VARCHAR" property="na" />
+      <result column="K" jdbcType="VARCHAR" property="k" />
+      <result column="P" jdbcType="VARCHAR" property="p" />
+      <result column="VITA" jdbcType="VARCHAR" property="vita" />
+      <result column="VITE" jdbcType="VARCHAR" property="vite" />
+      <result column="VITB1" jdbcType="VARCHAR" property="vitb1" />
+      <result column="VITB2" jdbcType="VARCHAR" property="vitb2" />
+      <result column="VITC" jdbcType="VARCHAR" property="vitc" />
+      <result column="VITPP" jdbcType="VARCHAR" property="vitpp" />
+      <result column="ASP" jdbcType="VARCHAR" property="asp" />
+      <result column="WATER" jdbcType="VARCHAR" property="water" />
+      <result column="VPP" jdbcType="VARCHAR" property="vpp" />
+      <result column="I" jdbcType="VARCHAR" property="i" />
+      <result column="PURINE" jdbcType="VARCHAR" property="purine" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, oms_id, meal_id, meal_name, current_price, oven_id, oven_name, goal_id, goal_name, 
+    goal_price, goal_num, goal_type, memo
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from his_oms_details
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from his_oms_details
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteBy">
+    delete from his_oms_details
+    where oms_id in (select id from his_oms where patient_id = #{patientId} and  dining_time = #{diningDate,jdbcType=TIMESTAMP})
+  </delete>
+  <insert id="insert" parameterType="com.tenghong.ndip.model.his.HisOmsDetails">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into his_oms_details (oms_id, meal_id, meal_name, 
+      current_price, oven_id, oven_name, 
+      goal_id, goal_name, goal_price, 
+      goal_num, goal_type, memo
+      )
+    values (#{omsId,jdbcType=INTEGER}, #{mealId,jdbcType=INTEGER}, #{mealName,jdbcType=VARCHAR}, 
+      #{currentPrice,jdbcType=DOUBLE}, #{ovenId,jdbcType=INTEGER}, #{ovenName,jdbcType=VARCHAR}, 
+      #{goalId,jdbcType=INTEGER}, #{goalName,jdbcType=VARCHAR}, #{goalPrice,jdbcType=DOUBLE}, 
+      #{goalNum,jdbcType=INTEGER}, #{goalType,jdbcType=INTEGER}, #{memo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tenghong.ndip.model.his.HisOmsDetails">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into his_oms_details
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="omsId != null">
+        oms_id,
+      </if>
+      <if test="mealId != null">
+        meal_id,
+      </if>
+      <if test="mealName != null">
+        meal_name,
+      </if>
+      <if test="currentPrice != null">
+        current_price,
+      </if>
+      <if test="ovenId != null">
+        oven_id,
+      </if>
+      <if test="ovenName != null">
+        oven_name,
+      </if>
+      <if test="goalId != null">
+        goal_id,
+      </if>
+      <if test="goalName != null">
+        goal_name,
+      </if>
+      <if test="goalPrice != null">
+        goal_price,
+      </if>
+      <if test="goalNum != null">
+        goal_num,
+      </if>
+      <if test="goalType != null">
+        goal_type,
+      </if>
+      <if test="memo != null">
+        memo,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="omsId != null">
+        #{omsId,jdbcType=INTEGER},
+      </if>
+      <if test="mealId != null">
+        #{mealId,jdbcType=INTEGER},
+      </if>
+      <if test="mealName != null">
+        #{mealName,jdbcType=VARCHAR},
+      </if>
+      <if test="currentPrice != null">
+        #{currentPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="ovenId != null">
+        #{ovenId,jdbcType=INTEGER},
+      </if>
+      <if test="ovenName != null">
+        #{ovenName,jdbcType=VARCHAR},
+      </if>
+      <if test="goalId != null">
+        #{goalId,jdbcType=INTEGER},
+      </if>
+      <if test="goalName != null">
+        #{goalName,jdbcType=VARCHAR},
+      </if>
+      <if test="goalPrice != null">
+        #{goalPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="goalNum != null">
+        #{goalNum,jdbcType=INTEGER},
+      </if>
+      <if test="goalType != null">
+        #{goalType,jdbcType=INTEGER},
+      </if>
+      <if test="memo != null">
+        #{memo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tenghong.ndip.model.his.HisOmsDetails">
+    update his_oms_details
+    <set>
+      <if test="omsId != null">
+        oms_id = #{omsId,jdbcType=INTEGER},
+      </if>
+      <if test="mealId != null">
+        meal_id = #{mealId,jdbcType=INTEGER},
+      </if>
+      <if test="mealName != null">
+        meal_name = #{mealName,jdbcType=VARCHAR},
+      </if>
+      <if test="currentPrice != null">
+        current_price = #{currentPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="ovenId != null">
+        oven_id = #{ovenId,jdbcType=INTEGER},
+      </if>
+      <if test="ovenName != null">
+        oven_name = #{ovenName,jdbcType=VARCHAR},
+      </if>
+      <if test="goalId != null">
+        goal_id = #{goalId,jdbcType=INTEGER},
+      </if>
+      <if test="goalName != null">
+        goal_name = #{goalName,jdbcType=VARCHAR},
+      </if>
+      <if test="goalPrice != null">
+        goal_price = #{goalPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="goalNum != null">
+        goal_num = #{goalNum,jdbcType=INTEGER},
+      </if>
+      <if test="goalType != null">
+        goal_type = #{goalType,jdbcType=INTEGER},
+      </if>
+      <if test="memo != null">
+        memo = #{memo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tenghong.ndip.model.his.HisOmsDetails">
+    update his_oms_details
+    set oms_id = #{omsId,jdbcType=INTEGER},
+      meal_id = #{mealId,jdbcType=INTEGER},
+      meal_name = #{mealName,jdbcType=VARCHAR},
+      current_price = #{currentPrice,jdbcType=DOUBLE},
+      oven_id = #{ovenId,jdbcType=INTEGER},
+      oven_name = #{ovenName,jdbcType=VARCHAR},
+      goal_id = #{goalId,jdbcType=INTEGER},
+      goal_name = #{goalName,jdbcType=VARCHAR},
+      goal_price = #{goalPrice,jdbcType=DOUBLE},
+      goal_num = #{goalNum,jdbcType=INTEGER},
+      goal_type = #{goalType,jdbcType=INTEGER},
+      memo = #{memo,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getList" resultMap="BaseResultMap">
+    select
+    detail.*,`data`.*,oms.oms_type AS  omsType
+    from
+    his_oms_details detail
+    LEFT  JOIN
+    diet_element `data`
+    ON
+    detail.goal_id = `data`.goal_id
+    JOIN
+    his_oms oms
+    ON
+    detail.oms_id = oms.id
+    JOIN
+    his_patient patient
+    ON
+    oms.patient_id = patient.patient_id
+    WHERE
+    <if test="flag ==  1" >
+    `data`.goal_type = 2
+    </if>
+    <if test="flag ==  2" >
+      `data`.goal_type = 3
+    </if>
+    AND
+    patient.patient_id = #{patientId}
+    AND
+    <![CDATA[DATE_FORMAT(oms.dining_time,'%Y-%m-%d') = #{diningDate}]]>
+    <if test="mealId !=null and mealId != ''">
+      and oms.meal_id = #{mealId}
+    </if>
+    and oms.oms_type != 3
+  </select>
+
+  <select id="getDetailsList" resultMap="BaseResultMap">
+    select
+    details.*,oms.dining_time as diningTime,oms.oms_type as omsType
+    from
+    his_oms_details details
+    LEFT JOIN
+    his_oms oms
+    ON
+    details.oms_id = oms.id
+    <where>
+      <if test="list !=null and list.size()>0">
+        <foreach collection="list" open=" and details.oms_id in (" close=")"
+                 item="id" separator=",">
+          #{id}
+        </foreach>
+      </if>
+    </where>
+  </select>
+
+  <select id="selectByOmsId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from his_oms_details
+    where oms_id = #{omsId}
+  </select>
+
+  <select id="selectOmsDetailsForReport" resultType="com.tenghong.ndip.model.vo.report.OvenCountVo">
+    SELECT
+    details.goal_id as goalId,details.goal_type as goalType,details.oven_id as ovenId,details.oven_name as ovenName,
+    details.goal_name as `name`,details.meal_id
+    FROM
+    his_oms_details details
+    LEFT JOIN
+    (select id,meal_id from his_oms where <![CDATA[DATE_FORMAT(dining_time,'%Y-%m-%d') = #{date}]]>) oms
+    ON
+    oms.id = details.oms_id
+    GROUP BY
+    details.goal_id,details.goal_type
+    HAVING
+    details.meal_id = #{mealId}
+    <if test="ovenId != null and ovenId != ''">
+      and ovenId = #{ovenId}
+    </if>
+  </select>
+
+  <select id ="getGoalNum" resultType="java.lang.Integer">
+    select count(1)
+    from
+    his_oms_details details
+    left join
+    (select id,meal_id,ward_id,oms_type from his_oms where <![CDATA[DATE_FORMAT(dining_time,'%Y-%m-%d') = #{date}]]>) oms
+    ON
+    oms.id = details.oms_id
+    where
+    details.oven_id = #{ovenId}
+    and
+    oms.ward_id = #{wardId}
+    and
+    oms.oms_type = 2
+  </select>
+</mapper>

@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tenghong.ndip.mapper.his.HisPatientMapper">
+  <resultMap id="BaseResultMap" type="com.tenghong.ndip.model.his.HisPatient">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="patient_id" jdbcType="VARCHAR" property="patientId" />
+    <result column="inp_no" jdbcType="VARCHAR" property="inpNo" />
+    <result column="dept_code" jdbcType="VARCHAR" property="deptCode" />
+    <result column="dept_name" jdbcType="VARCHAR" property="deptName" />
+    <result column="ward_code" jdbcType="VARCHAR" property="wardCode" />
+    <result column="ward_name" jdbcType="VARCHAR" property="wardName" />
+    <result column="bed_no" jdbcType="VARCHAR" property="bedNo" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="age_of_year" jdbcType="INTEGER" property="ageOfYear" />
+    <result column="age_of_month" jdbcType="INTEGER" property="ageOfMonth" />
+    <result column="height" jdbcType="VARCHAR" property="height" />
+    <result column="weight" jdbcType="VARCHAR" property="weight" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="id_no" jdbcType="VARCHAR" property="idNo" />
+    <result column="charge_type" jdbcType="INTEGER" property="chargeType" />
+    <result column="balance" jdbcType="DOUBLE" property="balance" />
+    <result column="in_hos_date" jdbcType="TIMESTAMP" property="inHosDate" />
+    <result column="out_hos_date" jdbcType="TIMESTAMP" property="outHosDate" />
+    <result column="diagnosis" jdbcType="VARCHAR" property="diagnosis" />
+    <result column="settled_indicator" jdbcType="INTEGER" property="settledIndicator" />
+    <result column="out_status" jdbcType="VARCHAR" property="outStatus" />
+    <result column="total_wallet" jdbcType="DOUBLE" property="totalWallet" />
+    <result column="flag" jdbcType="INTEGER" property="flag" />
+    <result column="dining_date" jdbcType="TIMESTAMP" property="diningDate" />
+    <result column="order_name" jdbcType="VARCHAR" property="orderName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, patient_id, inp_no, dept_code, dept_name, ward_code, ward_name, bed_no, name, 
+    sex, birthday, age_of_year, age_of_month, height, weight, mobile_phone, address, 
+    id_no, charge_type, balance, in_hos_date, out_hos_date, diagnosis, settled_indicator, 
+    out_status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from his_patient
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectOvenId" resultType="java.lang.Integer">
+    select
+    relation.oven_id
+    from his_patient_orders `order`
+    LEFT JOIN
+    his_order_oven_relation relation
+    ON
+    `order`.order_code = relation.order_code
+    where `order`.patient_id = #{patientId}
+    LIMIT 1
+  </select>
+
+  <select id="selectByPatientId"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from his_patient
+    where patient_id = #{id}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from his_patient
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tenghong.ndip.model.his.HisPatient">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into his_patient (patient_id, inp_no, dept_code, 
+      dept_name, ward_code, ward_name, 
+      bed_no, name, sex, birthday, 
+      age_of_year, age_of_month, height, 
+      weight, mobile_phone, address, 
+      id_no, charge_type, balance, 
+      in_hos_date, out_hos_date, diagnosis, 
+      settled_indicator, out_status)
+    values (#{patientId,jdbcType=VARCHAR}, #{inpNo,jdbcType=VARCHAR}, #{deptCode,jdbcType=VARCHAR},
+      #{deptName,jdbcType=VARCHAR}, #{wardCode,jdbcType=VARCHAR}, #{wardName,jdbcType=VARCHAR}, 
+      #{bedNo,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{birthday,jdbcType=TIMESTAMP}, 
+      #{ageOfYear,jdbcType=INTEGER}, #{ageOfMonth,jdbcType=INTEGER}, #{height,jdbcType=VARCHAR}, 
+      #{weight,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{idNo,jdbcType=VARCHAR}, #{chargeType,jdbcType=INTEGER}, #{balance,jdbcType=DOUBLE}, 
+      #{inHosDate,jdbcType=TIMESTAMP}, #{outHosDate,jdbcType=TIMESTAMP}, #{diagnosis,jdbcType=VARCHAR}, 
+      #{settledIndicator,jdbcType=INTEGER}, #{outStatus,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tenghong.ndip.model.his.HisPatient">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into his_patient
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="patientId != null">
+        patient_id,
+      </if>
+      <if test="inpNo != null">
+        inp_no,
+      </if>
+      <if test="deptCode != null">
+        dept_code,
+      </if>
+      <if test="deptName != null">
+        dept_name,
+      </if>
+      <if test="wardCode != null">
+        ward_code,
+      </if>
+      <if test="wardName != null">
+        ward_name,
+      </if>
+      <if test="bedNo != null">
+        bed_no,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="birthday != null">
+        birthday,
+      </if>
+      <if test="ageOfYear != null">
+        age_of_year,
+      </if>
+      <if test="ageOfMonth != null">
+        age_of_month,
+      </if>
+      <if test="height != null">
+        height,
+      </if>
+      <if test="weight != null">
+        weight,
+      </if>
+      <if test="mobilePhone != null">
+        mobile_phone,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="idNo != null">
+        id_no,
+      </if>
+      <if test="chargeType != null">
+        charge_type,
+      </if>
+      <if test="balance != null">
+        balance,
+      </if>
+      <if test="inHosDate != null">
+        in_hos_date,
+      </if>
+      <if test="outHosDate != null">
+        out_hos_date,
+      </if>
+      <if test="diagnosis != null">
+        diagnosis,
+      </if>
+      <if test="settledIndicator != null">
+        settled_indicator,
+      </if>
+      <if test="outStatus != null">
+        out_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="patientId != null">
+        #{patientId,jdbcType=VARCHAR},
+      </if>
+      <if test="inpNo != null">
+        #{inpNo,jdbcType=VARCHAR},
+      </if>
+      <if test="deptCode != null">
+        #{deptCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deptName != null">
+        #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="wardCode != null">
+        #{wardCode,jdbcType=VARCHAR},
+      </if>
+      <if test="wardName != null">
+        #{wardName,jdbcType=VARCHAR},
+      </if>
+      <if test="bedNo != null">
+        #{bedNo,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ageOfYear != null">
+        #{ageOfYear,jdbcType=INTEGER},
+      </if>
+      <if test="ageOfMonth != null">
+        #{ageOfMonth,jdbcType=INTEGER},
+      </if>
+      <if test="height != null">
+        #{height,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        #{weight,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null">
+        #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="idNo != null">
+        #{idNo,jdbcType=VARCHAR},
+      </if>
+      <if test="chargeType != null">
+        #{chargeType,jdbcType=INTEGER},
+      </if>
+      <if test="balance != null">
+        #{balance,jdbcType=DOUBLE},
+      </if>
+      <if test="inHosDate != null">
+        #{inHosDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="outHosDate != null">
+        #{outHosDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="diagnosis != null">
+        #{diagnosis,jdbcType=VARCHAR},
+      </if>
+      <if test="settledIndicator != null">
+        #{settledIndicator,jdbcType=INTEGER},
+      </if>
+      <if test="outStatus != null">
+        #{outStatus,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tenghong.ndip.model.his.HisPatient">
+    update his_patient
+    <set>
+      <if test="patientId != null">
+        patient_id = #{patientId,jdbcType=VARCHAR},
+      </if>
+      <if test="inpNo != null">
+        inp_no = #{inpNo,jdbcType=VARCHAR},
+      </if>
+      <if test="deptCode != null">
+        dept_code = #{deptCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deptName != null">
+        dept_name = #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="wardCode != null">
+        ward_code = #{wardCode,jdbcType=VARCHAR},
+      </if>
+      <if test="wardName != null">
+        ward_name = #{wardName,jdbcType=VARCHAR},
+      </if>
+      <if test="bedNo != null">
+        bed_no = #{bedNo,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        birthday = #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ageOfYear != null">
+        age_of_year = #{ageOfYear,jdbcType=INTEGER},
+      </if>
+      <if test="ageOfMonth != null">
+        age_of_month = #{ageOfMonth,jdbcType=INTEGER},
+      </if>
+      <if test="height != null">
+        height = #{height,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null">
+        mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="idNo != null">
+        id_no = #{idNo,jdbcType=VARCHAR},
+      </if>
+      <if test="chargeType != null">
+        charge_type = #{chargeType,jdbcType=INTEGER},
+      </if>
+      <if test="balance != null">
+        balance = #{balance,jdbcType=DOUBLE},
+      </if>
+      <if test="inHosDate != null">
+        in_hos_date = #{inHosDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="outHosDate != null">
+        out_hos_date = #{outHosDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="diagnosis != null">
+        diagnosis = #{diagnosis,jdbcType=VARCHAR},
+      </if>
+      <if test="settledIndicator != null">
+        settled_indicator = #{settledIndicator,jdbcType=INTEGER},
+      </if>
+      <if test="outStatus != null">
+        out_status = #{outStatus,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tenghong.ndip.model.his.HisPatient">
+    update his_patient
+    set patient_id = #{patientId,jdbcType=VARCHAR},
+      inp_no = #{inpNo,jdbcType=VARCHAR},
+      dept_code = #{deptCode,jdbcType=VARCHAR},
+      dept_name = #{deptName,jdbcType=VARCHAR},
+      ward_code = #{wardCode,jdbcType=VARCHAR},
+      ward_name = #{wardName,jdbcType=VARCHAR},
+      bed_no = #{bedNo,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=TIMESTAMP},
+      age_of_year = #{ageOfYear,jdbcType=INTEGER},
+      age_of_month = #{ageOfMonth,jdbcType=INTEGER},
+      height = #{height,jdbcType=VARCHAR},
+      weight = #{weight,jdbcType=VARCHAR},
+      mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      id_no = #{idNo,jdbcType=VARCHAR},
+      charge_type = #{chargeType,jdbcType=INTEGER},
+      balance = #{balance,jdbcType=DOUBLE},
+      in_hos_date = #{inHosDate,jdbcType=TIMESTAMP},
+      out_hos_date = #{outHosDate,jdbcType=TIMESTAMP},
+      diagnosis = #{diagnosis,jdbcType=VARCHAR},
+      settled_indicator = #{settledIndicator,jdbcType=INTEGER},
+      out_status = #{outStatus,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+<!--     <if test="condition.diningDate != null and condition.diningDate != '' " >
+        <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') = #{condition.diningDate}]]>
+      </if>-->
+  <select id="findPageCondition"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
+    SELECT
+    patient.*,wallet.total_wallet
+    FROM
+    his_patient patient
+    LEFT JOIN
+    his_patient_wallet wallet
+    ON
+    patient.patient_id = wallet.patient_id
+    LEFT JOIN
+    his_inpatient_area ward
+    ON
+    ward.ward_code = patient.ward_code
+    LEFT JOIN
+    his_relation relation
+    ON
+    ward.id = relation.ward_id
+    <where>
+      <if test="condition.wardId != null and condition.wardId != '' " >
+        and ward.id = #{condition.wardId}
+      </if>
+      <if test="condition.cafeteriaId != null and condition.cafeteriaId != '' " >
+        and relation.cafeteria_id = #{condition.cafeteriaId}
+      </if>
+      <if test="condition.bedNo != null and condition.bedNo != '' " >
+        and patient.bed_no = #{condition.bedNo}
+      </if>
+      <if test="condition.sex != null and condition.sex != '' " >
+        and patient.sex = #{condition.sex}
+      </if>
+      <if test="condition.inpNo != null and condition.inpNo != '' " >
+        and patient.inp_no = #{condition.inpNo}
+      </if>
+      <if test="condition.totalWallet != null and condition.totalWallet != '' " >
+        and wallet.total_wallet &gt; #{condition.totalWallet}
+      </if>
+      and patient.out_status = 0
+    </where>
+    GROUP BY
+    patient.patient_id
+    ORDER BY ${sort} ${order}
+    LIMIT #{from}, #{size}
+  </select>
+
+  <select id="findPageCount" resultType="int" parameterType="com.tenghong.ndip.utils.PageInfo">
+    SELECT COUNT(1)
+    FROM
+    his_patient patient
+    LEFT JOIN
+    his_patient_wallet wallet
+    ON
+    patient.patient_id = wallet.patient_id
+    LEFT JOIN
+    his_inpatient_area ward
+    ON
+    ward.ward_code = patient.ward_code
+    LEFT JOIN
+    his_relation relation
+    ON
+    ward.id = relation.ward_id
+    <where>
+      <if test="condition.wardId != null and condition.wardId != '' " >
+        and ward.id = #{condition.wardId}
+      </if>
+      <if test="condition.cafeteriaId != null and condition.cafeteriaId != '' " >
+        and relation.cafeteria_id = #{condition.cafeteriaId}
+      </if>
+      <if test="condition.bedNo != null and condition.bedNo != '' " >
+        and patient.bed_no = #{condition.bedNo}
+      </if>
+      <if test="condition.sex != null and condition.sex != '' " >
+        and patient.sex = #{condition.sex}
+      </if>
+      <if test="condition.inpNo != null and condition.inpNo != '' " >
+        and patient.inp_no = #{condition.inpNo}
+      </if>
+      <if test="condition.totalWallet != null and condition.totalWallet != '' " >
+        and wallet.total_wallet &gt; #{condition.totalWallet}
+      </if>
+    </where>
+  </select>
+
+  <select id="findDataByIdList"  resultMap="BaseResultMap">
+    SELECT
+    patient.*,wallet.total_wallet,if(count(oms.id) = 0,0,1) as flag,DATE_FORMAT(oms.dining_time,'%Y-%m-%d') as dining_date,orders.order_name
+    FROM
+    his_patient patient
+    LEFT JOIN
+    his_patient_wallet wallet
+    ON
+    patient.patient_id = wallet.patient_id
+    LEFT JOIN
+    his_oms oms
+    ON
+    patient.patient_id = oms.patient_id
+    LEFT JOIN
+    his_inpatient_area ward
+    ON
+    ward.ward_code = patient.ward_code
+    LEFT JOIN
+    his_relation relation
+    ON
+    ward.id = relation.ward_id
+    LEFT JOIN
+    his_patient_orders orders
+    ON
+    patient.patient_id = orders.patient_id
+    <where>
+      <foreach collection="list" open=" and relation.cafeteria_id in (" close=")"
+               item="id" separator=",">
+        #{id}
+      </foreach>
+    </where>
+    and relation.user_id = #{userId}
+    and patient.out_status = 0
+    GROUP BY
+    patient.patient_id
+  </select>
+</mapper>
