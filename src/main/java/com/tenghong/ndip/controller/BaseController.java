@@ -110,7 +110,7 @@ public class BaseController {
 
     //更新膳食配置关系
     protected  void updateRelation(DietRelation relation){
-        relationService.update(relation);
+        relationService.update(relation); 
     }
 
     //保存订单状态
