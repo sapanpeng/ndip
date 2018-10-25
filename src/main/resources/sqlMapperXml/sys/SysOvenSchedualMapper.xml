@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tenghong.ndip.mapper.sys.SysOvenSchedualMapper">
+  <resultMap id="BaseResultMap" type="com.tenghong.ndip.model.sys.SysOvenSchedual">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="key" jdbcType="VARCHAR" property="key" />
+    <result column="exp_hour" jdbcType="INTEGER" property="expHour" />
+    <result column="exp_min" jdbcType="INTEGER" property="expMin" />
+    <result column="exp_time" jdbcType="VARCHAR" property="expTime" />
+    <result column="ded_time" jdbcType="VARCHAR" property="dedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `key`, exp_hour, exp_min, exp_time, ded_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_oven_schedual
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByKey"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_oven_schedual
+    where `key` = #{key}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_oven_schedual
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tenghong.ndip.model.sys.SysOvenSchedual">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_oven_schedual (`key`, exp_hour, exp_min,
+      exp_time, ded_time)
+    values (#{key,jdbcType=VARCHAR}, #{expHour,jdbcType=INTEGER}, #{expMin,jdbcType=INTEGER}, 
+      #{expTime,jdbcType=VARCHAR}, #{dedTime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tenghong.ndip.model.sys.SysOvenSchedual">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_oven_schedual
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="key != null">
+        `key`,
+      </if>
+      <if test="expHour != null">
+        exp_hour,
+      </if>
+      <if test="expMin != null">
+        exp_min,
+      </if>
+      <if test="expTime != null">
+        exp_time,
+      </if>
+      <if test="dedTime != null">
+        ded_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="key != null">
+        #{key,jdbcType=VARCHAR},
+      </if>
+      <if test="expHour != null">
+        #{expHour,jdbcType=INTEGER},
+      </if>
+      <if test="expMin != null">
+        #{expMin,jdbcType=INTEGER},
+      </if>
+      <if test="expTime != null">
+        #{expTime,jdbcType=VARCHAR},
+      </if>
+      <if test="dedTime != null">
+        #{dedTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tenghong.ndip.model.sys.SysOvenSchedual">
+    update sys_oven_schedual
+    <set>
+      <if test="key != null">
+        `key` = #{key,jdbcType=VARCHAR},
+      </if>
+      <if test="expHour != null">
+        exp_hour = #{expHour,jdbcType=INTEGER},
+      </if>
+      <if test="expMin != null">
+        exp_min = #{expMin,jdbcType=INTEGER},
+      </if>
+      <if test="expTime != null">
+        exp_time = #{expTime,jdbcType=VARCHAR},
+      </if>
+      <if test="dedTime != null">
+        ded_time = #{dedTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tenghong.ndip.model.sys.SysOvenSchedual">
+    update sys_oven_schedual
+    set `key` = #{key,jdbcType=VARCHAR},
+      exp_hour = #{expHour,jdbcType=INTEGER},
+      exp_min = #{expMin,jdbcType=INTEGER},
+      exp_time = #{expTime,jdbcType=VARCHAR},
+      ded_time = #{dedTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
