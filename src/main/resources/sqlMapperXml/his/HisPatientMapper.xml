@@ -354,7 +354,7 @@
       </if>-->
   <select id="findPageCondition"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
     SELECT
-    patient.*,wallet.total_wallet
+    patient.*,wallet.total_wallet,patient_orders.order_name,(case when OMS.ordercount is null then 0 else 1 end) flag
     FROM
     his_patient patient
     LEFT JOIN
@@ -369,6 +369,12 @@
     his_relation relation
     ON
     ward.id = relation.ward_id
+    LEFT JOIN
+    (select  patient_id,order_name from (SELECT * from his_patient_orders order by start_time desc) A  group by A.patient_id) patient_orders
+    ON patient.patient_id = patient_orders.patient_id
+    LEFT JOIN
+    (select patient_id,count(1) ordercount from his_oms where DATE_FORMAT(dining_time,'%Y-%m-%d') = #{condition.diningDate}  group by  patient_id) OMS
+    ON patient.patient_id = OMS.patient_id
     <where>
       <if test="condition.wardId != null and condition.wardId != '' " >
         and ward.id = #{condition.wardId}
@@ -385,10 +391,18 @@
       <if test="condition.inpNo != null and condition.inpNo != '' " >
         and patient.inp_no = #{condition.inpNo}
       </if>
-      <if test="condition.totalWallet != null and condition.totalWallet != '' " >
-        and wallet.total_wallet &gt; #{condition.totalWallet}
+      <if test="condition.mainJudge != null and condition.mainJudge != '' " >
+         and  patient_orders.diagnosis like concat(concat('%',#{condition.mainJudge}),'%')
       </if>
-      and patient.out_status = 0
+       <if test="condition.diningDate != null and condition.diningDate != '' " >
+        <![CDATA[ and ((DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= #{condition.diningDate} and patient.out_status=0) or (DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= #{condition.diningDate} and (DATE_FORMAT(patient.out_hos_date,'%Y-%m-%d') >= #{condition.diningDate} or patient.out_hos_date is null))) ]]>
+      </if>
+      <if test="condition.order != null and condition.order == '1'.toString() " >
+         and  OMS.ordercount is not null
+      </if>
+      <if test="condition.order != null and condition.order == '0'.toString() " >
+         and  OMS.ordercount is null
+      </if>
     </where>
     GROUP BY
     patient.patient_id

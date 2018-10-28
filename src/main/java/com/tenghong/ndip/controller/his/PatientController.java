@@ -1,9 +1,7 @@
 package com.tenghong.ndip.controller.his;
 
-import com.tenghong.ndip.controller.BaseController;
-import com.tenghong.ndip.core.Result;
-import com.tenghong.ndip.service.his.PatientService;
-import com.tenghong.ndip.utils.PageInfo;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Date;
-import java.util.Map;
+import com.tenghong.ndip.controller.BaseController;
+import com.tenghong.ndip.core.Result;
+import com.tenghong.ndip.service.his.PatientService;
+import com.tenghong.ndip.utils.PageInfo;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,21 +40,23 @@ public class PatientController extends BaseController{
                        @RequestParam(value = "bedNo", required = false, defaultValue = "")Integer bedNo,
                        @RequestParam(value = "sex", required = false, defaultValue = "")Integer sex,
                        @RequestParam(value = "inpNo", required = false, defaultValue = "")Integer inpNo,
-                       @RequestParam(value = "totalWallet", required = false, defaultValue = "")Integer totalWallet,
+                       @RequestParam(value = "mainJudge", required = false, defaultValue = "")String mainJudge,
+                       @RequestParam(value = "order", required = false, defaultValue = "")String order,
                        @RequestParam(value = "pageNo", required = false, defaultValue = "1")Integer page,
                        @RequestParam(value = "pageSize", required = false, defaultValue = "10")Integer rows){
         Result result = getResultInstance();
         Map<String,Object> queryMap = getQueryMap();
         try{
+        	queryMap.put("wardId",wardId);
             queryMap.put("cafeteriaId",cafeteriaId);
-            queryMap.put("totalWallet",totalWallet);
-            queryMap.put("wardId",wardId);
             queryMap.put("bedNo",bedNo);
             queryMap.put("sex",sex);
-            queryMap.put("diningDate",diningDate);
             queryMap.put("inpNo",inpNo);
+            queryMap.put("mainJudge",mainJudge);
+            queryMap.put("diningDate",diningDate);
+            queryMap.put("order",order);
             PageInfo pageInfo = new PageInfo(page, rows, "id", "desc");
-//            pageInfo.setCondition(queryMap);
+            pageInfo.setCondition(queryMap);
             patientService.getDataGrip(pageInfo,diningDate);
             result.setData(pageInfo);
             result.setMsg("success");

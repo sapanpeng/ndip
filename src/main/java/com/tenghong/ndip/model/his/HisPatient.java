@@ -125,7 +125,7 @@ public class HisPatient implements Serializable {
     private List<HisOmsDetails> detailsList;
 
     private Integer newPatient;
-
+    
     private static final long serialVersionUID = 1L;
 
     public Integer getNewPatient() {
