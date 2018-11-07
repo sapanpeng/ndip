@@ -177,7 +177,7 @@ public class OmsController extends BaseController {
                  if (style.equals("1")) {
                 	 oms.setOmsType(HisOmsEnum.PAY.getType());
                  } else {
-                	 oms.setOmsType(HisOmsEnum.WAIT_FOR_PAY.getType());
+                	 oms.setOmsType(HisOmsEnum.WAIT_FOR_PAY.getType()); 
                  }
                  oms.setUserName(getCurrentUser(token).getUserName());
                  oms.setUserId(getCurrentUser(token).getUserId());
