@@ -150,7 +150,9 @@ public class OmsController extends BaseController {
             Double price = Double.valueOf(0);
 //            List<HisOms> omsList = new ArrayList<HisOms>();
             for (HisOmsDetails detail : details) {
-            	omsId = detail.getOmsId();
+            	if (omsId == null) {
+            		omsId = detail.getOmsId();
+            	}
 //            	if (detail.getOmsId() != null) {
 //            		listOmsIds.add(detail.getOmsId());
 //            	}
