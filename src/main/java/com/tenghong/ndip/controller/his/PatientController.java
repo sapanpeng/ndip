@@ -39,7 +39,7 @@ public class PatientController extends BaseController{
                        @RequestParam(value = "cafeteriaId", required = false, defaultValue = "")Integer cafeteriaId,
                        @RequestParam(value = "bedNo", required = false, defaultValue = "")Integer bedNo,
                        @RequestParam(value = "sex", required = false, defaultValue = "")Integer sex,
-                       @RequestParam(value = "inpNo", required = false, defaultValue = "")Integer inpNo,
+                       @RequestParam(value = "inpNo", required = false, defaultValue = "")String inpNo,
                        @RequestParam(value = "mainJudge", required = false, defaultValue = "")String mainJudge,
                        @RequestParam(value = "order", required = false, defaultValue = "")String order,
                        @RequestParam(value = "pageNo", required = false, defaultValue = "1")Integer page,
@@ -50,7 +50,16 @@ public class PatientController extends BaseController{
         	queryMap.put("wardId",wardId);
             queryMap.put("cafeteriaId",cafeteriaId);
             queryMap.put("bedNo",bedNo);
-            queryMap.put("sex",sex);
+            if (sex != null) {
+            	if(sex == 0) {
+            		queryMap.put("sex","男");
+            	} else if(sex == 1) {
+            		queryMap.put("sex","女");
+            	}
+            } else {
+            	queryMap.put("sex",sex);
+            }
+            
             queryMap.put("inpNo",inpNo);
             queryMap.put("mainJudge",mainJudge);
             queryMap.put("diningDate",diningDate);

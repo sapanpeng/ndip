@@ -392,7 +392,7 @@
         and patient.inp_no = #{condition.inpNo}
       </if>
       <if test="condition.mainJudge != null and condition.mainJudge != '' " >
-         and  patient_orders.diagnosis like concat(concat('%',#{condition.mainJudge}),'%')
+         and  patient.diagnosis like concat(concat('%',#{condition.mainJudge}),'%')
       </if>
        <if test="condition.diningDate != null and condition.diningDate != '' " >
         <![CDATA[ and ((DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= #{condition.diningDate} and patient.out_status=0) or (DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= #{condition.diningDate} and (DATE_FORMAT(patient.out_hos_date,'%Y-%m-%d') >= #{condition.diningDate} or patient.out_hos_date is null))) ]]>
