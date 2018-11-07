@@ -1,7 +1,6 @@
 package com.tenghong.ndip.controller.his;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -145,23 +144,25 @@ public class OmsController extends BaseController {
         Result result = getResultInstance();
         try {
             List<HisOmsDetails> details = JSONArray.parseArray(omsDetail, HisOmsDetails.class);
-            List<Integer> listOmsIds = new ArrayList<Integer>();
-            List<HisOms> omsList = new ArrayList<HisOms>();
+//            List<Integer> listOmsIds = new ArrayList<Integer>();
+            Integer omsId = null;
+            HisOms oms = new HisOms();
+//            List<HisOms> omsList = new ArrayList<HisOms>();
             for (HisOmsDetails detail : details) {
-            	HisOms oms = null;
-            	if (detail.getOmsId() != null) {
-            		listOmsIds.add(detail.getOmsId());
-            	}
-            	for (HisOms hisOms : omsList) {
-            		if (hisOms.getMealId() == detail.getMealId()) {
-            			oms = hisOms;
-            		} 
-            	}
-            	
-            	if (oms == null) {
-        			oms = new HisOms();
-        			omsList.add(oms);
-        		}
+            	omsId = detail.getOmsId();
+//            	if (detail.getOmsId() != null) {
+//            		listOmsIds.add(detail.getOmsId());
+//            	}
+//            	for (HisOms hisOms : omsList) {
+//            		if (hisOms.getMealId() == detail.getMealId()) {
+//            			oms = hisOms;
+//            		} 
+//            	}
+//            	
+//            	if (oms == null) {
+//        			oms = new HisOms();
+//        			omsList.add(oms);
+//        		}
             	 Double price = oms.getPrice();
             	 if (price == null) {
             		 price = Double.valueOf(0);
@@ -173,7 +174,11 @@ public class OmsController extends BaseController {
                  oms.setMealName(detail.getMealName());
                  oms.setCreateTime(new Date());
                  oms.setCreateBy(getCurrentUser(token).getUserId());
-                 oms.setOmsType(HisOmsEnum.WAIT_FOR_PAY.getType());
+                 if (style.equals("1")) {
+                	 oms.setOmsType(HisOmsEnum.PAY.getType());
+                 } else {
+                	 oms.setOmsType(HisOmsEnum.WAIT_FOR_PAY.getType());
+                 }
                  oms.setUserName(getCurrentUser(token).getUserName());
                  oms.setUserId(getCurrentUser(token).getUserId());
                  oms.setDiningTime(diningTime);
@@ -183,7 +188,7 @@ public class OmsController extends BaseController {
             
             
             //根据病人信息查询当前时间是否存在历史订单
-            for (Integer omsId : listOmsIds) {
+//            for (Integer omsId : listOmsIds) {
             	HisOms om = omsService.getOne(omsId);
             	if (om!=null){
             		if (om.getOmsType() == HisOmsEnum.PAY.getType()){
@@ -198,34 +203,34 @@ public class OmsController extends BaseController {
             		omsService.update(om);
             		LOGGER.info("修改订单类型状态方法完成.....{}",om.getOmsType());
             	}
-            }
+//            }
             
             omsDetailsService.deleteBy(patientId, diningTime);
             omsService.deleteBy(patientId, diningTime);
-            for (HisOms hisOms : omsList) {
-            	 DietMealTimes times = mealTimesService.select(hisOms.getMealId());
+//            for (HisOms hisOms : omsList) {
+            	 DietMealTimes times = mealTimesService.select(oms.getMealId());
                  HisCafeteria cafeteria = cafeteriaService.select(times.getCafeteriaId());
                  HisPatient patientS = patientService.select(patientId);
                  HisInpatientArea area = inpatientAreaService.selectByCode(patientS.getWardCode());
                  if (null == area) {
                      throw new NullException();
                  }
-                 hisOms.setWardId(area.getId());
-                 hisOms.setWardName(area.getWardName());
-                 hisOms.setCafeteriaId(cafeteria.getId());
-                 hisOms.setCafeteriaName(cafeteria.getCafeteriaName());
-                 omsService.save(hisOms);
-                 saveOmsStatus(hisOms.getId(), hisOms.getOmsType(), hisOms.getCreateBy(), hisOms.getCreateTime());
-                 for (HisOmsDetails hisOmsDetails : hisOms.getHisOmsDetails()) {
-                	 hisOmsDetails.setOmsId(hisOms.getId());
+                 oms.setWardId(area.getId());
+                 oms.setWardName(area.getWardName());
+                 oms.setCafeteriaId(cafeteria.getId());
+                 oms.setCafeteriaName(cafeteria.getCafeteriaName());
+                 omsService.save(oms);
+                 saveOmsStatus(oms.getId(), oms.getOmsType(), oms.getCreateBy(), oms.getCreateTime());
+                 for (HisOmsDetails hisOmsDetails : details) {
+                	 hisOmsDetails.setOmsId(oms.getId());
                 	 omsDetailsService.save(hisOmsDetails);
                  }
                  
                  //实时扣款
                  if (style.equals("1")) {
-                     patientService.dedWallet(hisOms);
+                     patientService.dedWallet(oms);
                  }
-            }
+//            }
             
             result.setState(1);
             result.setMsg("success");
