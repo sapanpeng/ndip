@@ -147,6 +147,7 @@ public class OmsController extends BaseController {
 //            List<Integer> listOmsIds = new ArrayList<Integer>();
             Integer omsId = null;
             HisOms oms = new HisOms();
+            Double price = Double.valueOf(0);
 //            List<HisOms> omsList = new ArrayList<HisOms>();
             for (HisOmsDetails detail : details) {
             	omsId = detail.getOmsId();
@@ -163,28 +164,28 @@ public class OmsController extends BaseController {
 //        			oms = new HisOms();
 //        			omsList.add(oms);
 //        		}
-            	 Double price = oms.getPrice();
-            	 if (price == null) {
-            		 price = Double.valueOf(0);
-            	 }
+//            	 Double price = oms.getPrice();
+//            	 if (price == null) {
+//            		 price = Double.valueOf(0);
+//            	 }
                  detail.setCurrentPrice(getDouble(detail.getGoalPrice() * detail.getGoalNum()));
                  price += detail.getCurrentPrice();
                  oms.setPatientId(patientId);
                  oms.setMealId(detail.getMealId());
                  oms.setMealName(detail.getMealName());
-                 oms.setCreateTime(new Date());
-                 oms.setCreateBy(getCurrentUser(token).getUserId());
-                 if (style.equals("1")) {
-                	 oms.setOmsType(HisOmsEnum.PAY.getType());
-                 } else {
-                	 oms.setOmsType(HisOmsEnum.WAIT_FOR_PAY.getType()); 
-                 }
-                 oms.setUserName(getCurrentUser(token).getUserName());
-                 oms.setUserId(getCurrentUser(token).getUserId());
-                 oms.setDiningTime(diningTime);
-                 oms.setPrice(price);
-                 oms.getHisOmsDetails().add(detail);
             }
+            
+            if (style.equals("1")) {
+           	 oms.setOmsType(HisOmsEnum.PAY.getType());
+            } else {
+           	 oms.setOmsType(HisOmsEnum.WAIT_FOR_PAY.getType()); 
+            }
+            oms.setUserName(getCurrentUser(token).getUserName());
+            oms.setUserId(getCurrentUser(token).getUserId());
+            oms.setDiningTime(diningTime);
+            oms.setCreateTime(new Date());
+            oms.setCreateBy(getCurrentUser(token).getUserId());
+            oms.setPrice(price);
             
             
             //根据病人信息查询当前时间是否存在历史订单
