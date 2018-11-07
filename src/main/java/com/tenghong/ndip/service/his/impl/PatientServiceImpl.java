@@ -145,16 +145,16 @@ public class PatientServiceImpl implements PatientService{
         records.setCreateTime(new Date());
         patientWalletRecordsMapper.insertSelective(records);
 
-        //刷新订单
-        oms.setOmsType(HisOmsEnum.PAY.getType());
-        omsMapper.updateByPrimaryKeySelective(oms);
-
-        //记录订单状态
-        HisOmsStatus status = new HisOmsStatus();
-        status.setOrderId(oms.getId());
-        status.setStatus(HisOmsEnum.PAY.getType());
-        status.setCreateTime(new Date());
-        omsStatusMapper.insertSelective(status);
+//        //刷新订单
+//        oms.setOmsType(HisOmsEnum.PAY.getType());
+//        omsMapper.updateByPrimaryKeySelective(oms);
+//
+//        //记录订单状态
+//        HisOmsStatus status = new HisOmsStatus();
+//        status.setOrderId(oms.getId());
+//        status.setStatus(HisOmsEnum.PAY.getType());
+//        status.setCreateTime(new Date());
+//        omsStatusMapper.insertSelective(status);
     }
 
     @Override
