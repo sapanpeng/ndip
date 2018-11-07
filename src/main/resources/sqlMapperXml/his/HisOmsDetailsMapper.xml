@@ -242,12 +242,11 @@
     ON
     oms.patient_id = patient.patient_id
     WHERE
-    <if test="flag ==  1" >
-    `data`.goal_type = 2
-    </if>
-    <if test="flag ==  2" >
-      `data`.goal_type = 3
-    </if>
+
+    (`data`.goal_type = 2
+	or
+      `data`.goal_type = 3)
+
     AND
     patient.patient_id = #{patientId}
     AND

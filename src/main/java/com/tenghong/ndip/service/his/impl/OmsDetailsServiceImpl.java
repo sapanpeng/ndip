@@ -44,10 +44,10 @@ public class OmsDetailsServiceImpl implements OmsDetailsService {
     @Override
     public List<HisOmsDetails> getList(String patientId,String date,Integer mealId) {
         List<HisOmsDetails> list = omsDetailsMapper.getList(1,patientId,date,mealId);
-        List<HisOmsDetails> list2 = omsDetailsMapper.getList(2,patientId,date,mealId);
-        for (HisOmsDetails item : list2){
-            list.add(item);
-        }
+//        List<HisOmsDetails> list2 = omsDetailsMapper.getList(2,patientId,date,mealId);
+//        for (HisOmsDetails item : list2){
+//            list.add(item);
+//        }
         for(HisOmsDetails details : list){
             SysOvenSchedual schedual = sysOvenSchedualMapper.selectByKey(details.getMealId().toString());
             details.setHour(schedual.getExpHour());

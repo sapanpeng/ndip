@@ -66,14 +66,14 @@ public class PatientServiceImpl implements PatientService{
     public void getDataGrip(PageInfo pageInfo,String diningDate) {
         List<HisPatient> patients = patientMapper.findPageCondition(pageInfo);
         for (HisPatient item : patients){
-            Integer num = omsMapper.getOmsNum(item.getPatientId(),diningDate);
+            //Integer num = omsMapper.getOmsNum(item.getPatientId(),diningDate);
             item.setOvenId(patientMapper.selectOvenId(item.getPatientId()));
-            if (num > 0){
-                item.setFlag(1);
-                item.setDiningDate(DateUtil.parseDate(diningDate));
-            }else {
-                item.setFlag(0);
-            }
+//            if (num > 0){
+//                item.setFlag(1);
+//                item.setDiningDate(DateUtil.parseDate(diningDate));
+//            }else {
+//                item.setFlag(0);
+//            }
         }
         pageInfo.setRows(patients);
         pageInfo.setRecords(patientMapper.findPageCount(pageInfo));

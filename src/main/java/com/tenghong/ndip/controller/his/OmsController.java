@@ -298,16 +298,12 @@ public class OmsController extends BaseController {
 
     @RequestMapping(value = "/oms/delete", method = RequestMethod.POST)
     @ResponseBody
-    public Result delete(@RequestParam("detailsId") Integer id, @RequestParam("token") String token) { //2018-05-06
+    public Result delete(@RequestParam("detailsId") Integer id) { //2018-05-06
         Result result = getResultInstance();
         try {
             HisOmsDetails details = omsDetailsService.getInfo(id);
             HisOms oms = omsService.getOne(details.getOmsId());
             oms.setPrice(oms.getPrice() - details.getCurrentPrice());
-            if (oms.getPrice().compareTo(Double.valueOf(0)) == 0) {
-//            	omsService.deleteByPrimaryKey(oms.getId());
-            	oms.setOmsType(HisOmsEnum.REFUND.getType());
-            } 
             
 //            omsService.update(oms);
             
@@ -318,13 +314,18 @@ public class OmsController extends BaseController {
           			LOGGER.info("进入退款方法.....");
           			patientService.rewardWallet(oms, details.getCurrentPrice());
           		}
-          		LOGGER.info("进入修改订单类型状态方法.....{}",oms.getOmsType());
-          		oms.setUpdateTime(new Date());
-          		oms.setUpdateBy(getCurrentUser(token).getUserId());
-          		omsService.update(oms);
-          		LOGGER.info("修改订单类型状态方法完成.....{}",oms.getOmsType());
           	}
-            
+          	
+          	 if (oms.getPrice().compareTo(Double.valueOf(0)) == 0) {
+//             	omsService.deleteByPrimaryKey(oms.getId());
+             	oms.setOmsType(HisOmsEnum.REFUND.getType());
+             } 
+          	 
+          	LOGGER.info("进入修改订单类型状态方法.....{}",oms.getOmsType());
+          	oms.setUpdateTime(new Date());
+//  		oms.setUpdateBy(getCurrentUser(token).getUserId());
+          	omsService.update(oms);
+          	LOGGER.info("修改订单类型状态方法完成.....{}",oms.getOmsType());
             
             
             //删除详情
