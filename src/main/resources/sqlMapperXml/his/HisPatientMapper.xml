@@ -373,7 +373,7 @@
     (select  patient_id,order_name from (SELECT * from his_patient_orders order by start_time desc) A  group by A.patient_id) patient_orders
     ON patient.patient_id = patient_orders.patient_id
     LEFT JOIN
-    (select patient_id,count(1) ordercount from his_oms where DATE_FORMAT(dining_time,'%Y-%m-%d') = #{condition.diningDate}  group by  patient_id) OMS
+    (select patient_id,count(1) ordercount from his_oms where oms_type != 3 and  DATE_FORMAT(dining_time,'%Y-%m-%d') = #{condition.diningDate}  group by  patient_id) OMS
     ON patient.patient_id = OMS.patient_id
     <where>
       <if test="condition.wardId != null and condition.wardId != '' " >
