@@ -1,12 +1,12 @@
 package com.tenghong.ndip.service.his;
 
+import java.text.ParseException;
+import java.util.List;
+
 import com.tenghong.ndip.model.his.HisOms;
 import com.tenghong.ndip.model.his.HisPatient;
 import com.tenghong.ndip.model.vo.DailyPercentVo;
 import com.tenghong.ndip.utils.PageInfo;
-
-import java.text.ParseException;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +29,7 @@ public interface PatientService {
     //扣钱
     void dedWallet(HisOms oms);
 
-    void rewardWallet(HisOms oms);
+    void rewardWallet(HisOms oms, Double price);
 
     //查询昨日病人住院数
     Integer getYesterdayPatients();

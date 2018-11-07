@@ -131,16 +131,16 @@ public class PatientServiceImpl implements PatientService{
 
     @Override
     @Transactional
-    public void rewardWallet(HisOms oms) {
+    public void rewardWallet(HisOms oms, Double price) {
         HisPatientWallet wallet = patientWalletMapper.selectByPatientId(oms.getPatientId());
-        wallet.setTotalWallet(wallet.getTotalWallet() + oms.getPrice());
+        wallet.setTotalWallet(wallet.getTotalWallet() + price);
         patientWalletMapper.updateByPrimaryKey(wallet);
 
         //记录病人钱包变动
         HisPatientWalletRecords records = new HisPatientWalletRecords();
         records.setFlag(0);
         records.setPatientId(oms.getPatientId());
-        records.setCurrentAmount(oms.getPrice());
+        records.setCurrentAmount(price);
         records.setMemo("系统退餐退款");
         records.setCreateTime(new Date());
         patientWalletRecordsMapper.insertSelective(records);

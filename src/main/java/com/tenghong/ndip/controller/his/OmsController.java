@@ -196,7 +196,7 @@ public class OmsController extends BaseController {
             	if (om!=null){
             		if (om.getOmsType() == HisOmsEnum.PAY.getType()){
             			LOGGER.info("进入退款方法.....");
-            			patientService.rewardWallet(om);
+            			patientService.rewardWallet(om, om.getPrice());
             		}
             		LOGGER.info("进入修改订单类型状态方法.....{}",om.getOmsType());
             		om.setOmsType(HisOmsEnum.REFUND.getType());
@@ -298,17 +298,35 @@ public class OmsController extends BaseController {
 
     @RequestMapping(value = "/oms/delete", method = RequestMethod.POST)
     @ResponseBody
-    public Result delete(@RequestParam("detailsId") Integer id) { //2018-05-06
+    public Result delete(@RequestParam("detailsId") Integer id, @RequestParam("token") String token) { //2018-05-06
         Result result = getResultInstance();
         try {
             HisOmsDetails details = omsDetailsService.getInfo(id);
             HisOms oms = omsService.getOne(details.getOmsId());
             oms.setPrice(oms.getPrice() - details.getCurrentPrice());
             if (oms.getPrice().compareTo(Double.valueOf(0)) == 0) {
-            	omsService.deleteByPrimaryKey(oms.getId());
-            } else {
-            	omsService.update(oms);
-            }
+//            	omsService.deleteByPrimaryKey(oms.getId());
+            	oms.setOmsType(HisOmsEnum.REFUND.getType());
+            } 
+            
+//            omsService.update(oms);
+            
+            
+            //根据病人信息查询当前时间是否存在历史订单
+          	if (oms!=null){
+          		if (oms.getOmsType() == HisOmsEnum.PAY.getType()){
+          			LOGGER.info("进入退款方法.....");
+          			patientService.rewardWallet(oms, details.getCurrentPrice());
+          		}
+          		LOGGER.info("进入修改订单类型状态方法.....{}",oms.getOmsType());
+          		oms.setUpdateTime(new Date());
+          		oms.setUpdateBy(getCurrentUser(token).getUserId());
+          		omsService.update(oms);
+          		LOGGER.info("修改订单类型状态方法完成.....{}",oms.getOmsType());
+          	}
+            
+            
+            
             //删除详情
             omsDetailsService.delete(id);
             saveOmsStatus(oms.getId(), oms.getOmsType(), oms.getCreateBy(), oms.getCreateTime());
