@@ -206,8 +206,8 @@ public class OmsController extends BaseController {
             	}
 //            }
             
-            omsDetailsService.deleteBy(patientId, diningTime);
-            omsService.deleteBy(patientId, diningTime);
+//            omsDetailsService.deleteBy(patientId, diningTime);
+//            omsService.deleteBy(patientId, diningTime);
 //            for (HisOms hisOms : omsList) {
             	 DietMealTimes times = mealTimesService.select(oms.getMealId());
                  HisCafeteria cafeteria = cafeteriaService.select(times.getCafeteriaId());
