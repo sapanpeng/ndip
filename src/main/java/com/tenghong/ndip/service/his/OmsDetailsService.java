@@ -17,7 +17,7 @@ public interface OmsDetailsService {
     void save(HisOmsDetails details);
     
     //根据病人ID和日期删除订单详情
-    void deleteBy(String patientId, Date diningTime);
+    void updateBy(Integer omsId, Integer userId, Date time);
 
     List<HisOmsDetails> getList(String patientId,String date,Integer mealId);
 

@@ -207,6 +207,7 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
     @Transactional
     public Result saveWebData(List<HisOmsDetails> details, Date diningTime, List<String> list, String token, String style) {
         Result result = new Result();
+        Date time = new Date();
         List<HisOms> omsList = new ArrayList<HisOms>();
         for (String item : list) {
         	HisOms oms = null;
@@ -228,6 +229,10 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
             	 }
             	 detail.setCurrentPrice(getDouble(detail.getGoalPrice() * detail.getGoalNum()));
                  price += detail.getCurrentPrice();
+                 detail.setCreateBy(getCurrentUser(token).getUserId());
+                 detail.setCreateTime(time);
+                 detail.setUpdateBy(getCurrentUser(token).getUserId());
+                 detail.setUpdateTime(time);
             	
             	HisPatient patientS = patientMapper.selectByPatientId(item);
                 HisInpatientArea area = inpatientAreaMapper.selectByCode(patientS.getWardCode());
@@ -239,7 +244,7 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
                 oms.setWardName(area.getWardName());
                 oms.setMealId(detail.getMealId());
                 oms.setMealName(detail.getMealName());
-                oms.setCreateTime(new Date());
+                oms.setCreateTime(time);
                 oms.setCreateBy(getCurrentUser(token).getUserId());
                 oms.setOmsType(HisOmsEnum.WAIT_FOR_PAY.getType());
                 oms.setUserName(getCurrentUser(token).getUserName());
@@ -247,12 +252,6 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
                 oms.setDiningTime(diningTime);
                 oms.setPrice(price);
                 oms.getHisOmsDetails().add(detail);
-//                omsMapper.insertSelective(oms);
-//                saveOmsStatus(oms.getId(), oms.getOmsType(), oms.getCreateBy(), oms.getCreateTime());
-//                detail.setOmsId(oms.getId());
-//                detail.setMealId(oms.getMealId());
-//                detail.setMealName(oms.getMealName());
-//                omsDetailsMapper.insertSelective(detail);
             }
         }
         
@@ -291,7 +290,7 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
                 records.setCurrentAmount(hisOms.getPrice());
                 records.setPatientId(hisOms.getPatientId());
                 records.setMemo("系统订餐扣减");
-                records.setCreateTime(new Date());
+                records.setCreateTime(time);
                 patientWalletRecordsMapper.insertSelective(records);
 
                 //刷新订单
@@ -302,7 +301,7 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
                 HisOmsStatus status = new HisOmsStatus();
                 status.setOrderId(hisOms.getId());
                 status.setStatus(HisOmsEnum.PAY.getType());
-                status.setCreateTime(new Date());
+                status.setCreateTime(time);
                 omsStatusMapper.insertSelective(status);
             }
        }

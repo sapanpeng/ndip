@@ -80,7 +80,7 @@ public class OmsDetailsServiceImpl implements OmsDetailsService {
     }
 
 	@Override
-	public void deleteBy(String patientId, Date diningTime) {
-		omsDetailsMapper.deleteBy(patientId, diningTime);
+	public void updateBy(Integer omsId, Integer userId, Date time) {
+		omsDetailsMapper.updateBy(omsId, userId, time);
 	}
 }

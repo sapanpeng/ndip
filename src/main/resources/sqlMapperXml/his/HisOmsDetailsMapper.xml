@@ -64,10 +64,10 @@
     delete from his_oms_details
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteBy">
-    delete from his_oms_details
-    where oms_id in (select id from his_oms where patient_id = #{patientId} and  dining_time = #{diningDate,jdbcType=TIMESTAMP})
-  </delete>
+  <update id="updateBy">
+    update his_oms_details set oms_status=0，update_by=#{userId,jdbcType=INTEGER},update_time=#{time,jdbcType=TIMESTAMP}
+    where oms_id = #{omsId,jdbcType=INTEGER})
+  </update>
   <insert id="insert" parameterType="com.tenghong.ndip.model.his.HisOmsDetails">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
@@ -125,6 +125,18 @@
       <if test="memo != null">
         memo,
       </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="omsId != null">
@@ -162,6 +174,18 @@
       </if>
       <if test="memo != null">
         #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=INTEGER},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
