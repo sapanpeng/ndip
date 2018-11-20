@@ -36,5 +36,5 @@ public interface HisOmsDetailsMapper {
     //统计菜的数量
     Integer getGoalNum(@Param("wardId") Integer wardId,@Param("ovenId") Integer ovenId,@Param("date") String date);
 
-	int deleteBy(@Param("patientId")String patientId, @Param("diningDate")Date diningTime);
+	int updateBy(@Param("omsId")Integer omsId, @Param("userId")Integer userId, @Param("time")Date time);
 }

@@ -1,9 +1,9 @@
 package com.tenghong.ndip.model.his;
 
-import com.tenghong.ndip.model.diet.DietElement;
-
 import java.io.Serializable;
 import java.util.Date;
+
+import com.tenghong.ndip.model.diet.DietElement;
 
 /**
  * his_oms_details
@@ -74,6 +74,28 @@ public class HisOmsDetails implements Serializable {
     private String expTime;
 
     private Date diningTime;
+    
+    private Integer omsStatus;
+    
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
+
+    /**
+     * 创建人
+     */
+    private Integer createBy;
+
+    /**
+     * 更新人
+     */
+    private Integer updateBy;
 
     private static final long serialVersionUID = 1L;
 
@@ -85,7 +107,15 @@ public class HisOmsDetails implements Serializable {
         this.omsType = omsType;
     }
 
-    public Date getDiningTime() {
+    public Integer getOmsStatus() {
+		return omsStatus;
+	}
+
+	public void setOmsStatus(Integer omsStatus) {
+		this.omsStatus = omsStatus;
+	}
+
+	public Date getDiningTime() {
         return diningTime;
     }
 
@@ -228,4 +258,37 @@ public class HisOmsDetails implements Serializable {
     public void setMemo(String memo) {
         this.memo = memo;
     }
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public Integer getCreateBy() {
+		return createBy;
+	}
+
+	public void setCreateBy(Integer createBy) {
+		this.createBy = createBy;
+	}
+
+	public Integer getUpdateBy() {
+		return updateBy;
+	}
+
+	public void setUpdateBy(Integer updateBy) {
+		this.updateBy = updateBy;
+	}
+    
 }

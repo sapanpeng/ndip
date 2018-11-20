@@ -22,18 +22,9 @@ import com.tenghong.ndip.controller.BaseController;
 import com.tenghong.ndip.core.Result;
 import com.tenghong.ndip.core.constants.HisOmsEnum;
 import com.tenghong.ndip.model.command.OrderReportCommand;
-import com.tenghong.ndip.model.diet.DietMealTimes;
-import com.tenghong.ndip.model.his.HisCafeteria;
-import com.tenghong.ndip.model.his.HisInpatientArea;
 import com.tenghong.ndip.model.his.HisOms;
 import com.tenghong.ndip.model.his.HisOmsDetails;
-import com.tenghong.ndip.model.his.HisPatient;
-import com.tenghong.ndip.service.diet.DietRelationService;
-import com.tenghong.ndip.service.diet.MealTimesService;
-import com.tenghong.ndip.service.diet.OvenService;
-import com.tenghong.ndip.service.his.CafeteriaService;
 import com.tenghong.ndip.service.his.DataSaveSerice;
-import com.tenghong.ndip.service.his.InpatientAreaService;
 import com.tenghong.ndip.service.his.OmsDetailsService;
 import com.tenghong.ndip.service.his.OmsService;
 import com.tenghong.ndip.service.his.PatientService;
@@ -56,25 +47,10 @@ public class OmsController extends BaseController {
     private OmsService omsService;
 
     @Autowired
-    private MealTimesService mealTimesService;
-
-    @Autowired
-    private OvenService ovenService;
-
-    @Autowired
-    private CafeteriaService cafeteriaService;
-
-    @Autowired
     private OmsDetailsService omsDetailsService;
 
     @Autowired
     private PatientService patientService;
-
-    @Autowired
-    private InpatientAreaService inpatientAreaService;
-
-    @Autowired
-    private DietRelationService dietRelationService;
 
     @Autowired
     private DataSaveSerice dataSaveSerice;
@@ -142,98 +118,60 @@ public class OmsController extends BaseController {
                              @RequestParam("omsDetail") String omsDetail,
                              @RequestParam("token") String token) throws Exception {
         Result result = getResultInstance();
+        Date time = new Date();
         try {
             List<HisOmsDetails> details = JSONArray.parseArray(omsDetail, HisOmsDetails.class);
-//            List<Integer> listOmsIds = new ArrayList<Integer>();
             Integer omsId = null;
-            HisOms oms = new HisOms();
             Double price = Double.valueOf(0);
-//            List<HisOms> omsList = new ArrayList<HisOms>();
             for (HisOmsDetails detail : details) {
             	if (omsId == null) {
             		omsId = detail.getOmsId();
             	}
-//            	if (detail.getOmsId() != null) {
-//            		listOmsIds.add(detail.getOmsId());
-//            	}
-//            	for (HisOms hisOms : omsList) {
-//            		if (hisOms.getMealId() == detail.getMealId()) {
-//            			oms = hisOms;
-//            		} 
-//            	}
-//            	
-//            	if (oms == null) {
-//        			oms = new HisOms();
-//        			omsList.add(oms);
-//        		}
-//            	 Double price = oms.getPrice();
-//            	 if (price == null) {
-//            		 price = Double.valueOf(0);
-//            	 }
                  detail.setCurrentPrice(getDouble(detail.getGoalPrice() * detail.getGoalNum()));
                  price += detail.getCurrentPrice();
-                 oms.setPatientId(patientId);
-                 oms.setMealId(detail.getMealId());
-                 oms.setMealName(detail.getMealName());
+                 detail.setOmsStatus(1);
+                 detail.setCreateBy(getCurrentUser(token).getUserId());
+                 detail.setCreateTime(time);
+                 detail.setUpdateBy(getCurrentUser(token).getUserId());
+                 detail.setUpdateTime(time);
             }
             
-            if (style.equals("1")) {
-           	 oms.setOmsType(HisOmsEnum.PAY.getType());
-            } else {
-           	 oms.setOmsType(HisOmsEnum.WAIT_FOR_PAY.getType()); 
-            }
-            oms.setUserName(getCurrentUser(token).getUserName());
-            oms.setUserId(getCurrentUser(token).getUserId());
-            oms.setDiningTime(diningTime);
-            oms.setCreateTime(new Date());
-            oms.setCreateBy(getCurrentUser(token).getUserId());
-            oms.setPrice(price);
-            
-            
+            HisOms oms =  omsService.getOne(omsId);
             //根据病人信息查询当前时间是否存在历史订单
-//            for (Integer omsId : listOmsIds) {
-            	HisOms om = omsService.getOne(omsId);
-            	if (om!=null){
-            		if (om.getOmsType() == HisOmsEnum.PAY.getType()){
-            			LOGGER.info("进入退款方法.....");
-            			patientService.rewardWallet(om, om.getPrice());
-            		}
-            		LOGGER.info("进入修改订单类型状态方法.....{}",om.getOmsType());
-            		om.setOmsType(HisOmsEnum.REFUND.getType());
-            		om.setUpdateTime(new Date());
-            		om.setUpdateBy(getCurrentUser(token).getUserId());
-            		saveOmsStatus(om.getId(), om.getOmsType(), om.getCreateBy(), om.getCreateTime());
-            		omsService.update(om);
-            		LOGGER.info("修改订单类型状态方法完成.....{}",om.getOmsType());
-            	}
-//            }
+        	if (oms!=null){
+        		LOGGER.info("进入修改订单类型状态方法.....{}",oms.getOmsType());
+        		if (oms.getOmsType() == HisOmsEnum.PAY.getType()){
+        			LOGGER.info("进入退款方法.....");
+        			patientService.rewardWallet(oms, oms.getPrice());
+        		}
+        		if (style.equals("1")) {
+                   oms.setOmsType(HisOmsEnum.PAY.getType());
+                } else {
+                   oms.setOmsType(HisOmsEnum.WAIT_FOR_PAY.getType()); 
+                }
+        		if (price.compareTo(Double.valueOf(0)) == 0) {
+                  	oms.setOmsType(HisOmsEnum.REFUND.getType());
+                 } 
+        		oms.setPrice(price);
+        		oms.setUpdateTime(time);
+        		oms.setUpdateBy(getCurrentUser(token).getUserId());
+        		saveOmsStatus(oms.getId(), oms.getOmsType(), oms.getCreateBy(), oms.getCreateTime());
+        		omsService.update(oms);
+        		LOGGER.info("修改订单类型状态方法完成.....{}",oms.getOmsType());
+        	}
             
-//            omsDetailsService.deleteBy(patientId, diningTime);
-//            omsService.deleteBy(patientId, diningTime);
-//            for (HisOms hisOms : omsList) {
-            	 DietMealTimes times = mealTimesService.select(oms.getMealId());
-                 HisCafeteria cafeteria = cafeteriaService.select(times.getCafeteriaId());
-                 HisPatient patientS = patientService.select(patientId);
-                 HisInpatientArea area = inpatientAreaService.selectByCode(patientS.getWardCode());
-                 if (null == area) {
-                     throw new NullException();
-                 }
-                 oms.setWardId(area.getId());
-                 oms.setWardName(area.getWardName());
-                 oms.setCafeteriaId(cafeteria.getId());
-                 oms.setCafeteriaName(cafeteria.getCafeteriaName());
-                 omsService.save(oms);
-                 saveOmsStatus(oms.getId(), oms.getOmsType(), oms.getCreateBy(), oms.getCreateTime());
-                 for (HisOmsDetails hisOmsDetails : details) {
-                	 hisOmsDetails.setOmsId(oms.getId());
-                	 omsDetailsService.save(hisOmsDetails);
-                 }
-                 
-                 //实时扣款
-                 if (style.equals("1")) {
-                     patientService.dedWallet(oms);
-                 }
-//            }
+            
+            
+            omsDetailsService.updateBy(omsId,getCurrentUser(token).getUserId(),time);
+             for (HisOmsDetails hisOmsDetails : details) {
+            	 hisOmsDetails.setOmsId(oms.getId());
+            	 omsDetailsService.save(hisOmsDetails);
+             }
+             
+             //实时扣款
+             if (style.equals("1") && price.compareTo(Double.valueOf(0)) > 0) {
+                 patientService.dedWallet(oms);
+             }
             
             result.setState(1);
             result.setMsg("success");
@@ -300,14 +238,14 @@ public class OmsController extends BaseController {
     @ResponseBody
     public Result delete(@RequestParam("detailsId") Integer id) { //2018-05-06
         Result result = getResultInstance();
+        Date time = new Date();
         try {
             HisOmsDetails details = omsDetailsService.getInfo(id);
+            details.setOmsStatus(0);
+//            details.setUpdateBy(getCurrentUser(token).getUserId());
+            details.setUpdateTime(time);
             HisOms oms = omsService.getOne(details.getOmsId());
             oms.setPrice(oms.getPrice() - details.getCurrentPrice());
-            
-//            omsService.update(oms);
-            
-            
             //根据病人信息查询当前时间是否存在历史订单
           	if (oms!=null){
           		if (oms.getOmsType() == HisOmsEnum.PAY.getType()){
@@ -317,19 +255,18 @@ public class OmsController extends BaseController {
           	}
           	
           	 if (oms.getPrice().compareTo(Double.valueOf(0)) == 0) {
-//             	omsService.deleteByPrimaryKey(oms.getId());
              	oms.setOmsType(HisOmsEnum.REFUND.getType());
              } 
           	 
           	LOGGER.info("进入修改订单类型状态方法.....{}",oms.getOmsType());
-          	oms.setUpdateTime(new Date());
+          	oms.setUpdateTime(time);
 //  		oms.setUpdateBy(getCurrentUser(token).getUserId());
           	omsService.update(oms);
           	LOGGER.info("修改订单类型状态方法完成.....{}",oms.getOmsType());
             
             
             //删除详情
-            omsDetailsService.delete(id);
+            omsDetailsService.update(details);
             saveOmsStatus(oms.getId(), oms.getOmsType(), oms.getCreateBy(), oms.getCreateTime());
             result.setState(1);
             result.setMsg("success");
