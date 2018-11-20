@@ -212,8 +212,8 @@ public class OmsController extends BaseController {
             map.put("diningDateEnd", diningDateEnd);
             map.put("wardId", wardId);
             map.put("cafeteriaId", cafeteriaId);
-            map.put("ovenId", ovenId);
-            map.put("mealId", mealId);
+            //map.put("ovenId", ovenId);
+            //map.put("mealId", mealId);
             map.put("userId", userId);
             map.put("patientName", patientName);
             map.put("bedNo", bedNo);
