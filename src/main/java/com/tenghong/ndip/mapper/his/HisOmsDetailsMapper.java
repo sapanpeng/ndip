@@ -37,4 +37,10 @@ public interface HisOmsDetailsMapper {
     Integer getGoalNum(@Param("wardId") Integer wardId,@Param("ovenId") Integer ovenId,@Param("date") String date);
 
 	int updateBy(@Param("omsId")Integer omsId, @Param("userId")Integer userId, @Param("time")Date time);
+	
+	//根据订单ID查询订单详情
+	List<HisOmsDetails> findOmsDetail(com.tenghong.ndip.utils.PageInfo pageInfo);
+
+	//根据订单ID查询订单详情数量
+	int findOmsDetailCount(com.tenghong.ndip.utils.PageInfo pageInfo);
 }

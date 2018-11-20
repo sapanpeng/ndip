@@ -345,23 +345,23 @@
     his_relation relation
     ON
     ward.id = relation.ward_id
-    LEFT JOIN
+    <!--LEFT JOIN
     his_oms_details detail
     ON
-    oms.id = detail.oms_id
-    <where>
+    oms.id = detail.oms_id-->
+     <where>
       <if test="condition.cafeteriaId != null and condition.cafeteriaId != '' " >
         and relation.cafeteria_id = #{condition.cafeteriaId}
       </if>
       <if test="condition.wardId != null and condition.wardId != '' " >
         and ward.id = #{condition.wardId}
       </if>
-      <if test="condition.ovenId != null and condition.ovenId != '' " >
+      <!-- <if test="condition.ovenId != null and condition.ovenId != '' " >
         and detail.oven_id = #{condition.ovenId}
-      </if>
-      <if test="condition.mealId != null and condition.mealId != '' " >
+      </if> -->
+      <!--<if test="condition.mealId != null and condition.mealId != '' " >
         and oms.meal_id = #{condition.mealId}
-      </if>
+      </if>-->
       <if test="condition.userId != null and condition.userId != '' " >
         and oms.user_id = #{condition.userId}
       </if>

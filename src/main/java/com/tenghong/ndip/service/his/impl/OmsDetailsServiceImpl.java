@@ -12,6 +12,7 @@ import com.tenghong.ndip.mapper.sys.SysOvenSchedualMapper;
 import com.tenghong.ndip.model.his.HisOmsDetails;
 import com.tenghong.ndip.model.sys.SysOvenSchedual;
 import com.tenghong.ndip.service.his.OmsDetailsService;
+import com.tenghong.ndip.utils.PageInfo;
 import com.tenghong.ndip.utils.SqlMapper;
 
 /**
@@ -82,5 +83,12 @@ public class OmsDetailsServiceImpl implements OmsDetailsService {
 	@Override
 	public void updateBy(Integer omsId, Integer userId, Date time) {
 		omsDetailsMapper.updateBy(omsId, userId, time);
+	}
+
+	@Override
+	public void getOmsDetail(PageInfo pageInfo) {
+		pageInfo.setRows(omsDetailsMapper.findOmsDetail(pageInfo));
+        pageInfo.setRecords(omsDetailsMapper.findOmsDetailCount(pageInfo));
+		
 	}
 }

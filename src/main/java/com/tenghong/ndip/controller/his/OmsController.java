@@ -232,6 +232,30 @@ public class OmsController extends BaseController {
         }
         return result;
     }
+    
+    //查询订单列表
+    @RequestMapping(value = "/oms/omsdetail", method = RequestMethod.POST)
+    @ResponseBody
+    public Result getOmsDetail(@RequestParam(value = "omsId", required = true, defaultValue = "") Integer omsId,
+                       @RequestParam(value = "pageNo", required = false, defaultValue = "1") Integer page,
+                       @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer rows) {
+        Result result = getResultInstance();
+        Map<String, Object> map = getQueryMap();
+        try {
+            map.put("omsId", omsId);
+            PageInfo pageInfo = new PageInfo(page, rows, "", "");
+            pageInfo.setCondition(map);
+            omsDetailsService.getOmsDetail(pageInfo);
+            result.setData(pageInfo);
+            result.setMsg("success");
+            result.setState(1);
+        } catch (Exception e) {
+            LOGGER.error("Server Exception：{}", e);
+            result.setState(0);
+            result.setMsg("Server Exception");
+        }
+        return result;
+    }
 
 
     @RequestMapping(value = "/oms/delete", method = RequestMethod.POST)

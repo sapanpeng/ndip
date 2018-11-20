@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.tenghong.ndip.model.his.HisOmsDetails;
+import com.tenghong.ndip.utils.PageInfo;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,4 +29,7 @@ public interface OmsDetailsService {
     void delete(Integer id);
 
     void update(HisOmsDetails details);
+
+    //根据订单ID查询订单详情
+	void getOmsDetail(PageInfo pageInfo);
 }
