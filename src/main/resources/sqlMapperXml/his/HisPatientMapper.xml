@@ -400,11 +400,14 @@
        <if test="condition.diningDate != null and condition.diningDate != '' " >
         <![CDATA[ and ((DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= #{condition.diningDate} and patient.out_status=0) or (DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= #{condition.diningDate} and (DATE_FORMAT(patient.out_hos_date,'%Y-%m-%d') >= #{condition.diningDate} or patient.out_hos_date is null))) ]]>
       </if>
-      <if test="condition.order != null and condition.order == '1'.toString() " >
-         and  OMS.ordercount is not null
-      </if>
       <if test="condition.order != null and condition.order == '0'.toString() " >
-         and  OMS.ordercount is null
+         and  oms.oms_type is not null
+      </if>
+      <if test="condition.order != null and condition.order == '1'.toString() " >
+         and  (oms.oms_type = 1 or oms.oms_type=2)
+      </if>
+      <if test="condition.order != null and condition.order == '3'.toString() " >
+         and  oms.oms_type = 3
       </if>
     </where>
     GROUP BY
@@ -429,6 +432,9 @@
     his_relation relation
     ON
     ward.id = relation.ward_id
+    LEFT JOIN
+    his_oms oms
+    ON patient.patient_id = oms.patient_id
     <where>
       <if test="condition.wardId != null and condition.wardId != '' " >
         and ward.id = #{condition.wardId}
@@ -445,8 +451,20 @@
       <if test="condition.inpNo != null and condition.inpNo != '' " >
         and patient.inp_no = #{condition.inpNo}
       </if>
-      <if test="condition.totalWallet != null and condition.totalWallet != '' " >
-        and wallet.total_wallet &gt; #{condition.totalWallet}
+      <if test="condition.mainJudge != null and condition.mainJudge != '' " >
+         and  patient.diagnosis like concat(concat('%',#{condition.mainJudge}),'%')
+      </if>
+       <if test="condition.diningDate != null and condition.diningDate != '' " >
+        <![CDATA[ and ((DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= #{condition.diningDate} and patient.out_status=0) or (DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= #{condition.diningDate} and (DATE_FORMAT(patient.out_hos_date,'%Y-%m-%d') >= #{condition.diningDate} or patient.out_hos_date is null))) ]]>
+      </if>
+      <if test="condition.order != null and condition.order == '0'.toString() " >
+         and  oms.oms_type is not null
+      </if>
+      <if test="condition.order != null and condition.order == '1'.toString() " >
+         and  (oms.oms_type = 1 or oms.oms_type=2)
+      </if>
+      <if test="condition.order != null and condition.order == '3'.toString() " >
+         and  oms.oms_type = 3
       </if>
     </where>
   </select>

@@ -129,6 +129,7 @@ public class OmsController extends BaseController {
             	}
                  detail.setCurrentPrice(getDouble(detail.getGoalPrice() * detail.getGoalNum()));
                  price += detail.getCurrentPrice();
+                 detail.setOmsStatus(1);
                  detail.setCreateBy(getCurrentUser(token).getUserId());
                  detail.setCreateTime(time);
                  detail.setUpdateBy(getCurrentUser(token).getUserId());
@@ -237,14 +238,14 @@ public class OmsController extends BaseController {
     @ResponseBody
     public Result delete(@RequestParam("detailsId") Integer id) { //2018-05-06
         Result result = getResultInstance();
+        Date time = new Date();
         try {
             HisOmsDetails details = omsDetailsService.getInfo(id);
+            details.setOmsStatus(0);
+//            details.setUpdateBy(getCurrentUser(token).getUserId());
+            details.setUpdateTime(time);
             HisOms oms = omsService.getOne(details.getOmsId());
             oms.setPrice(oms.getPrice() - details.getCurrentPrice());
-            
-//            omsService.update(oms);
-            
-            
             //根据病人信息查询当前时间是否存在历史订单
           	if (oms!=null){
           		if (oms.getOmsType() == HisOmsEnum.PAY.getType()){
@@ -254,19 +255,18 @@ public class OmsController extends BaseController {
           	}
           	
           	 if (oms.getPrice().compareTo(Double.valueOf(0)) == 0) {
-//             	omsService.deleteByPrimaryKey(oms.getId());
              	oms.setOmsType(HisOmsEnum.REFUND.getType());
              } 
           	 
           	LOGGER.info("进入修改订单类型状态方法.....{}",oms.getOmsType());
-          	oms.setUpdateTime(new Date());
+          	oms.setUpdateTime(time);
 //  		oms.setUpdateBy(getCurrentUser(token).getUserId());
           	omsService.update(oms);
           	LOGGER.info("修改订单类型状态方法完成.....{}",oms.getOmsType());
             
             
             //删除详情
-            omsDetailsService.delete(id);
+            omsDetailsService.update(details);
             saveOmsStatus(oms.getId(), oms.getOmsType(), oms.getCreateBy(), oms.getCreateTime());
             result.setState(1);
             result.setMsg("success");

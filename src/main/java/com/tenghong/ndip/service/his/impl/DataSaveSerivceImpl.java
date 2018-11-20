@@ -233,6 +233,7 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
                  detail.setCreateTime(time);
                  detail.setUpdateBy(getCurrentUser(token).getUserId());
                  detail.setUpdateTime(time);
+                 detail.setOmsStatus(1);
             	
             	HisPatient patientS = patientMapper.selectByPatientId(item);
                 HisInpatientArea area = inpatientAreaMapper.selectByCode(patientS.getWardCode());
