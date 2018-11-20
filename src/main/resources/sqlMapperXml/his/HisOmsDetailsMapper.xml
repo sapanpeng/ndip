@@ -380,7 +380,7 @@
     LIMIT #{from}, #{size}
   </select>
   
-  <select id="findOmsDetailCount"  resultMap="java.lang.Integer" parameterType="com.tenghong.ndip.utils.PageInfo">
+  <select id="findOmsDetailCount"  resultType="java.lang.Integer" parameterType="com.tenghong.ndip.utils.PageInfo">
     SELECT
     COUNT(1)
     FROM
