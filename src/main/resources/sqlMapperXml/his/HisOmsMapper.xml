@@ -271,7 +271,7 @@
 
   <select id="findPageCondition"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
     SELECT
-    oms.*,patient.bed_no as bedNo,patient.name as patientName,patient.inp_no as inpNo, <!-- detail.oven_name as ovenName-->
+    oms.*,patient.bed_no as bedNo,patient.name as patientName,patient.inp_no as inpNo<!--,  detail.oven_name as ovenName-->
     FROM
     his_oms oms
     LEFT JOIN
