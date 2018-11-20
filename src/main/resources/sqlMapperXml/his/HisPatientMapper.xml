@@ -401,7 +401,7 @@
         <![CDATA[ and ((DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= #{condition.diningDate} and patient.out_status=0) or (DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= #{condition.diningDate} and (DATE_FORMAT(patient.out_hos_date,'%Y-%m-%d') >= #{condition.diningDate} or patient.out_hos_date is null))) ]]>
       </if>
       <if test="condition.order != null and condition.order == '0'.toString() " >
-         and  oms.oms_type is not null
+         and  oms.oms_type is null
       </if>
       <if test="condition.order != null and condition.order == '1'.toString() " >
          and  (oms.oms_type = 1 or oms.oms_type=2)
