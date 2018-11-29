@@ -260,13 +260,13 @@ public class OmsController extends BaseController {
 
     @RequestMapping(value = "/oms/delete", method = RequestMethod.POST)
     @ResponseBody
-    public Result delete(@RequestParam("detailsId") Integer id) { //2018-05-06
+    public Result delete(@RequestParam("detailsId") Integer id,@RequestParam("token") String token) { //2018-05-06
         Result result = getResultInstance();
         Date time = new Date();
         try {
             HisOmsDetails details = omsDetailsService.getInfo(id);
             details.setOmsStatus(0);
-//            details.setUpdateBy(getCurrentUser(token).getUserId());
+            details.setUpdateBy(getCurrentUser(token).getUserId());
             details.setUpdateTime(time);
             HisOms oms = omsService.getOne(details.getOmsId());
             oms.setPrice(oms.getPrice() - details.getCurrentPrice());
@@ -284,7 +284,7 @@ public class OmsController extends BaseController {
           	 
           	LOGGER.info("进入修改订单类型状态方法.....{}",oms.getOmsType());
           	oms.setUpdateTime(time);
-//  		oms.setUpdateBy(getCurrentUser(token).getUserId());
+  		    oms.setUpdateBy(getCurrentUser(token).getUserId());
           	omsService.update(oms);
           	LOGGER.info("修改订单类型状态方法完成.....{}",oms.getOmsType());
             

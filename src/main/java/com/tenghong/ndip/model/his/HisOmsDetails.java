@@ -96,6 +96,12 @@ public class HisOmsDetails implements Serializable {
      * 更新人
      */
     private Integer updateBy;
+    
+    private String updateByName;
+    private String createByName;
+    
+    
+    
 
     private static final long serialVersionUID = 1L;
 
@@ -290,5 +296,20 @@ public class HisOmsDetails implements Serializable {
 	public void setUpdateBy(Integer updateBy) {
 		this.updateBy = updateBy;
 	}
-    
+
+	public String getUpdateByName() {
+		return updateByName;
+	}
+
+	public void setUpdateByName(String updateByName) {
+		this.updateByName = updateByName;
+	}
+
+	public String getCreateByNmae() {
+		return createByName;
+	}
+
+	public void setCreateByNmae(String createByName) {
+		this.createByName = createByName;
+	}
 }
