@@ -378,7 +378,7 @@
     <where>
       detail.oms_id= #{condition.omsId}
     </where>
-   ORDER BY detail.update_time desc,meal_id asc,oven_id asc,goal_id asc
+   ORDER BY detail.id desc,detail.update_time desc,meal_id asc,oven_id asc,goal_id asc
     LIMIT #{from}, #{size}
   </select>
   
