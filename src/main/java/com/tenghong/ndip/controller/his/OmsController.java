@@ -121,12 +121,12 @@ public class OmsController extends BaseController {
         Date time = new Date();
         try {
             List<HisOmsDetails> details = JSONArray.parseArray(omsDetail, HisOmsDetails.class);
-            Integer omsId = null;
+//            Integer omsId = null;
             Double price = Double.valueOf(0);
             for (HisOmsDetails detail : details) {
-            	if (omsId == null) {
-            		omsId = detail.getOmsId();
-            	}
+//            	if (omsId == null) {
+//            		omsId = detail.getOmsId();
+//            	}
                  detail.setCurrentPrice(getDouble(detail.getGoalPrice() * detail.getGoalNum()));
                  price += detail.getCurrentPrice();
                  detail.setOmsStatus(1);
@@ -136,7 +136,7 @@ public class OmsController extends BaseController {
                  detail.setUpdateTime(time);
             }
             
-            HisOms oms =  omsService.getOne(omsId);
+            HisOms oms =  omsService.getHisOmsBy(patientId, diningTime);
             //根据病人信息查询当前时间是否存在历史订单
         	if (oms!=null){
         		LOGGER.info("进入修改订单类型状态方法.....{}",oms.getOmsType());
@@ -162,7 +162,7 @@ public class OmsController extends BaseController {
             
             
             
-            omsDetailsService.updateBy(omsId,getCurrentUser(token).getUserId(),time);
+            omsDetailsService.updateBy(oms.getId(),getCurrentUser(token).getUserId(),time);
              for (HisOmsDetails hisOmsDetails : details) {
             	 hisOmsDetails.setOmsId(oms.getId());
             	 omsDetailsService.save(hisOmsDetails);

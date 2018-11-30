@@ -390,4 +390,9 @@ public class OmsServiceImpl implements OmsService {
 	public void deleteByPrimaryKey(Integer id) {
 		omsMapper.deleteByPrimaryKey(id);
 	}
+
+	@Override
+	public HisOms getHisOmsBy(String patientId, Date diningTime) {
+		return omsMapper.getHisOmsBy(patientId, diningTime);
+	}
 }

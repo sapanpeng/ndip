@@ -1,6 +1,9 @@
 package com.tenghong.ndip.service.his;
 
+import java.util.Date;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.tenghong.ndip.model.command.OrderReportCommand;
 import com.tenghong.ndip.model.his.HisOms;
@@ -58,6 +61,9 @@ public interface OmsService {
 
     //根据ID删除订单 
 	void deleteByPrimaryKey(Integer id);
+	
+	 // 根据病人ID和订单日期查询订单
+    HisOms getHisOmsBy(String patientId, Date diningTime);
 
     //原材料统计
 
