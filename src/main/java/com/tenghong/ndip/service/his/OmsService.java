@@ -1,6 +1,5 @@
 package com.tenghong.ndip.service.his;
 
-import java.util.Date;
 import java.util.List;
 
 import com.tenghong.ndip.model.command.OrderReportCommand;
@@ -23,9 +22,6 @@ public interface OmsService {
     //保存订单实例
     void save(HisOms oms);
     
-    //根据日期和病人删除订单
-    void deleteBy(String patientId, Date diningTime);
-
     //查询订单app
     List<HisOms> getDataGrip(List<Integer> list,Integer userId);
 

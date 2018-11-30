@@ -395,10 +395,10 @@
     <![CDATA[ and DATE_FORMAT(dining_time,'%Y-%m-%d') = #{diningDate}]]>
   </select>
   
-   <delete id="deleteBy">
-    delete from his_oms
+   <select id="getHisOmsBy" resultMap="BaseResultMap">
+    select * from his_oms
     where patient_id = #{patientId} and  dining_time = #{diningDate,jdbcType=TIMESTAMP}
-  </delete>
+  </select>
 
   <select id="getOmsIds" resultType="java.lang.Integer">
     select

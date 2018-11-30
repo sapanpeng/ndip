@@ -102,9 +102,10 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
             }
             DietMealTimes times = dietMealTimesMapper.selectByPrimaryKey(dto.getMealId());
             HisCafeteria cafeteria = hisCafeteriaMapper.selectByPrimaryKey(times.getCafeteriaId());
+            Date time = new Date();
+            HisOms oms = omsMapper.getHisOmsBy(dto.getPatientId(), dto.getDiningTime());
             //如果订单是历史订单
-            if (dto.getOmsId() != null && !dto.getOmsId().toString().equals("0")) {
-                HisOms oms = omsMapper.selectByPrimaryKey(dto.getOmsId());
+            if (oms != null) {
                 if (oms.getOmsType() == HisOmsEnum.PAY.getType()) {
                     HisPatientWallet wallet = patientWalletMapper.selectByPatientId(oms.getPatientId());
                     wallet.setTotalWallet(wallet.getTotalWallet() + oms.getPrice());
@@ -116,27 +117,29 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
                     records.setPatientId(oms.getPatientId());
                     records.setCurrentAmount(oms.getPrice());
                     records.setMemo("系统退餐退款");
-                    records.setCreateTime(new Date());
+                    records.setCreateTime(time);
                     patientWalletRecordsMapper.insertSelective(records);
-
-                    //刷新订单
-                    oms.setOmsType(HisOmsEnum.PAY.getType());
-                    omsMapper.updateByPrimaryKeySelective(oms);
-
                     //记录订单状态
                     HisOmsStatus status = new HisOmsStatus();
                     status.setStatus(HisOmsEnum.PAY.getType());
                     status.setOrderId(oms.getId());
-                    status.setCreateTime(new Date());
+                    status.setCreateTime(time);
                     omsStatusMapper.insertSelective(status);
                 }
                 oms.setOmsType(HisOmsEnum.REFUND.getType());
-                oms.setUpdateTime(new Date());
+                oms.setUpdateTime(time);
                 oms.setUpdateBy(getCurrentUser(dto.getToken()).getUserId());
-                //完成退单
+                //修改订单详情状态
+                omsDetailsMapper.updateBy(oms.getId(),getCurrentUser(dto.getToken()).getUserId(),time);
+                //修改订单状态
                 omsMapper.updateByPrimaryKeySelective(oms);
                 saveOmsStatus(oms.getId(), oms.getOmsType(), oms.getCreateBy(), oms.getCreateTime());
             }
+            
+            //若订单金额为0说明是退单，不执行后续操作
+            if (price.compareTo(Double.valueOf(0)) == 0)
+            	continue;
+            
             //新下单
             HisOms omsNew = new HisOms();
             HisPatient patientS = patientMapper.selectByPatientId(dto.getPatientId());
@@ -144,37 +147,76 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
             if (null == area) {
                 throw new NullException();
             }
-            omsNew.setPatientId(dto.getPatientId());
-            omsNew.setWardId(area.getId());
-            omsNew.setWardName(area.getWardName());
-            omsNew.setMealId(dto.getMealId());
-            omsNew.setMealName(dto.getMealName());
-            omsNew.setCafeteriaId(cafeteria.getId());
-            omsNew.setCafeteriaName(cafeteria.getCafeteriaName());
-            omsNew.setCreateTime(new Date());
-            omsNew.setCreateBy(getCurrentUser(dto.getToken()).getUserId());
-            omsNew.setOmsType(HisOmsEnum.WAIT_FOR_PAY.getType());
-            omsNew.setUserName(getCurrentUser(dto.getToken()).getUserName());
-            omsNew.setUserId(getCurrentUser(dto.getToken()).getUserId());
-            omsNew.setDiningTime(dto.getDiningTime());
-            omsNew.setPrice(getDouble(price));
-            omsMapper.insertSelective(omsNew);
-            saveOmsStatus(omsNew.getId(), omsNew.getOmsType(), omsNew.getCreateBy(), omsNew.getCreateTime());
+            if (oms != null) {
+            	oms.setPatientId(dto.getPatientId());
+            	oms.setWardId(area.getId());
+            	oms.setWardName(area.getWardName());
+            	oms.setMealId(dto.getMealId());
+            	oms.setMealName(dto.getMealName());
+            	oms.setCafeteriaId(cafeteria.getId());
+            	oms.setCafeteriaName(cafeteria.getCafeteriaName());
+            	oms.setCreateTime(time);
+            	oms.setCreateBy(getCurrentUser(dto.getToken()).getUserId());
+            	if (style.equals("1")) {
+            		oms.setOmsType(HisOmsEnum.PAY.getType());
+            	} else {
+            		oms.setOmsType(HisOmsEnum.WAIT_FOR_PAY.getType());
+            	}
+            	oms.setUserName(getCurrentUser(dto.getToken()).getUserName());
+            	oms.setUserId(getCurrentUser(dto.getToken()).getUserId());
+            	oms.setDiningTime(dto.getDiningTime());
+            	oms.setPrice(getDouble(price));
+            	omsMapper.updateByPrimaryKeySelective(oms);
+            	saveOmsStatus(oms.getId(), oms.getOmsType(), oms.getCreateBy(), oms.getCreateTime());
+            } else {
+            	omsNew.setPatientId(dto.getPatientId());
+            	omsNew.setWardId(area.getId());
+            	omsNew.setWardName(area.getWardName());
+            	omsNew.setMealId(dto.getMealId());
+            	omsNew.setMealName(dto.getMealName());
+            	omsNew.setCafeteriaId(cafeteria.getId());
+            	omsNew.setCafeteriaName(cafeteria.getCafeteriaName());
+            	omsNew.setCreateTime(time);
+            	omsNew.setCreateBy(getCurrentUser(dto.getToken()).getUserId());
+            	if (style.equals("1")) {
+            		omsNew.setOmsType(HisOmsEnum.PAY.getType());
+            	} else {
+            		omsNew.setOmsType(HisOmsEnum.WAIT_FOR_PAY.getType());
+            	}
+            	omsNew.setUserName(getCurrentUser(dto.getToken()).getUserName());
+            	omsNew.setUserId(getCurrentUser(dto.getToken()).getUserId());
+            	omsNew.setDiningTime(dto.getDiningTime());
+            	omsNew.setPrice(getDouble(price));
+            	omsMapper.insertSelective(omsNew);
+            	saveOmsStatus(omsNew.getId(), omsNew.getOmsType(), omsNew.getCreateBy(), omsNew.getCreateTime());
+            }
             for (HisOmsDetails detail : dto.getDetailDto()) {
+            	if (detail.getGoalNum() == 0) {
+            		continue;
+            	}
                 Integer menuId = dietRelationMapper.getMenuId(detail.getGoalId(), detail.getGoalType());
                 DietOven oven = ovenMapper.selectByPrimaryKey(menuMapper.selectByPrimaryKey(menuId).getOvenId());
-                detail.setOmsId(omsNew.getId());
+                if (oms != null) {
+                	detail.setOmsId(oms.getId());
+                } else {
+                	detail.setOmsId(omsNew.getId());
+                }
                 detail.setMealId(omsNew.getMealId());
                 detail.setMealName(omsNew.getMealName());
                 detail.setOvenId(oven.getId());
                 detail.setOvenName(oven.getOvenName());
+                detail.setOmsStatus(1);
+                detail.setCreateBy(getCurrentUser(dto.getToken()).getUserId());
+                detail.setCreateTime(time);
+                detail.setUpdateBy(getCurrentUser(dto.getToken()).getUserId());
+                detail.setUpdateTime(time);
                 omsDetailsMapper.insertSelective(detail);
             }
 
             //实时扣款
-            if (style.equals("1")) {
-                HisPatientWallet wallet = patientWalletMapper.selectByPatientId(omsNew.getPatientId());
-                wallet.setTotalWallet(wallet.getTotalWallet() - omsNew.getPrice());
+            if (style.equals("1") && price.compareTo(Double.valueOf(0)) != 0) {
+                HisPatientWallet wallet = patientWalletMapper.selectByPatientId(dto.getPatientId());
+                wallet.setTotalWallet(wallet.getTotalWallet() - getDouble(price));
                 patientWalletMapper.updateByPrimaryKey(wallet);
 
                 //记录病人钱包变动
@@ -183,12 +225,12 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
                 records.setCurrentAmount(omsNew.getPrice());
                 records.setPatientId(omsNew.getPatientId());
                 records.setMemo("系统订餐扣减");
-                records.setCreateTime(new Date());
+                records.setCreateTime(time);
                 patientWalletRecordsMapper.insertSelective(records);
 
-                //刷新订单
-                omsNew.setOmsType(HisOmsEnum.PAY.getType());
-                omsMapper.updateByPrimaryKeySelective(omsNew);
+//                //刷新订单
+//                omsNew.setOmsType(HisOmsEnum.PAY.getType());
+//                omsMapper.updateByPrimaryKeySelective(omsNew);
 
                 //记录订单状态
                 HisOmsStatus status = new HisOmsStatus();

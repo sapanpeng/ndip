@@ -387,11 +387,6 @@ public class OmsServiceImpl implements OmsService {
     }
 
 	@Override
-	public void deleteBy(String patientId, Date diningTime) {
-		omsMapper.deleteBy(patientId, diningTime);
-	}
-
-	@Override
 	public void deleteByPrimaryKey(Integer id) {
 		omsMapper.deleteByPrimaryKey(id);
 	}

@@ -77,7 +77,7 @@ public interface HisOmsMapper {
 
     Integer selectOrderInformationCount(PageInfo pageInfo);
 
-    // 根据病人ID和订单日期删除订单
-	int deleteBy(@Param("patientId")String patientId, @Param("diningDate")Date diningTime);
+    // 根据病人ID和订单日期查询订单
+    HisOms getHisOmsBy(@Param("patientId")String patientId, @Param("diningDate")Date diningTime);
 
 }
