@@ -32,10 +32,10 @@ public interface PatientService {
     void rewardWallet(HisOms oms, Double price);
 
     //查询昨日病人住院数
-    Integer getYesterdayPatients();
+    Integer getYesterdayPatients(Integer cafeteriaId);
 
     //查询昨日病人订餐人数
-    Integer getYesterdayPatientsHadOrder();
+    Integer getYesterdayPatientsHadOrder(Integer cafeteriaId);
 
     //所有病人数
     Integer getPatientsNum();

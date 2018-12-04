@@ -45,7 +45,7 @@ public interface OmsService {
     void update(HisOms oms);
 
     //查询昨日营业额
-    Double getYesterdayReward();
+    Double getYesterdayReward(Integer cafeteriaId);
 
     //查询所有病区金额
     void getWardIncome(PageInfo pageInfo);

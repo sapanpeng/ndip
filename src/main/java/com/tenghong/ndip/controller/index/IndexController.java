@@ -55,9 +55,9 @@ public class IndexController extends BaseController {
         Result result = getResultInstance();
         Map<String,Object> map = Maps.newHashMap();
         try{
-            map.put("yesterdayPatientNum",patientService.getYesterdayPatients());
-            map.put("yesterdayBookRate",getPercent(patientService.getYesterdayPatientsHadOrder(),patientService.getPatientsNum()));
-            map.put("yesterdayTurnover",omsService.getYesterdayReward());
+            map.put("yesterdayPatientNum",patientService.getYesterdayPatients(cafeteriaId));
+            map.put("yesterdayBookRate",getPercent(patientService.getYesterdayPatientsHadOrder(cafeteriaId),patientService.getYesterdayPatients(cafeteriaId)));
+            map.put("yesterdayTurnover",omsService.getYesterdayReward(cafeteriaId));
             map.put("cafeteriaTurnoverList",cafeteriaService.getTurnover());
             map.put("wardCostList",inpatientAreaService.getTurnover());
             map.put("dailyBookRateList",patientService.getPatientOrderNum(cafeteriaId));

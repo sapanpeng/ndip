@@ -273,8 +273,11 @@ public class OmsServiceImpl implements OmsService {
     }
 
     @Override
-    public Double getYesterdayReward() {
-        String sql = "select sum(price) from his_oms where DATE_FORMAT(dining_time,'%Y-%m-%d') = DATE_SUB(curdate(),INTERVAL +  1 DAY) and oms_type = 2";
+    public Double getYesterdayReward(Integer cafeteriaId) {
+        String sql = "select sum(oms.price) from his_oms oms join  his_patient patient ON oms.patient_id = patient.patient_id "
+        		+ " JOIN his_inpatient_area ward ON ward.ward_code = patient.ward_code  JOIN his_relation relation"
+        		+ " ON ward.id = relation.ward_id where oms.oms_type = 2 and relation.cafeteria_id= " + cafeteriaId
+        		+ "  and DATE_FORMAT(dining_time,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(curdate(),INTERVAL +  1 DAY),'%Y-%m-%d')";
         Double ret =  sqlMapper.selectOne(sql,double.class);
         if (null == ret)
             return 0.00;

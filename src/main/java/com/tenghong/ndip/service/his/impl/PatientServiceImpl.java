@@ -158,14 +158,20 @@ public class PatientServiceImpl implements PatientService{
     }
 
     @Override
-    public Integer getYesterdayPatients() {
-        String sql = "select count(1) from his_patient where DATE_FORMAT(in_hos_date,'%Y-%m-%d') = DATE_SUB(curdate(),INTERVAL +  1 DAY)";
+    public Integer getYesterdayPatients(Integer cafeteriaId) {
+        String sql = "select count(1) from his_patient patient  LEFT JOIN his_inpatient_area ward ON ward.ward_code = patient.ward_code LEFT JOIN  his_relation relation ON ward.id = relation.ward_id where "
+        		+ " ((DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= DATE_FORMAT(DATE_SUB(curdate(),INTERVAL +  1 DAY),'%Y-%m-%d') and patient.out_status=0) or (DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= DATE_FORMAT(DATE_SUB(curdate(),INTERVAL +  1 DAY),'%Y-%m-%d') and (DATE_FORMAT(patient.out_hos_date,'%Y-%m-%d') >= DATE_FORMAT(DATE_SUB(curdate(),INTERVAL +  1 DAY),'%Y-%m-%d') or patient.out_hos_date is null)))"
+        		+ " and relation.cafeteria_id = " + cafeteriaId;
+//        		+ " DATE_FORMAT(in_hos_date,'%Y-%m-%d') = DATE_SUB(curdate(),INTERVAL +  1 DAY)";
         return sqlMapper.selectOne(sql,int.class);
     }
 
     @Override
-    public Integer getYesterdayPatientsHadOrder() {
-        String sql = "select count(1) from his_oms where DATE_FORMAT(dining_time,'%Y-%m-%d') = DATE_SUB(curdate(),INTERVAL +  1 DAY)";
+    public Integer getYesterdayPatientsHadOrder(Integer cafeteriaId) {
+        String sql = "select count(1) from his_oms oms join  his_patient patient ON oms.patient_id = patient.patient_id "
+        		+ " JOIN his_inpatient_area ward ON ward.ward_code = patient.ward_code  JOIN his_relation relation"
+        		+ " ON ward.id = relation.ward_id where relation.cafeteria_id= " + cafeteriaId
+        		+ "  and DATE_FORMAT(dining_time,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(curdate(),INTERVAL +  1 DAY),'%Y-%m-%d')";
         return sqlMapper.selectOne(sql,int.class);
     }
 

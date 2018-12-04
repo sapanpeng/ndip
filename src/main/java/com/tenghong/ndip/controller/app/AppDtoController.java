@@ -8,8 +8,10 @@ import com.tenghong.ndip.core.Result;
 import com.tenghong.ndip.core.constants.HisOmsEnum;
 import com.tenghong.ndip.model.diet.DietMealTimes;
 import com.tenghong.ndip.model.diet.DietOven;
+import com.tenghong.ndip.model.diet.DietOvenType;
 import com.tenghong.ndip.model.dto.OmsAppDto;
 import com.tenghong.ndip.model.his.*;
+import com.tenghong.ndip.model.vo.MenuVo;
 import com.tenghong.ndip.service.diet.DietMenuService;
 import com.tenghong.ndip.service.diet.DietRelationService;
 import com.tenghong.ndip.service.diet.MealTimesService;
@@ -86,7 +88,7 @@ public class AppDtoController extends BaseController{
     @ResponseBody
     public Result downland(@RequestParam("token")String token){
         Result result = getResultInstance();
-
+        System.out.println("token value:" + token);
         try{
             //获得送餐员id
             Integer userId = getCurrentUser(token).getUserId();
@@ -113,17 +115,28 @@ public class AppDtoController extends BaseController{
     private Result ndipDownData(List<Integer> list,String catIds,Integer userId){
         Result result = getResultInstance();
         Map<String,Object> map = Maps.newHashMap();
-        map.put("cafeteria",cafeteriaService.getDataGrip(list,fileViewPath));
-        map.put("ward",inpatientAreaService.getDataGrip(list,fileViewPath,userId));
-        map.put("ovenType",ovenService.getTypeDataGrip(list,fileViewPath));
-        map.put("oven",ovenService.getDataGrip(list));
-        map.put("mealTimes",mealTimesService.getDataGrip(list,fileViewPath));
-        map.put("patient",patientService.getDataGrip(list,userId));
-        map.put("patientOrders",patientOrdersService.getDataGrip(list,userId));
-        map.put("oms",omsService.getDataGrip(list,userId));
-        map.put("menu",menuService.getDataGrip(catIds,fileViewPath));
-        map.put("hisRelation",areaCafeteriaServic.gelAll(userId));
-        map.put("hisOrderOvenRelation",ovenOrderService.list());
+        List<HisCafeteria> t1 =  cafeteriaService.getDataGrip(list,fileViewPath);
+        map.put("cafeteria",t1);
+        List<HisInpatientArea> t2 = inpatientAreaService.getDataGrip(list,fileViewPath,userId);
+        map.put("ward",t2);
+        List<DietOvenType> t3 = ovenService.getTypeDataGrip(list,fileViewPath);
+        map.put("ovenType",t3);
+        List<DietOven> t4 = ovenService.getDataGrip(list);
+        map.put("oven",t4);
+        List<DietMealTimes> t5 = mealTimesService.getDataGrip(list,fileViewPath);
+        map.put("mealTimes",t5);
+        List<HisPatient> t6 = patientService.getDataGrip(list,userId);
+        map.put("patient",t6);
+        List<HisPatientOrders>t7 =  patientOrdersService.getDataGrip(list,userId);
+        map.put("patientOrders",t7);
+        List<HisOms> t8 = omsService.getDataGrip(list,userId);
+        map.put("oms",t8);
+        List<MenuVo> t9 = menuService.getDataGrip(catIds,fileViewPath);
+        map.put("menu",t9);
+        List<HisRelation> t10 = areaCafeteriaServic.gelAll(userId);
+        map.put("hisRelation",t10);
+        List<HisOrderOvenRelation> t11 = ovenOrderService.list();
+        map.put("hisOrderOvenRelation",t11);
         result.setData(map);
         return result;
     }
