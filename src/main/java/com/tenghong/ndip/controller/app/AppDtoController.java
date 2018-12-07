@@ -88,7 +88,6 @@ public class AppDtoController extends BaseController{
     @ResponseBody
     public Result downland(@RequestParam("token")String token){
         Result result = getResultInstance();
-        System.out.println("token value:" + token);
         try{
             //获得送餐员id
             Integer userId = getCurrentUser(token).getUserId();

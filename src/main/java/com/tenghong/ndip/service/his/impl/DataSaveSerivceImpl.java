@@ -95,14 +95,14 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
         for (OmsAppDto dto : dtoList) {
             if (!dataHasChanged(dto))
                 continue;
+            Date time = new Date();
             Double price = 0.00;
             for (HisOmsDetails detail : dto.getDetailDto()) {
                 detail.setCurrentPrice(getDouble(detail.getGoalPrice() * detail.getGoalNum()));
                 price += detail.getCurrentPrice();
             }
-            DietMealTimes times = dietMealTimesMapper.selectByPrimaryKey(dto.getMealId());
-            HisCafeteria cafeteria = hisCafeteriaMapper.selectByPrimaryKey(times.getCafeteriaId());
-            Date time = new Date();
+//            DietMealTimes times = dietMealTimesMapper.selectByPrimaryKey(dto.getMealId());
+//            HisCafeteria cafeteria = hisCafeteriaMapper.selectByPrimaryKey(times.getCafeteriaId());
             HisOms oms = omsMapper.getHisOmsBy(dto.getPatientId(), dto.getDiningTime());
             //如果订单是历史订单
             if (oms != null) {
@@ -121,7 +121,7 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
                     patientWalletRecordsMapper.insertSelective(records);
                     //记录订单状态
                     HisOmsStatus status = new HisOmsStatus();
-                    status.setStatus(HisOmsEnum.PAY.getType());
+                    status.setStatus(HisOmsEnum.REFUND.getType());
                     status.setOrderId(oms.getId());
                     status.setCreateTime(time);
                     omsStatusMapper.insertSelective(status);
@@ -153,8 +153,8 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
             	oms.setWardName(area.getWardName());
             	oms.setMealId(dto.getMealId());
             	oms.setMealName(dto.getMealName());
-            	oms.setCafeteriaId(cafeteria.getId());
-            	oms.setCafeteriaName(cafeteria.getCafeteriaName());
+            	oms.setCafeteriaId(dto.getCafeteriaId());
+            	oms.setCafeteriaName(dto.getCafeteriaName());
             	oms.setCreateTime(time);
             	oms.setCreateBy(getCurrentUser(dto.getToken()).getUserId());
             	if (style.equals("1")) {
@@ -174,10 +174,12 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
             	omsNew.setWardName(area.getWardName());
             	omsNew.setMealId(dto.getMealId());
             	omsNew.setMealName(dto.getMealName());
-            	omsNew.setCafeteriaId(cafeteria.getId());
-            	omsNew.setCafeteriaName(cafeteria.getCafeteriaName());
+            	omsNew.setCafeteriaId(dto.getId());
+            	omsNew.setCafeteriaName(dto.getCafeteriaName());
             	omsNew.setCreateTime(time);
             	omsNew.setCreateBy(getCurrentUser(dto.getToken()).getUserId());
+            	omsNew.setUpdateTime(time);
+            	omsNew.setUpdateBy(getCurrentUser(dto.getToken()).getUserId());
             	if (style.equals("1")) {
             		omsNew.setOmsType(HisOmsEnum.PAY.getType());
             	} else {
@@ -194,17 +196,17 @@ public class DataSaveSerivceImpl implements DataSaveSerice {
             	if (detail.getGoalNum() == 0) {
             		continue;
             	}
-                Integer menuId = dietRelationMapper.getMenuId(detail.getGoalId(), detail.getGoalType());
-                DietOven oven = ovenMapper.selectByPrimaryKey(menuMapper.selectByPrimaryKey(menuId).getOvenId());
+//                Integer menuId = dietRelationMapper.getMenuId(detail.getGoalId(), detail.getGoalType());
+//                DietOven oven = ovenMapper.selectByPrimaryKey(menuMapper.selectByPrimaryKey(menuId).getOvenId());
                 if (oms != null) {
                 	detail.setOmsId(oms.getId());
                 } else {
                 	detail.setOmsId(omsNew.getId());
                 }
-                detail.setMealId(omsNew.getMealId());
-                detail.setMealName(omsNew.getMealName());
-                detail.setOvenId(oven.getId());
-                detail.setOvenName(oven.getOvenName());
+//                detail.setMealId(omsNew.getMealId());
+////                detail.setMealName(omsNew.getMealName());
+//                detail.setOvenId(oven.getId());
+//                detail.setOvenName(oven.getOvenName());
                 detail.setOmsStatus(1);
                 detail.setCreateBy(getCurrentUser(dto.getToken()).getUserId());
                 detail.setCreateTime(time);
