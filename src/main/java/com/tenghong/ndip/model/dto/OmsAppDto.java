@@ -29,6 +29,10 @@ public class OmsAppDto implements Serializable {
 
     private String token;
 
+    private Integer cafeteriaId;
+    
+    private String cafeteriaName;
+    
     private Integer id;
 
     private List<HisOmsDetails> detailDto;
@@ -65,7 +69,23 @@ public class OmsAppDto implements Serializable {
         this.token = token;
     }
 
-    public String getPatientId() {
+    public Integer getCafeteriaId() {
+		return cafeteriaId;
+	}
+
+	public void setCafeteriaId(Integer cafeteriaId) {
+		this.cafeteriaId = cafeteriaId;
+	}
+
+	public String getCafeteriaName() {
+		return cafeteriaName;
+	}
+
+	public void setCafeteriaName(String cafeteriaName) {
+		this.cafeteriaName = cafeteriaName;
+	}
+
+	public String getPatientId() {
         return patientId;
     }
 
