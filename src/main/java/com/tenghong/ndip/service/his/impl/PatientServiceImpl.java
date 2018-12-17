@@ -191,9 +191,10 @@ public class PatientServiceImpl implements PatientService{
             List<BigDecimal> valueList = new ArrayList<>();
             List<String> stringList = new ArrayList<>();
             DailyPercentVo vo = new DailyPercentVo();
-            DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
-            Date myDate1 = dateFormat1.parse("2018-09-17");
-            vo.setDate(DateUtil.getOtherDay(myDate1,-i));
+            Date dt = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date myDate = dateFormat.parse(dateFormat.format(dt));
+            vo.setDate(DateUtil.getOtherDay(myDate,-i));
             for (MealTimesDto dto : mealList){
                 stringList.add(dto.getName());
                 valueList.add(omsMapper.findOmsRewardNum(vo.getDate(),dto.getId(),cafeteriaId));
