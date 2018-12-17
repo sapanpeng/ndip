@@ -325,6 +325,7 @@
           #{id}
         </foreach>
       </if>
+      and oms_status=1
     </where>
   </select>
 
