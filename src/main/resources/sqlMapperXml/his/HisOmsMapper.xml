@@ -429,23 +429,13 @@
   
   
 
-  <select id="findDailyOrderVal" resultType="com.tenghong.ndip.model.vo.OvenIndexVo">
+ <select id="findDailyOrderVal" resultType="com.tenghong.ndip.model.vo.OvenIndexVo">
     select
-    count(1) as bookNum,IFNULL(sum(oms.price),0.00) as bookFees,oms.dining_time,oms_type,details.oven_id
-    from his_oms oms
-    left join
-    his_oms_details details
-    ON
-    oms.id = details.oms_id
-    GROUP BY
-    oms.id
-    having
-    <![CDATA[DATE_FORMAT(oms.dining_time,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d')]]>
-    AND
-    details.oven_id = #{ovenId}
-    AND
-    oms_type = 2
-    LIMIT 1
+    count(1) as bookNum,IFNULL(sum(details.current_price),0.00) as bookFees,oms.dining_time,oms_type,details.oven_id
+    from his_oms oms,his_oms_details details where oms.id = details.oms_id
+    and <![CDATA[DATE_FORMAT(oms.dining_time,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d')]]>
+    AND details.oven_id = #{ovenId}
+    AND details.oms_status = 1
   </select>
 
   <select id="findIncome"  resultType="com.tenghong.ndip.model.vo.report.WardIncomeVo" parameterType="com.tenghong.ndip.utils.PageInfo">
