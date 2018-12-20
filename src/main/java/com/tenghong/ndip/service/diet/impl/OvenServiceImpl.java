@@ -1,5 +1,10 @@
 package com.tenghong.ndip.service.diet.impl;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.tenghong.ndip.core.NdipUtils;
 import com.tenghong.ndip.mapper.diet.DietMenuMapper;
 import com.tenghong.ndip.mapper.diet.DietOvenMapper;
@@ -13,11 +18,6 @@ import com.tenghong.ndip.model.vo.OvenTreeVo;
 import com.tenghong.ndip.service.diet.OvenService;
 import com.tenghong.ndip.utils.PageInfo;
 import com.tenghong.ndip.utils.SqlMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -126,7 +126,7 @@ public class OvenServiceImpl implements OvenService {
     public List<OvenIndexVo> getDailyOrderVal(Integer cafeteriaId) {
         List<OvenIndexVo> list = ovenMapper.findOvenIndexVo(cafeteriaId);
         for (OvenIndexVo vo : list){
-            OvenIndexVo voDb = omsMapper.findDailyOrderVal(vo.getOvenId());
+            OvenIndexVo voDb = omsMapper.findDailyOrderVal(vo.getOvenId(), cafeteriaId);
             vo.setBookFees(null == voDb ? 0.00 : voDb.getBookFees());
             vo.setBookNum(null == voDb ? 0 : voDb.getBookNum());
         }
