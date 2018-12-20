@@ -44,7 +44,7 @@ public interface HisOmsMapper {
     BigDecimal findOmsRewardNum(@Param("omsDate") Date date,@Param("mealId") Integer mealId,@Param("cafeteriaId") Integer cafeteriaId);
 
     //查询当日某灶类下成交的订单数量订单金额
-    OvenIndexVo findDailyOrderVal(@Param("ovenId") Integer ovenId);
+    OvenIndexVo findDailyOrderVal(@Param("ovenId") Integer ovenId, @Param("cafeteriaId") Integer cafeteriaId);
 
     //查询病区金额分页
     List<WardIncomeVo> findIncome(PageInfo pageInfo);

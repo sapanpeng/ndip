@@ -126,7 +126,7 @@ public class OvenServiceImpl implements OvenService {
     public List<OvenIndexVo> getDailyOrderVal(Integer cafeteriaId) {
         List<OvenIndexVo> list = ovenMapper.findOvenIndexVo(cafeteriaId);
         for (OvenIndexVo vo : list){
-            OvenIndexVo voDb = omsMapper.findDailyOrderVal(vo.getOvenId());
+            OvenIndexVo voDb = omsMapper.findDailyOrderVal(vo.getOvenId(), cafeteriaId);
             vo.setBookFees(null == voDb ? 0.00 : voDb.getBookFees());
             vo.setBookNum(null == voDb ? 0 : voDb.getBookNum());
         }
