@@ -412,20 +412,22 @@
 
   <select id="findOmsRewardNum" resultType="java.math.BigDecimal">
     select  CONVERT((select
-    count(1) * 100
-    from his_oms
-    where
-    <![CDATA[DATE_FORMAT(dining_time,'%Y-%m-%d') = DATE_FORMAT(#{omsDate},'%Y-%m-%d')]]>
+    count(distinct (detail.oms_id)) * 100
+    from his_oms oms,his_oms_details detail
+    where oms.id=detail.oms_id and 
+    <![CDATA[DATE_FORMAT(oms.dining_time,'%Y-%m-%d') = DATE_FORMAT(#{omsDate},'%Y-%m-%d')]]>
     AND
-    meal_id = #{mealId}
-    AND price >0 
-    and oms_type = 2) /
-    (SELECT count(1)
-	FROM his_patient d,his_relation a,his_cafeteria b,his_inpatient_area c
-	 where a.cafeteria_id=b.id and a.ward_id=c.id and d.ward_code=c.ward_code and b.id=#{cafeteriaId}
-	 and DATE_FORMAT(#{omsDate},'%Y-%m-%d') between DATE_FORMAT(d.in_hos_date,'%Y-%m-%d')
-	 and ifnull(DATE_FORMAT(d.out_hos_date,'%Y-%m-%d'),'2099-12-31')),decimal(10,1))
+    detail.meal_id = #{mealId}
+    and detail.oms_status = 1) /
+    (SELECT count(1) FROM his_patient d left join his_inpatient_area c on d.ward_code=c.ward_code 
+      left join his_relation a on a.ward_id=c.id left join his_cafeteria b on a.cafeteria_id=b.id
+      where  b.id=#{cafeteriaId} and ((DATE_FORMAT(d.in_hos_date,'%Y-%m-%d') &lt; #{omsDate} and d.out_status=0) or 
+      (DATE_FORMAT(d.in_hos_date,'%Y-%m-%d') &lt; #{omsDate} and (DATE_FORMAT(d.out_hos_date,'%Y-%m-%d') &gt; #{omsDate} 
+       or d.out_hos_date is null)))),decimal(10,1))
   </select>
+  
+  
+  
 
   <select id="findDailyOrderVal" resultType="com.tenghong.ndip.model.vo.OvenIndexVo">
     select
