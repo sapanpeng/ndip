@@ -1,5 +1,11 @@
 package com.tenghong.ndip.service.his.impl;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.tenghong.ndip.core.NdipUtils;
 import com.tenghong.ndip.mapper.his.HisInpatientAreaMapper;
 import com.tenghong.ndip.model.his.HisInpatientArea;
@@ -7,11 +13,6 @@ import com.tenghong.ndip.model.vo.WardIndexVo;
 import com.tenghong.ndip.service.his.InpatientAreaService;
 import com.tenghong.ndip.utils.PageInfo;
 import com.tenghong.ndip.utils.SqlMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -85,11 +86,12 @@ public class InpatientAreaServiceImpl implements InpatientAreaService{
 
     @Override
     public List<WardIndexVo> getTurnover(Integer cafeteriaId) {
-        List<WardIndexVo> list = hisInpatientAreaMapper.findTurnover();
-        for (WardIndexVo vo:list){
-        	WardIndexVo wardIndexVo = hisInpatientAreaMapper.findWardTurnover(cafeteriaId, vo.getWardId());
-            vo.setValue(wardIndexVo.getValue());
-        }
-        return list;
+//        List<WardIndexVo> list = hisInpatientAreaMapper.findTurnover();
+//        for (WardIndexVo vo:list){
+//        	WardIndexVo wardIndexVo = hisInpatientAreaMapper.findWardTurnover(cafeteriaId, vo.getWardId());
+//            vo.setValue(wardIndexVo.getValue());
+//        }
+//        return list;
+    	return hisInpatientAreaMapper.findWardTurnover(cafeteriaId);
     }
 }

@@ -14,6 +14,11 @@
     <result column="update_by" jdbcType="INTEGER" property="updateBy" />
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
+   <resultMap id="WardIndexVoMap" type="com.tenghong.ndip.model.vo.WardIndexVo">
+    <result column="wardId" jdbcType="INTEGER" property="wardId" />
+    <result column="wardName" jdbcType="VARCHAR" property="wardName" />
+    <result column="value" jdbcType="DOUBLE" property="value" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, ward_code, ward_name, ward_pic, sort, memo, create_time, create_by, update_time, 
     update_by, status
@@ -217,10 +222,22 @@
     status = 1
   </select>
   
-   <select id="findWardTurnover"  resultType="com.tenghong.ndip.model.vo.WardIndexVo">
-     select IFNULL(sum(a.current_price),0) value from his_oms_details a,his_oms b  where a.oms_id=b.id and b.cafeteria_id=#{cafeteriaId} and b.ward_id = #{wardId} and a.oms_status = 1
+   <select id="findWardTurnover"  resultMap="WardIndexVoMap">
+     <!-- select IFNULL(sum(a.current_price),0) value from his_oms_details a,his_oms b  where a.oms_id=b.id and b.cafeteria_id=#{cafeteriaId} and b.ward_id = #{wardId} and a.oms_status = 1
      and DATE_FORMAT(b.dining_time,'%Y-%m-%d') between DATE_FORMAT(date_add(curdate(), interval - day(curdate()) + 1 day),'%Y-%m-%d') 
-     and DATE_FORMAT(curdate(),'%Y-%m-%d')
+     and DATE_FORMAT(curdate(),'%Y-%m-%d') -->
+     <!--select d.ward_code,d.ward_name,IFNULL(sum(a.current_price),0) value from his_oms_details a join his_oms b on a.oms_id=b.id 
+      join his_cafeteria c on b.cafeteria_id=c.id join his_relation f on c.id=f.cafeteria_id and f.ward_id = b.ward_id join his_inpatient_area d on d.id=f.ward_id
+      where  b.cafeteria_id=#{cafeteriaId} and d.status=1  and f.status=1 and a.oms_status = 1
+		and DATE_FORMAT(b.dining_time,'%Y-%m-%d') between 
+		DATE_FORMAT(date_add(curdate(), interval - day(curdate()) + 1 day),'%Y-%m-%d') 
+		and DATE_FORMAT(curdate(),'%Y-%m-%d') group by d.ward_code,d.ward_name-->
+		select d.id wardId,d.ward_name,IFNULL(sum(a.current_price),0) value from his_oms_details a,his_oms b,his_cafeteria c,his_inpatient_area d,his_relation f
+			where a.oms_id=b.id and b.cafeteria_id=c.id and d.id=f.ward_id and c.id=f.cafeteria_id and f.ward_id = b.ward_id
+			and b.cafeteria_id=#{cafeteriaId} and d.status=1  and f.status=1 and a.oms_status = 1
+			and DATE_FORMAT(b.dining_time,'%Y-%m-%d') between 
+			DATE_FORMAT(date_add(curdate(), interval - day(curdate()) + 1 day),'%Y-%m-%d') 
+			and DATE_FORMAT(curdate(),'%Y-%m-%d') group by d.id,d.ward_name
   </select>
 
   <select id="findWardDto"  resultType="com.tenghong.ndip.model.vo.report.WardDto">

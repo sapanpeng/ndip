@@ -1,12 +1,13 @@
 package com.tenghong.ndip.mapper.his;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.tenghong.ndip.model.his.HisInpatientArea;
 import com.tenghong.ndip.model.vo.WardIndexVo;
 import com.tenghong.ndip.model.vo.report.WardDto;
 import com.tenghong.ndip.utils.PageInfo;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 public interface HisInpatientAreaMapper {
     int deleteByPrimaryKey(Integer id);
@@ -34,5 +35,5 @@ public interface HisInpatientAreaMapper {
 
     List<WardDto> findWardDto(@Param("cafeteriaId") Integer cafeteriaId);
     
-    WardIndexVo findWardTurnover(@Param("cafeteriaId") Integer cafeteriaId, @Param("wardId") Integer wardId);
+    List<WardIndexVo> findWardTurnover(@Param("cafeteriaId") Integer cafeteriaId);
 }
