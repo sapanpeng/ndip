@@ -86,12 +86,12 @@ public class InpatientAreaServiceImpl implements InpatientAreaService{
 
     @Override
     public List<WardIndexVo> getTurnover(Integer cafeteriaId) {
-//        List<WardIndexVo> list = hisInpatientAreaMapper.findTurnover();
-//        for (WardIndexVo vo:list){
-//        	WardIndexVo wardIndexVo = hisInpatientAreaMapper.findWardTurnover(cafeteriaId, vo.getWardId());
-//            vo.setValue(wardIndexVo.getValue());
-//        }
-//        return list;
+        /*List<WardIndexVo> list = hisInpatientAreaMapper.findTurnover();
+        for (WardIndexVo vo:list){
+        	WardIndexVo wardIndexVo = hisInpatientAreaMapper.findWardTurnover(cafeteriaId, vo.getWardId());
+            vo.setValue(wardIndexVo.getValue());
+        }
+        return list;*/
     	return hisInpatientAreaMapper.findWardTurnover(cafeteriaId);
     }
 }

@@ -232,7 +232,7 @@
 		and DATE_FORMAT(b.dining_time,'%Y-%m-%d') between 
 		DATE_FORMAT(date_add(curdate(), interval - day(curdate()) + 1 day),'%Y-%m-%d') 
 		and DATE_FORMAT(curdate(),'%Y-%m-%d') group by d.ward_code,d.ward_name-->
-		select d.id wardId,d.ward_name,IFNULL(sum(a.current_price),0) value from his_oms_details a,his_oms b,his_cafeteria c,his_inpatient_area d,his_relation f
+		select d.id wardId,d.ward_name wardName,IFNULL(sum(a.current_price),0) value from his_oms_details a,his_oms b,his_cafeteria c,his_inpatient_area d,his_relation f
 			where a.oms_id=b.id and b.cafeteria_id=c.id and d.id=f.ward_id and c.id=f.cafeteria_id and f.ward_id = b.ward_id
 			and b.cafeteria_id=#{cafeteriaId} and d.status=1  and f.status=1 and a.oms_status = 1
 			and DATE_FORMAT(b.dining_time,'%Y-%m-%d') between 
