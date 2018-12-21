@@ -99,7 +99,8 @@ public class CafeteriaServiceImpl implements CafeteriaService{
     public List<CafeteriaIndexDto> getTurnover() {
         List<CafeteriaIndexDto> list = hisCafeteriaMapper.findTurnover();
         for (CafeteriaIndexDto dto : list){
-            String sql = "select IFNULL(sum(price),0) from his_oms where cafeteria_id = #{cafeteriaId} and oms_type = 2";
+            String sql = "select IFNULL(sum(a.current_price),0) from his_oms_details a,his_oms b  where a.oms_id=b.id and b.cafeteria_id = #{cafeteriaId} and a.oms_status = 1"
+            		+ " and DATE_FORMAT(b.dining_time,'%Y-%m-%d') between DATE_FORMAT(date_add(curdate(), interval - day(curdate()) + 1 day),'%Y-%m-%d') and DATE_FORMAT(curdate(),'%Y-%m-%d')";
             dto.setValue(sqlMapper.selectOne(sql,dto.getCafeteriaId(),double.class));
         }
         return list;
