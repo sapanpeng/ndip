@@ -33,4 +33,6 @@ public interface HisInpatientAreaMapper {
     List<WardIndexVo> findTurnover();
 
     List<WardDto> findWardDto(@Param("cafeteriaId") Integer cafeteriaId);
+    
+    WardIndexVo findWardTurnover(@Param("cafeteriaId") Integer cafeteriaId, @Param("wardId") Integer wardId);
 }

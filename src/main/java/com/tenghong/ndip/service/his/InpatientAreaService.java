@@ -36,5 +36,5 @@ public interface InpatientAreaService {
     HisInpatientArea selectByCode(String code);
 
     //查询病区营业额
-    List<WardIndexVo> getTurnover();
+    List<WardIndexVo> getTurnover(Integer cafeteriaId);
 }

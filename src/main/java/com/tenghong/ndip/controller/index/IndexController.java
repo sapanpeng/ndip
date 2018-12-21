@@ -59,7 +59,7 @@ public class IndexController extends BaseController {
             map.put("yesterdayBookRate",getPercent(patientService.getYesterdayPatientsHadOrder(cafeteriaId),patientService.getYesterdayPatients(cafeteriaId)));
             map.put("yesterdayTurnover",omsService.getYesterdayReward(cafeteriaId));
             map.put("cafeteriaTurnoverList",cafeteriaService.getTurnover());
-            map.put("wardCostList",inpatientAreaService.getTurnover());
+            map.put("wardCostList",inpatientAreaService.getTurnover(cafeteriaId));
             map.put("dailyBookRateList",patientService.getPatientOrderNum(cafeteriaId));
             map.put("ovenBookList",ovenService.getDailyOrderVal(cafeteriaId));
             result.setData(map);

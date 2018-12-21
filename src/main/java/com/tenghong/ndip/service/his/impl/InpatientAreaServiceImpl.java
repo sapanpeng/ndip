@@ -84,12 +84,11 @@ public class InpatientAreaServiceImpl implements InpatientAreaService{
     }
 
     @Override
-    public List<WardIndexVo> getTurnover() {
+    public List<WardIndexVo> getTurnover(Integer cafeteriaId) {
         List<WardIndexVo> list = hisInpatientAreaMapper.findTurnover();
         for (WardIndexVo vo:list){
-        	String sql = "select IFNULL(sum(a.current_price),0) from his_oms_details a,his_oms b  where a.oms_id=b.id and b.ward_id = #{wardId} and a.oms_status = 1"
-            		+ " and DATE_FORMAT(b.dining_time,'%Y-%m-%d') between DATE_FORMAT(date_add(curdate(), interval - day(curdate()) + 1 day),'%Y-%m-%d') and DATE_FORMAT(curdate(),'%Y-%m-%d')";
-            vo.setValue(sqlMapper.selectOne(sql,vo.getWardId(),double.class));
+        	WardIndexVo wardIndexVo = hisInpatientAreaMapper.findWardTurnover(cafeteriaId, vo.getWardId());
+            vo.setValue(wardIndexVo.getValue());
         }
         return list;
     }
