@@ -34,5 +34,12 @@ public class ReportServiceImpl implements ReportService {
         pageInfo.setRecords(reportMapper.findUseMealCount(pageInfo));
 	}
 
+	@Override
+	public void getSendMeals(PageInfo pageInfo) {
+		List<ReportHisOms> list = reportMapper.getSendMeals(pageInfo);
+		pageInfo.setRows(list);
+        pageInfo.setRecords(reportMapper.findSendMealCount(pageInfo));
+	}
+
 	
 }

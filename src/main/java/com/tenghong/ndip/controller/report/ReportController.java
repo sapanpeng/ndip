@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.tenghong.ndip.controller.BaseController;
 import com.tenghong.ndip.core.Result;
 import com.tenghong.ndip.model.diet.DietMealTimes;
-import com.tenghong.ndip.model.his.HisMealType;
 import com.tenghong.ndip.model.vo.report.DeptIncomeVo;
 import com.tenghong.ndip.service.diet.MealTimesService;
 import com.tenghong.ndip.service.his.OmsService;
@@ -259,6 +258,7 @@ public class ReportController extends BaseController {
             @RequestParam(value = "wardCode", required = false, defaultValue = "") String wardCode,
             @RequestParam(value = "ovenId", required = false, defaultValue = "") String ovenIds,
             @RequestParam(value = "mealId", required = false, defaultValue = "") String mealIds,
+            @RequestParam(value = "bedNo", required = false, defaultValue = "") String bedNo,
             @RequestParam(value = "pageNo", required = false, defaultValue = "1")Integer page,
             @RequestParam(value = "pageSize", required = false, defaultValue = "10")Integer rows){
         Result result = getResultInstance();
@@ -274,6 +274,7 @@ public class ReportController extends BaseController {
 			queryMap.put("cafeteriaId",cafeteriaId);
 			queryMap.put("deptCode",deptCode);
 			queryMap.put("wardCode",wardCode);
+			queryMap.put("bedNo",bedNo);
 			queryMap.put("ovenId",ovenIdList);
 			
 			//餐次处理，根据前台传入餐次查询，前台餐次未传入时查所有餐次
@@ -289,7 +290,7 @@ public class ReportController extends BaseController {
     			queryMap.put("mealId",mealId);
     			PageInfo pageInfo = new PageInfo(page, rows);
     			pageInfo.setCondition(queryMap);
-    			reportService.getUseMeals(pageInfo);
+    			reportService.getSendMeals(pageInfo);
     			infos.put(mealId, pageInfo);
     		}
         	result.setData(infos);

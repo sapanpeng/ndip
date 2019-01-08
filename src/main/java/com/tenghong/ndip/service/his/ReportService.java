@@ -11,6 +11,10 @@ import com.tenghong.ndip.utils.PageInfo;
  */
 public interface ReportService {
 
+	//获取订餐情况
 	void getUseMeals(PageInfo pageInfo);
+	
+	//获取送餐情况
+	void getSendMeals(PageInfo pageInfo);
 
 }

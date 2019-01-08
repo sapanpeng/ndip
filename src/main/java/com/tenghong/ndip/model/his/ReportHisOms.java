@@ -25,6 +25,11 @@ public class ReportHisOms implements Serializable {
     private String patientName;
     
     /**
+     * 病人医嘱
+     */
+    private String orderName;
+    
+    /**
      * 病区id
      */
     private Integer wardId;
@@ -140,6 +145,14 @@ public class ReportHisOms implements Serializable {
 
 	public void setPatientName(String patientName) {
 		this.patientName = patientName;
+	}
+
+	public String getOrderName() {
+		return orderName;
+	}
+
+	public void setOrderName(String orderName) {
+		this.orderName = orderName;
 	}
 
 	public Integer getWardId() {
