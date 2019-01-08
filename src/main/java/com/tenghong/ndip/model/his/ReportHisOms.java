@@ -105,6 +105,18 @@ public class ReportHisOms implements Serializable {
     private Double price;
     
     /**
+     * 菜ID
+     */
+    private Integer goalId;
+    
+    /**
+     * 单价
+     */
+    private String goalName;
+    
+    
+    
+    /**
      * 数量
      */
     private Double num;

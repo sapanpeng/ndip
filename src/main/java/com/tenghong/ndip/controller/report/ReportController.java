@@ -249,4 +249,57 @@ public class ReportController extends BaseController {
         }
         return result;
     }
+    
+    //送餐情况表
+    @RequestMapping(value = "/report/sendMeals",method = RequestMethod.POST)
+    @ResponseBody
+    public Result getSendMeals(@RequestParam(value = "diningTime", required = false, defaultValue = "") String diningTime,
+            @RequestParam("cafeteriaId") Integer cafeteriaId,
+            @RequestParam(value = "deptCode", required = false, defaultValue = "") Integer deptCode,
+            @RequestParam(value = "wardCode", required = false, defaultValue = "") String wardCode,
+            @RequestParam(value = "ovenId", required = false, defaultValue = "") String ovenIds,
+            @RequestParam(value = "mealId", required = false, defaultValue = "") String mealIds,
+            @RequestParam(value = "pageNo", required = false, defaultValue = "1")Integer page,
+            @RequestParam(value = "pageSize", required = false, defaultValue = "10")Integer rows){
+        Result result = getResultInstance();
+        Map<String,Object> queryMap = getQueryMap();
+        try{
+        	Map<String, PageInfo> infos = new HashMap<String, PageInfo>();
+        	List<String> mealIdList = new ArrayList<String>();
+        	List<String> ovenIdList = new ArrayList<String>();
+        	if (ovenIds != null && ovenIds.length() > 0) {
+        		ovenIdList = Arrays.asList(ovenIds.split(",")); 
+        	}
+        	queryMap.put("diningTime",diningTime);
+			queryMap.put("cafeteriaId",cafeteriaId);
+			queryMap.put("deptCode",deptCode);
+			queryMap.put("wardCode",wardCode);
+			queryMap.put("ovenId",ovenIdList);
+			
+			//餐次处理，根据前台传入餐次查询，前台餐次未传入时查所有餐次
+        	if (mealIds != null && mealIds.length() > 0) {
+        		mealIdList = Arrays.asList(mealIds.split(",")); 
+        	} else {
+        		List<DietMealTimes> listDietMealTimes = mealTimesService.getReportDataGrip(cafeteriaId);
+        		for (DietMealTimes times : listDietMealTimes) {
+        			mealIdList.add(times.getId().toString());
+        		}
+        	}
+    		for (String mealId : mealIdList) {
+    			queryMap.put("mealId",mealId);
+    			PageInfo pageInfo = new PageInfo(page, rows);
+    			pageInfo.setCondition(queryMap);
+    			reportService.getUseMeals(pageInfo);
+    			infos.put(mealId, pageInfo);
+    		}
+        	result.setData(infos);
+    		result.setMsg("success");
+    		result.setState(1);
+        }catch (Exception e){
+            LOGGER.error("Server Exception：{}",e);
+            result.setState(0);
+            result.setMsg("Server Exception");
+        }
+        return result;
+    }
 }
