@@ -20,13 +20,15 @@
     <result column="mealId" jdbcType="INTEGER" property="mealId" />
     <result column="mealName" jdbcType="VARCHAR" property="mealName" />
     <result column="goalType" jdbcType="INTEGER" property="goalType" />
+    <result column="goalId" jdbcType="INTEGER" property="goalId" />
+    <result column="goalName" jdbcType="VARCHAR" property="goalName" />
     <result column="price" jdbcType="DOUBLE" property="price" />
     <result column="num" jdbcType="DOUBLE" property="num" />
     <result column="amount" jdbcType="DOUBLE" property="amount" />
   </resultMap>
   <select id="getUseMeals"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
     SELECT
-    detail.oven_id,detail.oven_name,detail.goal_id,detail.goal_name,sum(detail.goal_num)
+    detail.oven_id ovenId,detail.oven_name ovenName,detail.goal_id goalId,detail.goal_name goalName,sum(detail.goal_num) num
     FROM
     his_patient patient join his_oms oms on patient.patient_id = oms.patient_id join his_oms_details detail on oms.id=detail.oms_id
     <where>
