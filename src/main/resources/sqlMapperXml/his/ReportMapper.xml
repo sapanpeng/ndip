@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tenghong.ndip.mapper.his.ReportMapper">
+  <resultMap id="BaseResultMap" type="com.tenghong.ndip.model.his.ReportHisOms">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="patientId" jdbcType="VARCHAR" property="patientId" />
+    <result column="patientName" jdbcType="VARCHAR" property="patientName" />
+    <result column="wardId" jdbcType="INTEGER" property="wardId" />
+    <result column="wardName" jdbcType="VARCHAR" property="wardName" />
+    <result column="inpNo" jdbcType="VARCHAR" property="inpNo" />
+    <result column="bedNo" jdbcType="VARCHAR" property="bedNo" />
+    <result column="cafeteriaId" jdbcType="INTEGER" property="cafeteriaId" />
+    <result column="cafeteriaName" jdbcType="VARCHAR" property="cafeteriaName" />
+    <result column="userId" jdbcType="INTEGER" property="userId" />
+    <result column="userName" jdbcType="VARCHAR" property="userName" />
+    <result column="diningTime" jdbcType="TIMESTAMP" property="diningTime" />
+    <result column="omsType" jdbcType="INTEGER" property="omsType" />
+    <result column="ovenId" jdbcType="INTEGER" property="ovenId" />
+    <result column="ovenName" jdbcType="VARCHAR" property="ovenName" />
+    <result column="mealId" jdbcType="INTEGER" property="mealId" />
+    <result column="mealName" jdbcType="VARCHAR" property="mealName" />
+    <result column="goalType" jdbcType="INTEGER" property="goalType" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="num" jdbcType="DOUBLE" property="num" />
+    <result column="amount" jdbcType="DOUBLE" property="amount" />
+  </resultMap>
+  <select id="getUseMeals"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
+    SELECT
+    detail.oven_id,detail.oven_name,detail.goal_id,detail.goal_name,sum(detail.goal_num)
+    FROM
+    his_patient patient join his_oms oms on patient.patient_id = oms.patient_id join his_oms_details detail on oms.id=detail.oms_id
+    <where>
+      <if test="condition.ovenId.size()>0" >
+	      <foreach collection="condition.ovenId" open=" and detail.oven_id in (" close=")"
+	               item="id" separator=",">
+	        #{id}
+	      </foreach>
+      </if>
+      <if test="condition.diningTime != null and condition.diningTime != '' " >
+        <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d') = #{condition.diningDate} ]]>
+      </if>
+      <if test="condition.cafeteriaId != null and condition.cafeteriaId != '' " >
+        and oms.cafeteria_id = #{condition.cafeteriaId}
+      </if>
+      <if test="condition.deptCode != null and condition.deptCode != '' " >
+        and patient.dept_code = #{condition.deptCode}
+      </if>
+      <if test="condition.wardId != null and condition.wardId != '' " >
+        oms.ward_code = #{condition.wardCode}
+      </if>
+      <if test="condition.mealId != null and condition.mealId != '' " >
+        and detail.meal_id = #{condition.mealId}
+      </if>
+      and detail.oms_status=1
+    </where>
+    group by detail.oven_id,detail.oven_name,detail.goal_id,detail.goal_name
+    ORDER BY detail.oven_id,detail.goal_id
+    LIMIT #{from}, #{size}
+  </select>
+  
+   <select id="findUseMealCount"  resultType="int" parameterType="com.tenghong.ndip.utils.PageInfo">
+    select count(1) from (select detail.oven_id,detail.oven_name,detail.goal_id,detail.goal_name,count(1)
+     FROM
+    his_patient patient join his_oms oms on patient.patient_id = oms.patient_id join his_oms_details detail on oms.id=detail.oms_id
+    <where>
+      <if test="condition.ovenId.size()>0" >
+	      <foreach collection="condition.ovenId" open=" and detail.oven_id in (" close=")"
+	               item="id" separator=",">
+	        #{id}
+	      </foreach>
+	  </if>
+      <if test="condition.diningTime != null and condition.diningTime != '' " >
+        <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d') = #{condition.diningDate} ]]>
+      </if>
+      <if test="condition.cafeteriaId != null and condition.cafeteriaId != '' " >
+        and oms.cafeteria_id = #{condition.cafeteriaId}
+      </if>
+      <if test="condition.deptCode != null and condition.deptCode != '' " >
+        and patient.dept_code = #{condition.deptCode}
+      </if>
+      <if test="condition.wardId != null and condition.wardId != '' " >
+        oms.ward_code = #{condition.wardCode}
+      </if>
+      <if test="condition.mealId != null and condition.mealId != '' " >
+        and detail.meal_id = #{condition.mealId}
+      </if>
+      and detail.oms_status=1
+    </where>
+    group by detail.oven_id,detail.oven_name,detail.goal_id,detail.goal_name) b
+  </select>
+</mapper>
