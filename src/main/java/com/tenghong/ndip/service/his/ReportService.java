@@ -1,5 +1,8 @@
 package com.tenghong.ndip.service.his;
 
+import java.util.List;
+
+import com.tenghong.ndip.model.his.ReportHisOms;
 import com.tenghong.ndip.utils.PageInfo;
 
 /**
@@ -16,5 +19,8 @@ public interface ReportService {
 	
 	//获取送餐情况
 	void getSendMeals(PageInfo pageInfo);
+
+	//获取灶类统计
+	List<ReportHisOms> getOvenStat(String diningTime, Integer cafeteriaId, List<String> ovenIdList);
 
 }

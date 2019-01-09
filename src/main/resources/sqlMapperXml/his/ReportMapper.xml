@@ -169,4 +169,27 @@
     </where>
     group by patient.id,patient.name,patient.bed_no,patient_orders.order_name,patient.inp_no,detail.oven_id,detail.oven_name,detail.goal_id) b
   </select>
+  
+   <select id="getOvenStat"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
+  	 SELECT
+    	detail.oven_id ovenId,detail.oven_name ovenName,detail.meal_id mealId,detail.meal_name mealName,detail.goal_id goalId,detail.goal_name goalName,
+    	sum(detail.goal_num) num FROM
+    	his_oms oms join his_oms_details detail on oms.id=detail.oms_id
+    <where>
+      <if test="list.size()>0" >
+	      <foreach collection="list" open=" and detail.oven_id in (" close=")"
+	               item="id" separator=",">
+	        #{id}
+	      </foreach>
+      </if>
+      <if test="diningTime != null and diningTime != '' " >
+        <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) = #{diningDate} ]]>
+      </if>
+      <if test="cafeteriaId != null and cafeteriaId != '' " >
+        and oms.cafeteria_id = #{cafeteriaId}
+      </if>
+      and detail.oms_status=1
+    </where>
+     group by detail.oven_id,detail.oven_name,detail.meal_id,detail.meal_name,detail.goal_id,detail.goal_name
+  </select>
 </mapper>

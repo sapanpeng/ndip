@@ -1,7 +1,9 @@
 package com.tenghong.ndip.model.his;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ReportHisOms
@@ -130,6 +132,11 @@ public class ReportHisOms implements Serializable {
      * 金额
      */
     private Double amount;
+    
+    
+    private List<ReportHisOms>  mealList;
+    
+    private List<ReportHisOms>  menuList;
 
 	public String getPatientId() {
 		return patientId;
@@ -314,4 +321,25 @@ public class ReportHisOms implements Serializable {
 	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
+
+	public List<ReportHisOms> getMealList() {
+		if (mealList  == null)
+			mealList = new ArrayList<ReportHisOms>();
+		return mealList;
+	}
+
+	public void setMealList(List<ReportHisOms> mealList) {
+		this.mealList = mealList;
+	}
+
+	public List<ReportHisOms> getMenuList() {
+		if (menuList  == null)
+			menuList = new ArrayList<ReportHisOms>();
+		return menuList;
+	}
+
+	public void setMenuList(List<ReportHisOms> menuList) {
+		this.menuList = menuList;
+	}
+	
 }

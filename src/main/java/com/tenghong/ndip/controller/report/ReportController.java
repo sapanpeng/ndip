@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.tenghong.ndip.controller.BaseController;
 import com.tenghong.ndip.core.Result;
 import com.tenghong.ndip.model.diet.DietMealTimes;
+import com.tenghong.ndip.model.his.ReportHisOms;
 import com.tenghong.ndip.model.vo.report.DeptIncomeVo;
 import com.tenghong.ndip.service.diet.MealTimesService;
 import com.tenghong.ndip.service.his.OmsService;
@@ -294,6 +295,32 @@ public class ReportController extends BaseController {
     			infos.put(mealId, pageInfo);
     		}
         	result.setData(infos);
+    		result.setMsg("success");
+    		result.setState(1);
+        }catch (Exception e){
+            LOGGER.error("Server Exception：{}",e);
+            result.setState(0);
+            result.setMsg("Server Exception");
+        }
+        return result;
+    }
+    
+    
+    //灶类统计表
+    @RequestMapping(value = "/report/ovenStat",method = RequestMethod.POST)
+    @ResponseBody
+    public Result getOvenStat(@RequestParam(value = "diningTime", required = false, defaultValue = "") String diningTime,
+            @RequestParam("cafeteriaId") Integer cafeteriaId,
+            @RequestParam(value = "ovenId", required = false, defaultValue = "") String ovenIds){
+        Result result = getResultInstance();
+        try{
+        	List<String> ovenIdList = new ArrayList<String>();
+        	if (ovenIds != null && ovenIds.length() > 0) {
+        		ovenIdList = Arrays.asList(ovenIds.split(",")); 
+        	}
+        	
+    		List<ReportHisOms> listReportHisOms = reportService.getOvenStat(diningTime, cafeteriaId, ovenIdList);
+        	result.setData(listReportHisOms);
     		result.setMsg("success");
     		result.setState(1);
         }catch (Exception e){
