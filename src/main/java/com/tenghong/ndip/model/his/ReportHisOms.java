@@ -133,6 +133,11 @@ public class ReportHisOms implements Serializable {
      */
     private Double amount;
     
+    /**
+     * 总金额
+     */
+    private Double totalAmount;
+    
     
     private List<ReportHisOms>  mealList;
     
@@ -320,6 +325,14 @@ public class ReportHisOms implements Serializable {
 
 	public void setAmount(Double amount) {
 		this.amount = amount;
+	}
+
+	public Double getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(Double totalAmount) {
+		this.totalAmount = totalAmount;
 	}
 
 	public List<ReportHisOms> getMealList() {

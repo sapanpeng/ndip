@@ -330,4 +330,31 @@ public class ReportController extends BaseController {
         }
         return result;
     }
+    
+    //获取灶类统计
+    @RequestMapping(value = "/report/consumptionStat",method = RequestMethod.POST)
+    @ResponseBody
+    public Result getConsumptionStat(@RequestParam(value = "diningTime", required = false, defaultValue = "") String diningTime,
+            @RequestParam("cafeteriaId") Integer cafeteriaId,
+            @RequestParam(value = "deptCode", required = false, defaultValue = "") String deptCode,
+            @RequestParam(value = "wardCode", required = false, defaultValue = "") String wardCode,
+            @RequestParam(value = "mealId", required = false, defaultValue = "") String mealIds){
+        Result result = getResultInstance();
+        try{
+        	List<String> mealList = new ArrayList<String>();
+        	if (mealIds != null && mealIds.length() > 0) {
+        		mealList = Arrays.asList(mealIds.split(",")); 
+        	}
+        	
+    		List<ReportHisOms> listReportHisOms = reportService.getConsumptionStat(diningTime, cafeteriaId, mealList, deptCode, wardCode);
+        	result.setData(listReportHisOms);
+    		result.setMsg("success");
+    		result.setState(1);
+        }catch (Exception e){
+            LOGGER.error("Server Exception：{}",e);
+            result.setState(0);
+            result.setMsg("Server Exception");
+        }
+        return result;
+    }
 }

@@ -22,5 +22,9 @@ public interface ReportService {
 
 	//获取灶类统计
 	List<ReportHisOms> getOvenStat(String diningTime, Integer cafeteriaId, List<String> ovenIdList);
+	
+	//获取灶类统计
+	List<ReportHisOms> getConsumptionStat(String diningTime, Integer cafeteriaId, 
+			List<String> mealIdList,String deptCode, String wardCode);
 
 }

@@ -1,7 +1,9 @@
 package com.tenghong.ndip.service.his.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,11 +60,6 @@ public class ReportServiceImpl implements ReportService {
 							icount2 = 1;
 							List<ReportHisOms> menuList =  meal.getMenuList();
 							menuList.add(oms);
-//							for (ReportHisOms menu : menuList) {
-//								if (oms.getMealId() == menu.getMealId()) {
-//									
-//								}
-//							}
 						}
 					}
 					
@@ -92,6 +89,61 @@ public class ReportServiceImpl implements ReportService {
 				reportHisOmsList.add(reportHisOms);
 			}
 		}
+		return reportHisOmsList;
+	}
+
+	@Override
+	public List<ReportHisOms> getConsumptionStat(String diningTime, Integer cafeteriaId, List<String> mealIdList,
+			String deptCode, String wardCode) {
+		List<ReportHisOms> list = reportMapper.getConsumptionStat(diningTime, cafeteriaId, mealIdList, deptCode, wardCode);
+		List<ReportHisOms> reportHisOmsList = new ArrayList<ReportHisOms>();
+		for (ReportHisOms oms : list) {
+			int icount1 = 0;
+			for (ReportHisOms reportOms : reportHisOmsList) {
+				if (oms.getPatientId().equals(reportOms.getPatientId())) {
+					icount1 = 1;
+					List<ReportHisOms> mealList =  reportOms.getMealList();
+					mealList.add(oms);
+				} 
+			}
+			if (icount1 == 0) {
+				ReportHisOms reportHisOms = new ReportHisOms();
+				reportHisOms.setWardId(oms.getWardId());;
+				reportHisOms.setWardName(oms.getWardName());
+				reportHisOms.setBedNo(oms.getBedNo());
+				reportHisOms.setInpNo(oms.getInpNo());
+				reportHisOms.setPatientId(oms.getPatientId());
+				reportHisOms.setPatientName(oms.getPatientName());
+				ReportHisOms meal = new ReportHisOms();
+				meal.setMealId(oms.getMealId());
+				meal.setMealName(oms.getMealName());
+				meal.setGoalId(oms.getGoalId());
+				meal.setGoalName(oms.getGoalName());
+				meal.setNum(oms.getNum());
+				meal.setAmount(oms.getAmount());
+				reportHisOms.getMealList().add(meal);
+				reportHisOmsList.add(reportHisOms);
+			}
+		}
+		
+		for (ReportHisOms oms : reportHisOmsList) {
+			Double amount = new Double(0);
+			Map<Integer, Double> amountMap = new HashMap<Integer, Double>();
+			for (ReportHisOms meal : oms.getMealList()) {
+				amount = amount.doubleValue() + meal.getAmount().doubleValue();
+				if (amountMap.get(meal.getMealId()) == null) {
+					amountMap.put(meal.getMealId(), meal.getAmount());
+				} else {
+					amountMap.put(meal.getMealId(), amountMap.get(meal.getMealId()).doubleValue() + meal.getAmount().doubleValue());
+				}
+			}
+			for (ReportHisOms meal : oms.getMealList()) {
+				if (amountMap.get(meal.getMealId()) != null) {
+					meal.setTotalAmount(amountMap.get(meal.getMealId()));
+				}
+			}
+			oms.setTotalAmount(amount);
+		} 
 		return reportHisOmsList;
 	}
 }

@@ -192,4 +192,35 @@
     </where>
      group by detail.oven_id,detail.oven_name,detail.meal_id,detail.meal_name,detail.goal_id,detail.goal_name
   </select>
+  
+   <select id="getConsumptionStat"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
+  	SELECT
+    	patient.ward_code wardId,patient.ward_name wardName,patient.inp_no inpNo,patient.bed_no bedNo,patient.id patientId,patient.name patientName,detail.meal_id mealId,
+    	detail.meal_name mealName,detail.goal_id goalId,detail.goal_name goalName,sum(detail.goal_num) num,sum(detail.current_price) amount 
+      FROM
+     his_patient patient join his_oms oms on patient.patient_id = oms.patient_id join his_oms_details detail on oms.id=detail.oms_id
+    <where>
+      <if test="list.size()>0" >
+	      <foreach collection="list" open=" and detail.meal_id in (" close=")"
+	               item="id" separator=",">
+	        #{id}
+	      </foreach>
+      </if>
+      <if test="diningTime != null and diningTime != '' " >
+        <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) = #{diningDate} ]]>
+      </if>
+      <if test="cafeteriaId != null and cafeteriaId != '' " >
+        and oms.cafeteria_id = #{cafeteriaId}
+      </if>
+      <if test="deptCode != null and deptCode != '' " >
+        and patient.dept_code = #{deptCode}
+      </if>
+      <if test="wardCode != null and wardCode != '' " >
+        oms.ward_code = #{wardCode}
+      </if>
+      and detail.oms_status=1
+    </where>
+     group by detail.oven_id,detail.oven_name,patient.inp_no,patient.bed_no,patient.id,patient.name,detail.meal_id,detail.meal_name,
+     detail.goal_id,detail.goal_name
+  </select>
 </mapper>

@@ -23,5 +23,9 @@ public interface ReportMapper {
 
 	//查询灶类统计表信息
 	List<ReportHisOms> getOvenStat(@Param("diningTime")String diningTime, @Param("cafeteriaId")Integer cafeteriaId, @Param("list")List<String> ovenIdList);
+	
+	//查询今日消费明细表
+	List<ReportHisOms> getConsumptionStat(@Param("diningTime")String diningTime, @Param("cafeteriaId")Integer cafeteriaId, 
+			@Param("list")List<String> mealIdList,@Param("deptCode")String deptCode, @Param("wardCode")String wardCode);
 
 }
