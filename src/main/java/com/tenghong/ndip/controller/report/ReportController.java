@@ -331,7 +331,7 @@ public class ReportController extends BaseController {
         return result;
     }
     
-    //获取灶类统计
+    //获取今日消费明细表
     @RequestMapping(value = "/report/consumptionStat",method = RequestMethod.POST)
     @ResponseBody
     public Result getConsumptionStat(@RequestParam(value = "diningTime", required = false, defaultValue = "") String diningTime,
@@ -358,7 +358,7 @@ public class ReportController extends BaseController {
         return result;
     }
     
-    //获取灶类统计
+    //获取病区金额汇总表
     @RequestMapping(value = "/report/wardAmountStat",method = RequestMethod.POST)
     @ResponseBody
     public Result getWardAmountStat(@RequestParam("diningTimeBegin") String diningTimeBegin,
