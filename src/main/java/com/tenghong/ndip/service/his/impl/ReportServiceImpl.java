@@ -146,4 +146,10 @@ public class ReportServiceImpl implements ReportService {
 		} 
 		return reportHisOmsList;
 	}
+
+	@Override
+	public List<ReportHisOms> getWardAmountStat(String diningTimeBegin, String diningTimeEnd, Integer cafeteriaId,
+			List<String> mealIdList, String deptCode, String wardCode) {
+		return reportMapper.getWardAmountStat(diningTimeBegin, diningTimeEnd, cafeteriaId, mealIdList, deptCode, wardCode);
+	}
 }

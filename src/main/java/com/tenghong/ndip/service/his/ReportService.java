@@ -26,5 +26,10 @@ public interface ReportService {
 	//获取灶类统计
 	List<ReportHisOms> getConsumptionStat(String diningTime, Integer cafeteriaId, 
 			List<String> mealIdList,String deptCode, String wardCode);
+	
+
+	//获取病区金额汇总
+	List<ReportHisOms> getWardAmountStat(String diningTimeBegin, String diningTimeEnd,Integer cafeteriaId, 
+			List<String> mealIdList,String deptCode, String wardCode);
 
 }

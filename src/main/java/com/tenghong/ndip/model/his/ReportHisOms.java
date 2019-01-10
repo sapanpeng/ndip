@@ -134,6 +134,11 @@ public class ReportHisOms implements Serializable {
     private Double amount;
     
     /**
+     * 上期金额
+     */
+    private Double lastAmount;
+    
+    /**
      * 总金额
      */
     private Double totalAmount;
@@ -321,6 +326,13 @@ public class ReportHisOms implements Serializable {
 
 	public Double getAmount() {
 		return amount;
+	}
+	public Double getLastAmount() {
+		return lastAmount;
+	}
+
+	public void setLastAmount(Double lastAmount) {
+		this.lastAmount = lastAmount;
 	}
 
 	public void setAmount(Double amount) {
