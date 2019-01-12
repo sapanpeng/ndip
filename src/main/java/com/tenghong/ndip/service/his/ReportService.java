@@ -31,5 +31,8 @@ public interface ReportService {
 	//获取病区金额汇总
 	List<ReportHisOms> getWardAmountStat(String diningTimeBegin, String diningTimeEnd,Integer cafeteriaId, 
 			List<String> mealIdList,String deptCode, String wardCode);
+	
+	//订餐信息查询
+    void getOrderInformation(PageInfo pageInfo);
 
 }

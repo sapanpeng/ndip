@@ -15,6 +15,9 @@
     <result column="userId" jdbcType="INTEGER" property="userId" />
     <result column="userName" jdbcType="VARCHAR" property="userName" />
     <result column="diningTime" jdbcType="TIMESTAMP" property="diningTime" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="createBy" jdbcType="INTEGER" property="createBy" />
+    <result column="createByName" jdbcType="VARCHAR" property="createByName" />
     <result column="omsType" jdbcType="INTEGER" property="omsType" />
     <result column="ovenId" jdbcType="INTEGER" property="ovenId" />
     <result column="ovenName" jdbcType="VARCHAR" property="ovenName" />
@@ -315,5 +318,90 @@
       and detail.oms_status=1
     </where>
      group by patient.ward_code,patient.ward_name) B GROUP BY wardName
+  </select>
+  
+  <select id="selectOrderInformation"  resultType="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
+   SELECT
+    patient.inp_no inpNo,patient.name patientName,oms.dining_time diningTime,detail.meal_name mealName,detail.goal_name goalName,
+    sum(detail.goal_num) num,sum(detail.current_price)/sum(detail.goal_num) price,sum(detail.current_price) amount,oms.cafeteria_name cafeteriaName,
+    patient.ward_name wardName,patient.bed_no bedNo,detail.create_by createBy,detail.create_time createTime,usr.user_name createByName
+    FROM
+    his_patient patient join his_oms oms on patient.patient_id = oms.patient_id join his_oms_details detail on oms.id=detail.oms_id
+    left join sys_user usr on usr.user_id=detail.create_by
+    <where>
+     <if test="condition.mealIds.size()>0" >
+	   <foreach collection="condition.mealIds" open=" and detail.meal_id in (" close=")"
+	               item="id" separator=",">
+	       #{id}
+	   </foreach>
+     </if>
+     <if test="condition.cafeteriaId != null and condition.cafeteriaId != '' " >
+        and oms.cafeteria_id = #{condition.cafeteriaId}
+      </if>
+       <if test="condition.deptCode != null and condition.deptCode != '' " >
+        and patient.dept_code = #{condition.deptCode}
+      </if>
+      <if test="condition.wardId != null and condition.wardId != '' " >
+        and oms.ward_code = #{condition.wardCode}
+      </if>
+      <if test="condition.inpNo != null and condition.inpNo != '' " >
+        and patient.inp_no = #{condition.inpNo}
+      </if>
+      <if test="condition.patientnName != null and condition.patientnName != '' " >
+        and patient.name = #{condition.patientnName}
+      </if>
+      <if test="condition.diningTimeBegin != null and condition.diningTimeBegin != '' " >
+        <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') >= #{condition.diningTimeBegin}]]>
+      </if>
+      <if test="condition.diningTimeEnd != null and condition.diningTimeEnd != '' " >
+        <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') <= #{condition.diningTimeEnd}]]>
+      </if>
+      and detail.oms_status=1
+    </where>
+     group by patient.inp_no,patient.name,oms.dining_time,detail.meal_name,detail.goal_name,oms.cafeteria_name,
+     patient.ward_name,patient.bed_no,detail.create_by,detail.create_time order by patient.id,oms.dining_time,detail.meal_id,detail.goal_id
+     LIMIT #{from}, #{size}
+  </select>
+
+  <select id="selectOrderInformationCount"  resultType="java.lang.Integer" parameterType="com.tenghong.ndip.utils.PageInfo">
+    SELECT COUNT(1) FROM (SELECT
+    patient.inp_no inpNo,patient.name patientName,oms.dining_time diningTime,detail.meal_name mealName,detail.goal_name goalName,
+    sum(detail.goal_num) num,sum(detail.current_price)/sum(detail.goal_num) price,sum(detail.current_price) amount,oms.cafeteria_name cafeteriaName,
+    patient.ward_name wardName,patient.bed_no bedNo,detail.create_by createBy,detail.create_time createTime,usr.user_name createByName
+    FROM
+    his_patient patient join his_oms oms on patient.patient_id = oms.patient_id join his_oms_details detail on oms.id=detail.oms_id
+    left join sys_user usr on usr.user_id=detail.create_by
+    <where>
+     <if test="condition.mealIds.size()>0" >
+	   <foreach collection="condition.mealIds" open=" and detail.meal_id in (" close=")"
+	               item="id" separator=",">
+	       #{id}
+	   </foreach>
+     </if>
+     <if test="condition.cafeteriaId != null and condition.cafeteriaId != '' " >
+        and oms.cafeteria_id = #{condition.cafeteriaId}
+      </if>
+       <if test="condition.deptCode != null and condition.deptCode != '' " >
+        and patient.dept_code = #{condition.deptCode}
+      </if>
+      <if test="condition.wardId != null and condition.wardId != '' " >
+        and oms.ward_code = #{condition.wardCode}
+      </if>
+      <if test="condition.inpNo != null and condition.inpNo != '' " >
+        and patient.inp_no = #{condition.inpNo}
+      </if>
+      <if test="condition.patientnName != null and condition.patientnName != '' " >
+        and patient.name = #{condition.patientnName}
+      </if>
+      <if test="condition.diningTimeBegin != null and condition.diningTimeBegin != '' " >
+        <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') >= #{condition.diningTimeBegin}]]>
+      </if>
+      <if test="condition.diningTimeEnd != null and condition.diningTimeEnd != '' " >
+        <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') <= #{condition.diningTimeEnd}]]>
+      </if>
+      and detail.oms_status=1
+    </where>
+     group by patient.inp_no,patient.name,oms.dining_time,detail.meal_name,detail.goal_name,oms.cafeteria_name,
+     patient.ward_name,patient.bed_no,detail.create_by,detail.create_time) B
   </select>
 </mapper>

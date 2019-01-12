@@ -152,4 +152,10 @@ public class ReportServiceImpl implements ReportService {
 			List<String> mealIdList, String deptCode, String wardCode) {
 		return reportMapper.getWardAmountStat(diningTimeBegin, diningTimeEnd, cafeteriaId, mealIdList, deptCode, wardCode);
 	}
+	
+	@Override
+    public void getOrderInformation(PageInfo pageInfo) {
+        pageInfo.setRows(reportMapper.selectOrderInformation(pageInfo));
+        pageInfo.setTotal(reportMapper.selectOrderInformationCount(pageInfo));
+    }
 }

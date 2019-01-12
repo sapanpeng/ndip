@@ -77,6 +77,21 @@ public class ReportHisOms implements Serializable {
     private Date diningTime;
     
     /**
+     * 创建时间
+     */
+    private Date createTime;
+    
+    /**
+     * 创建人ID
+     */
+    private Integer createBy;
+    
+    /**
+     * 创建人姓名
+     */
+    private String createByName;
+    
+    /**
      * 订单状态      1待支付  2已支付  3已退款
      */
     private Integer omsType;
@@ -242,6 +257,30 @@ public class ReportHisOms implements Serializable {
 
 	public void setDiningTime(Date diningTime) {
 		this.diningTime = diningTime;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Integer getCreateBy() {
+		return createBy;
+	}
+
+	public void setCreateBy(Integer createBy) {
+		this.createBy = createBy;
+	}
+
+	public String getCreateByName() {
+		return createByName;
+	}
+
+	public void setCreateByName(String createByName) {
+		this.createByName = createByName;
 	}
 
 	public Integer getOmsType() {

@@ -53,9 +53,6 @@ public interface OmsService {
     //科室营业情况表
     DeptIncomeVo getDeptIncome(PageInfo pageInfo );
 
-    //订餐信息查询
-    void getOrderInformation(PageInfo pageInfo);
-
     //灶类明细统计
     List<OvenDetailsVo> getOvenRecords(Integer cafeteriaId, Integer ovenId, String date, String departmentId, Integer mealTimesId);
 

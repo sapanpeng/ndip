@@ -115,45 +115,6 @@ public class ReportController extends BaseController {
         return result;
     }
 
-    //订单信息查询
-    @RequestMapping(value = "/report/orderInformation",method = RequestMethod.POST)
-    @ResponseBody
-    public Result orderInformation(@RequestParam("startDate") String startDate,
-                                   @RequestParam("endDate") String endDate,
-                                   @RequestParam("cafeteriaId") Integer cafeteriaId,
-                                   @RequestParam("wardId") Integer wardId,
-                                   @RequestParam(value = "departmentId", required = false, defaultValue = "") String departmentId,
-                                   @RequestParam(value = "hisNo", required = false, defaultValue = "") String hisNo,
-                                   @RequestParam(value = "mealTimesId", required = false, defaultValue = "") String mealTimesId,
-                                   @RequestParam(value = "name", required = false, defaultValue = "") String name,
-                                   @RequestParam(value = "pageNo", required = false, defaultValue = "1")Integer page,
-                                   @RequestParam(value = "pageSize", required = false, defaultValue = "10")Integer rows){
-        Result result = getResultInstance();
-        Map<String,Object> map = getQueryMap();
-        try{
-            PageInfo pageInfo = new PageInfo(page, rows, "ward.sort", "desc");
-            map.put("startDate",startDate);
-            map.put("endDate",endDate);
-            map.put("cafeteriaId",cafeteriaId);
-            map.put("departmentId",departmentId);
-            map.put("wardId",wardId);
-            map.put("hisNo",hisNo);
-            map.put("mealTimesId",mealTimesId);
-            map.put("name",name);
-            pageInfo.setCondition(map);
-            omsService.getOrderInformation(pageInfo);
-            pageInfo.setTitle(getCafeteriaName(cafeteriaId)+"订餐信息查询");
-            result.setData(pageInfo);
-            result.setMsg("success");
-            result.setState(1);
-        }catch (Exception e){
-            LOGGER.error("Server Exception：{}",e);
-            result.setState(0);
-            result.setMsg("Server Exception");
-        }
-        return result;
-    }
-
 
     //灶类明细统计表
     @RequestMapping(value = "/report/ovenRecords",method = RequestMethod.POST)
@@ -378,6 +339,51 @@ public class ReportController extends BaseController {
         	result.setData(listReportHisOms);
     		result.setMsg("success");
     		result.setState(1);
+        }catch (Exception e){
+            LOGGER.error("Server Exception：{}",e);
+            result.setState(0);
+            result.setMsg("Server Exception");
+        }
+        return result;
+    }
+    
+  //订单信息查询
+    @RequestMapping(value = "/report/orderInformation",method = RequestMethod.POST)
+    @ResponseBody
+    public Result orderInformation(@RequestParam("diningTimeBegin") String diningTimeBegin,
+                                   @RequestParam("diningTimeEnd") String diningTimeEnd,
+                                   @RequestParam("cafeteriaId") Integer cafeteriaId,
+                                   @RequestParam(value = "deptCode", required = false, defaultValue = "") String deptCode,
+                                   @RequestParam(value = "wardCode", required = false, defaultValue = "") String wardCode,
+                                   @RequestParam(value = "mealIds", required = false, defaultValue = "") String mealIds,
+                                   @RequestParam(value = "patientnName", required = false, defaultValue = "") String patientnName,
+                                   @RequestParam(value = "inpNo", required = false, defaultValue = "") String inpNo,
+                                   @RequestParam(value = "pageNo", required = false, defaultValue = "1")Integer page,
+                                   @RequestParam(value = "pageSize", required = false, defaultValue = "10")Integer rows){
+        Result result = getResultInstance();
+        Map<String,Object> map = getQueryMap();
+        try{
+        	
+        	List<String> mealList = new ArrayList<String>();
+        	if (mealIds != null && mealIds.length() > 0) {
+        		mealList = Arrays.asList(mealIds.split(",")); 
+        	}
+            PageInfo pageInfo = new PageInfo(page, rows, "", "");
+            map.put("diningTimeBegin",diningTimeBegin);
+            map.put("diningTimeEnd",diningTimeEnd);
+            map.put("cafeteriaId",cafeteriaId);
+            map.put("wardCode",wardCode);
+            map.put("deptCode",deptCode);
+            map.put("wardCode",wardCode);
+            map.put("mealIds",mealList);
+            map.put("patientnName",patientnName);
+            map.put("inpNo",inpNo);
+            pageInfo.setCondition(map);
+            reportService.getOrderInformation(pageInfo);
+            pageInfo.setTitle(getCafeteriaName(cafeteriaId)+"订餐信息查询");
+            result.setData(pageInfo);
+            result.setMsg("success");
+            result.setState(1);
         }catch (Exception e){
             LOGGER.error("Server Exception：{}",e);
             result.setState(0);

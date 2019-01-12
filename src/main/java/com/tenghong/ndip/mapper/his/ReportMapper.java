@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.tenghong.ndip.model.his.ReportHisOms;
+import com.tenghong.ndip.model.vo.OrderInformationVo;
 import com.tenghong.ndip.utils.PageInfo;
 
 public interface ReportMapper {
@@ -32,5 +33,11 @@ public interface ReportMapper {
 	List<ReportHisOms> getWardAmountStat(@Param("diningTimeBegin")String diningTimeBegin, 
 			@Param("diningTimeEnd")String diningTimeEnd,@Param("cafeteriaId")Integer cafeteriaId, 
 				@Param("list")List<String> mealIdList,@Param("deptCode")String deptCode, @Param("wardCode")String wardCode);
+	
+	 //订单信息查询（报表）
+    List<OrderInformationVo> selectOrderInformation(PageInfo pageInfo);
+    
+    //订单信息查询（报表）
+    Integer selectOrderInformationCount(PageInfo pageInfo);
 
 }

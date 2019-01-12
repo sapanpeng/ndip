@@ -72,11 +72,6 @@ public interface HisOmsMapper {
     //查询灶类下结算金额
     Double selectOvenAmount(@Param("wardId") Integer wardId,@Param("ovenId") Integer ovenId,@Param("startDate") String startDate,@Param("endDate") String endDate);
 
-    //订单信息查询（报表）
-    List<OrderInformationVo> selectOrderInformation(PageInfo pageInfo);
-
-    Integer selectOrderInformationCount(PageInfo pageInfo);
-
     // 根据病人ID和订单日期查询订单
     HisOms getHisOmsBy(@Param("patientId")String patientId, @Param("diningDate")Date diningTime);
 

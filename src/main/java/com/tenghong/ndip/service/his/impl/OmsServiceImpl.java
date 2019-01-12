@@ -337,12 +337,6 @@ public class OmsServiceImpl implements OmsService {
     }
 
     @Override
-    public void getOrderInformation(com.tenghong.ndip.utils.PageInfo pageInfo) {
-        pageInfo.setRows(omsMapper.selectOrderInformation(pageInfo));
-        pageInfo.setTotal(omsMapper.selectOrderInformationCount(pageInfo));
-    }
-
-    @Override
     public List<OvenDetailsVo> getOvenRecords(Integer cafeteriaId,Integer ovenId,String date,String departmentId,Integer mealTimesId) {
         List<WardDto> wardList = hisInpatientAreaMapper.findWardDto(cafeteriaId);
         List<DietMealTimes> mealList = dietMealTimesMapper.findDataByReq(cafeteriaId,mealTimesId);
