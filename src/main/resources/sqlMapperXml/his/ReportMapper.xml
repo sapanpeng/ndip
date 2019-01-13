@@ -465,4 +465,358 @@
      </where>
      ) b order by b.meal_id,b.matlid
   </select>
+  
+  <select id="getFoodStat"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
+        SELECT
+        t_mat.*, diet_matl.id as foodId,
+        diet_matl.unit
+        FROM
+        (
+        SELECT
+        ovenId,
+        ovenName,
+        goalId,
+        goalName,
+        meal_name as mealName,
+        meal_id as mealId,
+        sum(num) num
+        FROM
+        (
+        SELECT
+        t_menu.oven_id ovenId,
+        t_menu.oven_name ovenName,
+        drf.re_goal_id goalId,
+        drf.re_goal_name goalName,
+        sum(
+        t_menu.goal_num * drf.re_goal_num
+        ) num,
+        t_menu.meal_name,
+        t_menu.meal_id
+        FROM
+        diet_relation drf
+        JOIN (
+        SELECT
+        dr.*, detail.*
+        FROM
+        diet_relation dr
+        JOIN his_oms_details detail ON dr.re_parent_id = detail.goal_id
+        JOIN his_oms oms ON oms.id = detail.oms_id
+        JOIN diet_oven do ON detail.oven_id = do.id
+        <where>
+            dr.re_parent_type = '3'
+            AND detail.goal_type = '3'
+            <if test="diningTimeEnd != null and diningTimeEnd != '' " >
+                <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) <= #{diningTimeEnd} ]]>
+            </if>
+            <if test="diningTimeBegin != null and diningTimeBegin != '' " >
+                <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) >= #{diningTimeBegin} ]]>
+            </if>
+            <if test="cafeteriaId != null and cafeteriaId != '' " >
+                and oms.cafeteria_id = #{cafeteriaId}
+            </if>
+            <if test="ovenCode != null and ovenCode != '' " >
+                and do.oven_code = #{ovenCode}
+            </if>
+            and detail.oms_status=1
+        </where>
+        ) t_menu ON drf.relation_id = t_menu.goal_id
+
+        WHERE
+        drf.re_parent_type = '2'
+        GROUP BY
+        t_menu.oven_id,
+        t_menu.oven_name,
+        t_menu.goal_id,
+        t_menu.meal_name,
+        t_menu.meal_id
+
+        UNION ALL
+
+        SELECT
+        detail.oven_id ovenId,
+        detail.oven_name ovenName,
+        dr.re_goal_id goalId,
+        dr.re_goal_name goalName,
+        sum(
+        detail.goal_num * dr.re_goal_num
+        ) num,
+        detail.meal_name,
+        detail.meal_id
+        FROM
+        diet_relation dr
+        JOIN his_oms_details detail ON dr.re_parent_id = detail.goal_id
+        JOIN his_oms oms ON oms.id = detail.oms_id
+        JOIN diet_oven do ON detail.oven_id = do.id
+        <where>
+            dr.re_parent_type = '2'
+            AND detail.goal_type = '2'
+            <if test="diningTimeEnd != null and diningTimeEnd != '' " >
+                <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) <= #{diningTimeEnd} ]]>
+            </if>
+            <if test="diningTimeBegin != null and diningTimeBegin != '' " >
+                <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) >= #{diningTimeBegin} ]]>
+            </if>
+            <if test="cafeteriaId != null and cafeteriaId != '' " >
+                and oms.cafeteria_id = #{cafeteriaId}
+            </if>
+            <if test="ovenCode != null and ovenCode != '' " >
+                and do.oven_code = #{ovenCode}
+            </if>
+            and detail.oms_status=1
+        </where>
+        GROUP BY
+        detail.oven_id,
+        detail.oven_name,
+        detail.goal_id,
+        detail.meal_name,
+        detail.meal_id
+        ) t_food
+        GROUP BY
+        ovenId,
+        ovenName,
+        goalId,
+        goalName,
+        meal_name,
+        meal_id
+        ) t_mat
+        JOIN diet_matl ON t_mat.goalId = diet_matl.id
+        ORDER BY
+        mealId,
+        goalName
+    </select>
+
+
+    <select id="getFoodDetailStat"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
+        SELECT
+        t_mat.*, diet_matl.id as foodId,
+        diet_matl.unit
+        FROM
+        (
+        SELECT
+        ovenId,
+        ovenName,
+        goalId,
+        goalName,
+        meal_name as mealName,
+        meal_id as mealId,
+        sum(num) num
+        FROM
+        (
+        SELECT
+        t_menu.oven_id ovenId,
+        t_menu.oven_name ovenName,
+        drf.re_goal_id goalId,
+        drf.re_goal_name goalName,
+        sum(
+        t_menu.goal_num * drf.re_goal_num
+        ) num,
+        t_menu.meal_name,
+        t_menu.meal_id
+        FROM
+        diet_relation drf
+        JOIN (
+        SELECT
+        dr.*, detail.*
+        FROM
+        diet_relation dr
+        JOIN his_oms_details detail ON dr.re_parent_id = detail.goal_id
+        JOIN his_oms oms ON oms.id = detail.oms_id
+        JOIN diet_oven do ON detail.oven_id = do.id
+        <where>
+            dr.re_parent_type = '3'
+            AND detail.goal_type = '3'
+            <if test="diningTimeEnd != null and diningTimeEnd != '' " >
+                <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) <= #{diningTimeEnd} ]]>
+            </if>
+            <if test="diningTimeBegin != null and diningTimeBegin != '' " >
+                <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) >= #{diningTimeBegin} ]]>
+            </if>
+            <if test="cafeteriaId != null and cafeteriaId != '' " >
+                and oms.cafeteria_id = #{cafeteriaId}
+            </if>
+            <if test="ovenCode != null and ovenCode != '' " >
+                and do.oven_code = #{ovenCode}
+            </if>
+            and detail.oms_status=1
+        </where>
+        ) t_menu ON drf.relation_id = t_menu.goal_id
+
+        WHERE
+        drf.re_parent_type = '2'
+        GROUP BY
+        t_menu.oven_id,
+        t_menu.oven_name,
+        t_menu.goal_id,
+        t_menu.meal_name,
+        t_menu.meal_id
+
+        UNION ALL
+
+        SELECT
+        detail.oven_id ovenId,
+        detail.oven_name ovenName,
+        dr.re_goal_id goalId,
+        dr.re_goal_name goalName,
+        sum(
+        detail.goal_num * dr.re_goal_num
+        ) num,
+        detail.meal_name,
+        detail.meal_id
+        FROM
+        diet_relation dr
+        JOIN his_oms_details detail ON dr.re_parent_id = detail.goal_id
+        JOIN his_oms oms ON oms.id = detail.oms_id
+        JOIN diet_oven do ON detail.oven_id = do.id
+        <where>
+            dr.re_parent_type = '2'
+            AND detail.goal_type = '2'
+            <if test="diningTimeEnd != null and diningTimeEnd != '' " >
+                <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) <= #{diningTimeEnd} ]]>
+            </if>
+            <if test="diningTimeBegin != null and diningTimeBegin != '' " >
+                <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) >= #{diningTimeBegin} ]]>
+            </if>
+            <if test="cafeteriaId != null and cafeteriaId != '' " >
+                and oms.cafeteria_id = #{cafeteriaId}
+            </if>
+            <if test="ovenCode != null and ovenCode != '' " >
+                and do.oven_code = #{ovenCode}
+            </if>
+            and detail.oms_status=1
+        </where>
+        GROUP BY
+        detail.oven_id,
+        detail.oven_name,
+        detail.goal_id,
+        detail.meal_name,
+        detail.meal_id
+        ) t_food
+        GROUP BY
+        ovenId,
+        ovenName,
+        goalId,
+        goalName,
+        meal_name,
+        meal_id
+        ) t_mat
+        JOIN diet_matl ON t_mat.goalId = diet_matl.id
+        ORDER BY
+        mealId,
+        goalName
+    </select>
+
+
+    <select id="getFoodPurchaseStat"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
+        SELECT
+        t_mat.*, diet_matl.id as foodId,
+        diet_matl.unit
+        FROM
+        (
+        SELECT
+        ovenId,
+        ovenName,
+        goalId,
+        goalName,
+        sum(num) num
+        FROM
+        (
+        SELECT
+        t_menu.oven_id ovenId,
+        t_menu.oven_name ovenName,
+        drf.re_goal_id goalId,
+        drf.re_goal_name goalName,
+        sum(
+        t_menu.goal_num * drf.re_goal_num
+        ) num,
+        t_menu.meal_name,
+        t_menu.meal_id
+        FROM
+        diet_relation drf
+        JOIN (
+        SELECT
+        dr.*, detail.*
+        FROM
+        diet_relation dr
+        JOIN his_oms_details detail ON dr.re_parent_id = detail.goal_id
+        JOIN his_oms oms ON oms.id = detail.oms_id
+        JOIN diet_oven do ON detail.oven_id = do.id
+        <where>
+            dr.re_parent_type = '3'
+            AND detail.goal_type = '3'
+            <if test="diningTimeEnd != null and diningTimeEnd != '' " >
+                <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) <= #{diningTimeEnd} ]]>
+            </if>
+            <if test="diningTimeBegin != null and diningTimeBegin != '' " >
+                <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) >= #{diningTimeBegin} ]]>
+            </if>
+            <if test="cafeteriaId != null and cafeteriaId != '' " >
+                and oms.cafeteria_id = #{cafeteriaId}
+            </if>
+            <if test="ovenCode != null and ovenCode != '' " >
+                and do.oven_code = #{ovenCode}
+            </if>
+            and detail.oms_status=1
+        </where>
+        ) t_menu ON drf.relation_id = t_menu.goal_id
+
+        WHERE
+        drf.re_parent_type = '2'
+        GROUP BY
+        t_menu.oven_id,
+        t_menu.oven_name,
+        t_menu.goal_id,
+        t_menu.meal_name,
+        t_menu.meal_id
+
+        UNION ALL
+
+        SELECT
+        detail.oven_id ovenId,
+        detail.oven_name ovenName,
+        dr.re_goal_id goalId,
+        dr.re_goal_name goalName,
+        sum(
+        detail.goal_num * dr.re_goal_num
+        ) num,
+        detail.meal_name,
+        detail.meal_id
+        FROM
+        diet_relation dr
+        JOIN his_oms_details detail ON dr.re_parent_id = detail.goal_id
+        JOIN his_oms oms ON oms.id = detail.oms_id
+        JOIN diet_oven do ON detail.oven_id = do.id
+        <where>
+            dr.re_parent_type = '2'
+            AND detail.goal_type = '2'
+            <if test="diningTimeEnd != null and diningTimeEnd != '' " >
+                <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) <= #{diningTimeEnd} ]]>
+            </if>
+            <if test="diningTimeBegin != null and diningTimeBegin != '' " >
+                <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) >= #{diningTimeBegin} ]]>
+            </if>
+            <if test="cafeteriaId != null and cafeteriaId != '' " >
+                and oms.cafeteria_id = #{cafeteriaId}
+            </if>
+            <if test="ovenCode != null and ovenCode != '' " >
+                and do.oven_code = #{ovenCode}
+            </if>
+            and detail.oms_status=1
+        </where>
+        GROUP BY
+        detail.oven_id,
+        detail.oven_name,
+        detail.goal_id,
+        detail.meal_name,
+        detail.meal_id
+        ) t_food
+        GROUP BY
+        ovenId,
+        ovenName,
+        goalId,
+        goalName
+        ) t_mat
+        JOIN diet_matl ON t_mat.goalId = diet_matl.id
+        ORDER BY
+        goalName
+    </select>
 </mapper>

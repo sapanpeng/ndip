@@ -164,4 +164,19 @@ public class ReportServiceImpl implements ReportService {
 			Integer wardId) {
 		return reportMapper.getCost(diningTime, cafeteriaId, mealIdList, deptCode, wardId);
 	}
+	
+	@Override
+	public List<ReportHisOms> getFoodStat(String diningTimeBegin, String diningTimeEnd, Integer cafeteriaId, String ovenCode) {
+		return reportMapper.getFoodStat(diningTimeBegin, diningTimeEnd, cafeteriaId, ovenCode);
+	}
+
+	@Override
+	public List<ReportHisOms> getFoodDetailStat(String diningTimeBegin, String diningTimeEnd, Integer cafeteriaId, String ovenCode) {
+		return reportMapper.getFoodDetailStat(diningTimeBegin, diningTimeEnd, cafeteriaId, ovenCode);
+	}
+
+	@Override
+	public List<ReportHisOms> getFoodPurchaseStat(String diningTimeBegin, String diningTimeEnd, Integer cafeteriaId, String ovenCode) {
+		return reportMapper.getFoodPurchaseStat(diningTimeBegin, diningTimeEnd, cafeteriaId, ovenCode);
+	}
 }

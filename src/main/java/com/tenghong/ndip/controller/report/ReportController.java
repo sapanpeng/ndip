@@ -104,26 +104,6 @@ public class ReportController extends BaseController {
         return result;
     }
 
-    //原材料统计
-    @RequestMapping(value = "/report/matlRecords",method = RequestMethod.POST)
-    @ResponseBody
-    public Result matlRecords(@RequestParam("date") String date,
-                              @RequestParam(value = "ovenId", required = false, defaultValue = "") Integer ovenId,
-                              @RequestParam("cafeteriaId") Integer cafeteriaId){
-        Result result = getResultInstance();
-        try{
-            result.setData(null);
-            result.setMsg("success");
-            result.setState(1);
-        }catch (Exception e){
-            e.printStackTrace();
-            LOGGER.error("Server Exception：{}",e);
-            result.setState(0);
-            result.setMsg("Server Exception");
-        }
-        return result;
-    }
-    
     //领餐情况表
     @RequestMapping(value = "/report/useMeals",method = RequestMethod.POST)
     @ResponseBody
@@ -373,6 +353,67 @@ public class ReportController extends BaseController {
         		mealList = Arrays.asList(mealIds.split(",")); 
         	}
             result.setData(reportService.getCost(diningTime, cafeteriaId, mealList, deptCode, wardId));
+            result.setMsg("success");
+            result.setState(1);
+        }catch (Exception e){
+            LOGGER.error("Server Exception：{}",e);
+            result.setState(0);
+            result.setMsg("Server Exception");
+        }
+        return result;
+    }
+    
+    //原材料统计
+    @RequestMapping(value = "/report/foodStat",method = RequestMethod.POST)
+    @ResponseBody
+    public Result getFoodStat(@RequestParam("diningTimeBegin") String diningTimeBegin,
+                                    @RequestParam("diningTimeEnd") String diningTimeEnd,
+                                    @RequestParam("cafeteriaId") Integer cafeteriaId,
+                                    @RequestParam(value = "ovenCode", required = false, defaultValue = "") String ovenCode){
+        Result result = getResultInstance();
+        try{
+            List<ReportHisOms> listReportHisOms = reportService.getFoodStat(diningTimeBegin, diningTimeEnd, cafeteriaId, ovenCode);
+            result.setData(listReportHisOms);
+            result.setMsg("success");
+            result.setState(1);
+        }catch (Exception e){
+            LOGGER.error("Server Exception：{}",e);
+            result.setState(0);
+            result.setMsg("Server Exception");
+        }
+        return result;
+    }
+    //原材料明细统计
+    @RequestMapping(value = "/report/foodDetailStat",method = RequestMethod.POST)
+    @ResponseBody
+    public Result getFoodDetailStat(@RequestParam("diningTimeBegin") String diningTimeBegin,
+                              @RequestParam("diningTimeEnd") String diningTimeEnd,
+                              @RequestParam("cafeteriaId") Integer cafeteriaId,
+                              @RequestParam(value = "ovenCode", required = false, defaultValue = "") String ovenCode){
+        Result result = getResultInstance();
+        try{
+            List<ReportHisOms> listReportHisOms = reportService.getFoodDetailStat(diningTimeBegin, diningTimeEnd, cafeteriaId, ovenCode);
+            result.setData(listReportHisOms);
+            result.setMsg("success");
+            result.setState(1);
+        }catch (Exception e){
+            LOGGER.error("Server Exception：{}",e);
+            result.setState(0);
+            result.setMsg("Server Exception");
+        }
+        return result;
+    }
+    //原材料采购清单
+    @RequestMapping(value = "/report/foodPurchaseStat",method = RequestMethod.POST)
+    @ResponseBody
+    public Result getFoodPurchaseStat(@RequestParam("diningTimeBegin") String diningTimeBegin,
+                              @RequestParam("diningTimeEnd") String diningTimeEnd,
+                              @RequestParam("cafeteriaId") Integer cafeteriaId,
+                              @RequestParam(value = "ovenCode", required = false, defaultValue = "") String ovenCode){
+        Result result = getResultInstance();
+        try{
+            List<ReportHisOms> listReportHisOms = reportService.getFoodPurchaseStat(diningTimeBegin, diningTimeEnd, cafeteriaId, ovenCode);
+            result.setData(listReportHisOms);
             result.setMsg("success");
             result.setState(1);
         }catch (Exception e){

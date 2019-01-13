@@ -43,5 +43,17 @@ public interface ReportMapper {
     //成本核算表（参考价）
   	List<ReportHisOms> getCost(@Param("diningTime")String diningTime, @Param("cafeteriaId")Integer cafeteriaId, 
   				@Param("list")List<String> mealIdList,@Param("deptCode")String deptCode, @Param("wardId")Integer wardId);
+  	
+  	//原材料统计
+  	List<ReportHisOms> getFoodStat(@Param("diningTimeBegin")String diningTimeBegin,
+  										 @Param("diningTimeEnd")String diningTimeEnd,@Param("cafeteriaId")Integer cafeteriaId, @Param("ovenCode")String ovenCode);
+
+  	//原材料明细统计
+  	List<ReportHisOms> getFoodDetailStat(@Param("diningTimeBegin")String diningTimeBegin,
+  								   @Param("diningTimeEnd")String diningTimeEnd,@Param("cafeteriaId")Integer cafeteriaId, @Param("ovenCode")String ovenCode);
+
+  	//原材料采购清单
+  	List<ReportHisOms> getFoodPurchaseStat(@Param("diningTimeBegin")String diningTimeBegin,
+  								   @Param("diningTimeEnd")String diningTimeEnd,@Param("cafeteriaId")Integer cafeteriaId, @Param("ovenCode")String ovenCode);
 
 }

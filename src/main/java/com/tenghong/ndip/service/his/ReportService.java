@@ -40,5 +40,14 @@ public interface ReportService {
     //成本核算表（参考价）
   	List<ReportHisOms> getCost(String diningTime, Integer cafeteriaId, 
   				List<String> mealIdList,String deptCode, Integer wardId);
+  	
+  //原材料统计
+  	List<ReportHisOms> getFoodStat(String diningTimeBegin, String diningTimeEnd,Integer cafeteriaId, String ovenCode);
+
+  	//原材料明细统计
+  	List<ReportHisOms> getFoodDetailStat(String diningTimeBegin, String diningTimeEnd,Integer cafeteriaId, String ovenCode);
+
+  	//原材料采购清单
+  	List<ReportHisOms> getFoodPurchaseStat(String diningTimeBegin, String diningTimeEnd,Integer cafeteriaId, String ovenCode);
 
 }
