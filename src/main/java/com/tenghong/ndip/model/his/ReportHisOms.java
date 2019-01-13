@@ -132,11 +132,9 @@ public class ReportHisOms implements Serializable {
     private Integer goalId;
     
     /**
-     * 单价
+     * 菜品名称
      */
     private String goalName;
-    
-    
     
     /**
      * 数量
@@ -157,6 +155,33 @@ public class ReportHisOms implements Serializable {
      * 总金额
      */
     private Double totalAmount;
+    
+    
+    /**
+     * 原材料名称
+     */
+    private String matlName;
+    
+    /**
+     * 原材料单位
+     */
+    private String unit;
+    
+    /**
+     * 原材料数量
+     */
+    private Double matlNum;
+    
+    /**
+     * 原材料单价
+     */
+    private Double matlPrice;
+    
+    /**
+     * 原材料金额
+     */
+    private Double matlAmount;
+    
     
     
     private List<ReportHisOms>  mealList;
@@ -384,6 +409,46 @@ public class ReportHisOms implements Serializable {
 
 	public void setTotalAmount(Double totalAmount) {
 		this.totalAmount = totalAmount;
+	}
+
+	public String getMatlName() {
+		return matlName;
+	}
+
+	public void setMatlName(String matlName) {
+		this.matlName = matlName;
+	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
+
+	public Double getMatlNum() {
+		return matlNum;
+	}
+
+	public void setMatlNum(Double matlNum) {
+		this.matlNum = matlNum;
+	}
+
+	public Double getMatlPrice() {
+		return matlPrice;
+	}
+
+	public void setMatlPrice(Double matlPrice) {
+		this.matlPrice = matlPrice;
+	}
+
+	public Double getMatlAmount() {
+		return matlAmount;
+	}
+
+	public void setMatlAmount(Double matlAmount) {
+		this.matlAmount = matlAmount;
 	}
 
 	public List<ReportHisOms> getMealList() {

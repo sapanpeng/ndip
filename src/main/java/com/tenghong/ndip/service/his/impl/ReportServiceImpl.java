@@ -94,8 +94,8 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<ReportHisOms> getConsumptionStat(String diningTime, Integer cafeteriaId, List<String> mealIdList,
-			String deptCode, String wardCode) {
-		List<ReportHisOms> list = reportMapper.getConsumptionStat(diningTime, cafeteriaId, mealIdList, deptCode, wardCode);
+			String deptCode, Integer wardId) {
+		List<ReportHisOms> list = reportMapper.getConsumptionStat(diningTime, cafeteriaId, mealIdList, deptCode, wardId);
 		List<ReportHisOms> reportHisOmsList = new ArrayList<ReportHisOms>();
 		for (ReportHisOms oms : list) {
 			int icount1 = 0;
@@ -149,8 +149,8 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	public List<ReportHisOms> getWardAmountStat(String diningTimeBegin, String diningTimeEnd, Integer cafeteriaId,
-			List<String> mealIdList, String deptCode, String wardCode) {
-		return reportMapper.getWardAmountStat(diningTimeBegin, diningTimeEnd, cafeteriaId, mealIdList, deptCode, wardCode);
+			List<String> mealIdList, String deptCode, Integer wardId) {
+		return reportMapper.getWardAmountStat(diningTimeBegin, diningTimeEnd, cafeteriaId, mealIdList, deptCode, wardId);
 	}
 	
 	@Override
@@ -158,4 +158,10 @@ public class ReportServiceImpl implements ReportService {
         pageInfo.setRows(reportMapper.selectOrderInformation(pageInfo));
         pageInfo.setTotal(reportMapper.selectOrderInformationCount(pageInfo));
     }
+
+	@Override
+	public List<ReportHisOms> getCost(String diningTime, Integer cafeteriaId, List<String> mealIdList, String deptCode,
+			Integer wardId) {
+		return reportMapper.getCost(diningTime, cafeteriaId, mealIdList, deptCode, wardId);
+	}
 }

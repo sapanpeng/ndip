@@ -27,17 +27,21 @@ public interface ReportMapper {
 	
 	//查询今日消费明细表
 	List<ReportHisOms> getConsumptionStat(@Param("diningTime")String diningTime, @Param("cafeteriaId")Integer cafeteriaId, 
-			@Param("list")List<String> mealIdList,@Param("deptCode")String deptCode, @Param("wardCode")String wardCode);
+			@Param("list")List<String> mealIdList,@Param("deptCode")String deptCode, @Param("wardId")Integer wardId);
 	
 	//查询今日消费明细表
 	List<ReportHisOms> getWardAmountStat(@Param("diningTimeBegin")String diningTimeBegin, 
 			@Param("diningTimeEnd")String diningTimeEnd,@Param("cafeteriaId")Integer cafeteriaId, 
-				@Param("list")List<String> mealIdList,@Param("deptCode")String deptCode, @Param("wardCode")String wardCode);
+				@Param("list")List<String> mealIdList,@Param("deptCode")String deptCode, @Param("wardId")Integer wardId);
 	
 	 //订单信息查询（报表）
     List<OrderInformationVo> selectOrderInformation(PageInfo pageInfo);
     
     //订单信息查询（报表）
     Integer selectOrderInformationCount(PageInfo pageInfo);
+    
+    //成本核算表（参考价）
+  	List<ReportHisOms> getCost(@Param("diningTime")String diningTime, @Param("cafeteriaId")Integer cafeteriaId, 
+  				@Param("list")List<String> mealIdList,@Param("deptCode")String deptCode, @Param("wardId")Integer wardId);
 
 }

@@ -31,6 +31,11 @@
     <result column="amount" jdbcType="DOUBLE" property="amount" />
     <result column="lastAmount" jdbcType="DOUBLE" property="lastAmount" />
     <result column="totalAmount" jdbcType="DOUBLE" property="totalAmount" />
+    <result column="matlName" jdbcType="VARCHAR" property="matlName" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="matlNum" jdbcType="DOUBLE" property="matlNum" />
+    <result column="matlPrice" jdbcType="DOUBLE" property="matlPrice" />
+    <result column="matlAmount" jdbcType="DOUBLE" property="matlAmount" />
   </resultMap>
   <select id="getUseMeals"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
     SELECT
@@ -54,7 +59,7 @@
         and patient.dept_code = #{condition.deptCode}
       </if>
       <if test="condition.wardId != null and condition.wardId != '' " >
-        oms.ward_code = #{condition.wardCode}
+        and oms.ward_Id = #{condition.wardId}
       </if>
       <if test="condition.mealId != null and condition.mealId != '' " >
         and detail.meal_id = #{condition.mealId}
@@ -87,7 +92,7 @@
         and patient.dept_code = #{condition.deptCode}
       </if>
       <if test="condition.wardId != null and condition.wardId != '' " >
-        oms.ward_code = #{condition.wardCode}
+        and oms.ward_id = #{condition.wardId}
       </if>
       <if test="condition.mealId != null and condition.mealId != '' " >
         and detail.meal_id = #{condition.mealId}
@@ -125,7 +130,7 @@
         and patient.dept_code = #{condition.deptCode}
       </if>
       <if test="condition.wardId != null and condition.wardId != '' " >
-        oms.ward_code = #{condition.wardCode}
+        and oms.ward_id = #{condition.wardId}
       </if>
       <if test="condition.mealId != null and condition.mealId != '' " >
         and detail.meal_id = #{condition.mealId}
@@ -165,7 +170,7 @@
         and patient.dept_code = #{condition.deptCode}
       </if>
       <if test="condition.wardId != null and condition.wardId != '' " >
-        oms.ward_code = #{condition.wardCode}
+        and oms.ward_id = #{condition.wardId}
       </if>
       <if test="condition.mealId != null and condition.mealId != '' " >
         and detail.meal_id = #{condition.mealId}
@@ -188,7 +193,7 @@
 	      </foreach>
       </if>
       <if test="diningTime != null and diningTime != '' " >
-        <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) = #{diningDate} ]]>
+        <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) = #{diningTime} ]]>
       </if>
       <if test="cafeteriaId != null and cafeteriaId != '' " >
         and oms.cafeteria_id = #{cafeteriaId}
@@ -212,7 +217,7 @@
 	      </foreach>
       </if>
       <if test="diningTime != null and diningTime != '' " >
-        <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) = #{diningDate} ]]>
+        <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) = #{diningTime} ]]>
       </if>
       <if test="cafeteriaId != null and cafeteriaId != '' " >
         and oms.cafeteria_id = #{cafeteriaId}
@@ -220,8 +225,8 @@
       <if test="deptCode != null and deptCode != '' " >
         and patient.dept_code = #{deptCode}
       </if>
-      <if test="wardCode != null and wardCode != '' " >
-        oms.ward_code = #{wardCode}
+      <if test="wardId != null and wardId != '' " >
+        and oms.ward_Id = #{wardId}
       </if>
       and detail.oms_status=1
     </where>
@@ -254,8 +259,8 @@
       <if test="deptCode != null and deptCode != '' " >
         and patient.dept_code = #{deptCode}
       </if>
-      <if test="wardCode != null and wardCode != '' " >
-        oms.ward_code = #{wardCode}
+      <if test="wardId != null and wardId != '' " >
+        and oms.ward_id = #{wardId}
       </if>
       and detail.oms_status=1
     </where>
@@ -283,8 +288,8 @@
       <if test="deptCode != null and deptCode != '' " >
         and patient.dept_code = #{deptCode}
       </if>
-      <if test="wardCode != null and wardCode != '' " >
-        oms.ward_code = #{wardCode}
+      <if test="wardId != null and wardId != '' " >
+        and oms.ward_id = #{wardId}
       </if>
       and detail.oms_status=1
     </where>
@@ -312,8 +317,8 @@
       <if test="deptCode != null and deptCode != '' " >
         and patient.dept_code = #{deptCode}
       </if>
-      <if test="wardCode != null and wardCode != '' " >
-        oms.ward_code = #{wardCode}
+      <if test="wardId != null and wardId != '' " >
+        and oms.ward_Id = #{wardId}
       </if>
       and detail.oms_status=1
     </where>
@@ -342,7 +347,7 @@
         and patient.dept_code = #{condition.deptCode}
       </if>
       <if test="condition.wardId != null and condition.wardId != '' " >
-        and oms.ward_code = #{condition.wardCode}
+        and oms.ward_id = #{condition.wardId}
       </if>
       <if test="condition.inpNo != null and condition.inpNo != '' " >
         and patient.inp_no = #{condition.inpNo}
@@ -384,8 +389,8 @@
        <if test="condition.deptCode != null and condition.deptCode != '' " >
         and patient.dept_code = #{condition.deptCode}
       </if>
-      <if test="condition.wardId != null and condition.wardId != '' " >
-        and oms.ward_code = #{condition.wardCode}
+      <if test="condition.wardId != null and condition.wardId!= '' " >
+        and oms.ward_id = #{condition.wardId}
       </if>
       <if test="condition.inpNo != null and condition.inpNo != '' " >
         and patient.inp_no = #{condition.inpNo}
@@ -403,5 +408,61 @@
     </where>
      group by patient.inp_no,patient.name,oms.dining_time,detail.meal_name,detail.goal_name,oms.cafeteria_name,
      patient.ward_name,patient.bed_no,detail.create_by,detail.create_time) B
+  </select>
+  
+  <select id="getCost"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
+  	select * from (select detail.meal_id,matl.id matlid,detail.meal_name mealName,detail.goal_name goalName,detail.goal_num num,detail.goal_price/detail.goal_num price,
+	detail.goal_price amount,matl.name matlName,relation2.re_goal_num matlNum,matl.unit,matl.price matlPrice,relation2.re_goal_num*matl.price matlAmount
+	from his_patient patient join his_oms oms on patient.patient_id=oms.patient_id join his_oms_details detail on oms.id=detail.oms_id join diet_dish_pkg pkg on detail.goal_id=pkg.id 
+	join diet_relation relation on relation.re_parent_id = pkg.id join diet_dish dish on relation.re_goal_id = dish.id 
+	join diet_relation relation2 on dish.id=relation2.re_parent_id join diet_matl matl on matl.id=relation2.re_goal_id
+	<where>
+     <if test="list.size()>0" >
+	   <foreach collection="list" open=" and detail.meal_id in (" close=")"
+	               item="id" separator=",">
+	       #{id}
+	   </foreach>
+     </if>
+     <if test="cafeteriaId != null and cafeteriaId != '' " >
+        and oms.cafeteria_id = #{cafeteriaId}
+      </if>
+       <if test="deptCode != null and deptCode != '' " >
+        and patient.dept_code = #{deptCode}
+      </if>
+      <if test="wardId != null and wardId != '' " >
+        and oms.ward_id = #{wardId}
+      </if>
+      <if test="diningTime != null and diningTime != '' " >
+        <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') = #{diningTime}]]>
+      </if>
+      and detail.oms_status=1 and relation.re_parent_type=3
+     </where>
+	union all 
+	select detail.meal_id,matl.id matlid,detail.meal_name mealName,detail.goal_name goalName,detail.goal_num num,detail.goal_price/detail.goal_num price,
+	detail.goal_price amount,matl.name matlName,relation.re_goal_num matlNum,matl.unit,matl.price matlPrice,relation.re_goal_num*matl.price matlAmount
+	from his_patient patient join his_oms oms on patient.patient_id=oms.patient_id join his_oms_details detail on oms.id=detail.oms_id join diet_dish dish on detail.goal_id = dish.id 
+	join diet_relation relation on dish.id=relation.re_parent_id join diet_matl matl on matl.id=relation.re_goal_id
+	<where>
+     <if test="list.size()>0" >
+	   <foreach collection="list" open=" and detail.meal_id in (" close=")"
+	               item="id" separator=",">
+	       #{id}
+	   </foreach>
+     </if>
+     <if test="cafeteriaId != null and cafeteriaId != '' " >
+        and oms.cafeteria_id = #{cafeteriaId}
+      </if>
+       <if test="deptCode != null and deptCode != '' " >
+        and patient.dept_code = #{deptCode}
+      </if>
+      <if test="wardId != null and wardId != '' " >
+        and oms.ward_id = #{wardId}
+      </if>
+      <if test="diningTime != null and diningTime != '' " >
+        <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') = #{diningTime}]]>
+      </if>
+      and detail.oms_status=1 and relation.re_parent_type=3
+     </where>
+     ) b order by b.meal_id,b.matlid
   </select>
 </mapper>

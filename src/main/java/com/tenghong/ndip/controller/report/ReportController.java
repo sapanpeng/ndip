@@ -47,40 +47,6 @@ public class ReportController extends BaseController {
     @Autowired
     private MealTimesService mealTimesService;
 
-    //病区金额汇总表
-    @RequestMapping(value = "/report/wardAmountMoney",method = RequestMethod.POST)
-    @ResponseBody
-    public Result wardAmountMoney(@RequestParam("startDate") String startDate,
-                                  @RequestParam("endDate") String endDate,
-                                  @RequestParam(value = "cafeteriaId", required = false, defaultValue = "") Integer cafeteriaId,
-                                  @RequestParam(value = "departmentId", required = false, defaultValue = "") String departmentId,
-                                  @RequestParam(value = "wardId", required = false, defaultValue = "") Integer wardId,
-                                  @RequestParam(value = "mealTimesId", required = false, defaultValue = "") Integer mealTimesId,
-                                  @RequestParam(value = "pageNo", required = false, defaultValue = "1")Integer page,
-                                  @RequestParam(value = "pageSize", required = false, defaultValue = "10")Integer rows){
-        Result result = getResultInstance();
-        Map<String,Object> map = getQueryMap();
-        try{
-            PageInfo pageInfo = new PageInfo(page, rows, "ward.sort", "desc");
-            map.put("startDate",startDate);
-            map.put("endDate",endDate);
-            map.put("cafeteriaId",cafeteriaId);
-            map.put("departmentId",departmentId);
-            map.put("wardId",wardId);
-            map.put("mealTimesId",mealTimesId);
-            pageInfo.setCondition(map);
-            omsService.getWardIncome(pageInfo);
-            pageInfo.setTitle(getCafeteriaName(cafeteriaId)+"病区金额汇总表");
-            result.setData(pageInfo);
-            result.setMsg("success");
-            result.setState(1);
-        }catch (Exception e){
-            LOGGER.error("Server Exception：{}",e);
-            result.setState(0);
-            result.setMsg("Server Exception");
-        }
-        return result;
-    }
 
     //营业情况简表
     @RequestMapping(value = "/report/buinessSituation",method = RequestMethod.POST)
@@ -164,7 +130,7 @@ public class ReportController extends BaseController {
     public Result getUseMeals(@RequestParam(value = "diningTime", required = false, defaultValue = "") String diningTime,
             @RequestParam("cafeteriaId") Integer cafeteriaId,
             @RequestParam(value = "deptCode", required = false, defaultValue = "") Integer deptCode,
-            @RequestParam(value = "wardCode", required = false, defaultValue = "") String wardCode,
+            @RequestParam(value = "wardId", required = false, defaultValue = "") Integer wardId,
             @RequestParam(value = "ovenId", required = false, defaultValue = "") String ovenIds,
             @RequestParam(value = "mealId", required = false, defaultValue = "") String mealIds,
             @RequestParam(value = "pageNo", required = false, defaultValue = "1")Integer page,
@@ -181,7 +147,7 @@ public class ReportController extends BaseController {
         	queryMap.put("diningTime",diningTime);
 			queryMap.put("cafeteriaId",cafeteriaId);
 			queryMap.put("deptCode",deptCode);
-			queryMap.put("wardCode",wardCode);
+			queryMap.put("wardId",wardId);
 			queryMap.put("ovenId",ovenIdList);
 			
 			//餐次处理，根据前台传入餐次查询，前台餐次未传入时查所有餐次
@@ -217,7 +183,7 @@ public class ReportController extends BaseController {
     public Result getSendMeals(@RequestParam(value = "diningTime", required = false, defaultValue = "") String diningTime,
             @RequestParam("cafeteriaId") Integer cafeteriaId,
             @RequestParam(value = "deptCode", required = false, defaultValue = "") Integer deptCode,
-            @RequestParam(value = "wardCode", required = false, defaultValue = "") String wardCode,
+            @RequestParam(value = "wardId", required = false, defaultValue = "") Integer wardId,
             @RequestParam(value = "ovenId", required = false, defaultValue = "") String ovenIds,
             @RequestParam(value = "mealId", required = false, defaultValue = "") String mealIds,
             @RequestParam(value = "bedNo", required = false, defaultValue = "") String bedNo,
@@ -235,7 +201,7 @@ public class ReportController extends BaseController {
         	queryMap.put("diningTime",diningTime);
 			queryMap.put("cafeteriaId",cafeteriaId);
 			queryMap.put("deptCode",deptCode);
-			queryMap.put("wardCode",wardCode);
+			queryMap.put("wardId",wardId);
 			queryMap.put("bedNo",bedNo);
 			queryMap.put("ovenId",ovenIdList);
 			
@@ -298,7 +264,7 @@ public class ReportController extends BaseController {
     public Result getConsumptionStat(@RequestParam(value = "diningTime", required = false, defaultValue = "") String diningTime,
             @RequestParam("cafeteriaId") Integer cafeteriaId,
             @RequestParam(value = "deptCode", required = false, defaultValue = "") String deptCode,
-            @RequestParam(value = "wardCode", required = false, defaultValue = "") String wardCode,
+            @RequestParam(value = "wardId", required = false, defaultValue = "") Integer wardId,
             @RequestParam(value = "mealId", required = false, defaultValue = "") String mealIds){
         Result result = getResultInstance();
         try{
@@ -307,7 +273,7 @@ public class ReportController extends BaseController {
         		mealList = Arrays.asList(mealIds.split(",")); 
         	}
         	
-    		List<ReportHisOms> listReportHisOms = reportService.getConsumptionStat(diningTime, cafeteriaId, mealList, deptCode, wardCode);
+    		List<ReportHisOms> listReportHisOms = reportService.getConsumptionStat(diningTime, cafeteriaId, mealList, deptCode, wardId);
         	result.setData(listReportHisOms);
     		result.setMsg("success");
     		result.setState(1);
@@ -326,7 +292,7 @@ public class ReportController extends BaseController {
     		@RequestParam("diningTimeEnd") String diningTimeEnd,
             @RequestParam("cafeteriaId") Integer cafeteriaId,
             @RequestParam(value = "deptCode", required = false, defaultValue = "") String deptCode,
-            @RequestParam(value = "wardCode", required = false, defaultValue = "") String wardCode,
+            @RequestParam(value = "wardId", required = false, defaultValue = "") Integer wardId,
             @RequestParam(value = "mealId", required = false, defaultValue = "") String mealIds){
         Result result = getResultInstance();
         try{
@@ -335,7 +301,7 @@ public class ReportController extends BaseController {
         		mealList = Arrays.asList(mealIds.split(",")); 
         	}
         	
-    		List<ReportHisOms> listReportHisOms = reportService.getWardAmountStat(diningTimeBegin, diningTimeEnd, cafeteriaId, mealList, deptCode, wardCode);
+    		List<ReportHisOms> listReportHisOms = reportService.getWardAmountStat(diningTimeBegin, diningTimeEnd, cafeteriaId, mealList, deptCode, wardId);
         	result.setData(listReportHisOms);
     		result.setMsg("success");
     		result.setState(1);
@@ -347,14 +313,14 @@ public class ReportController extends BaseController {
         return result;
     }
     
-  //订单信息查询
+    //订单信息查询
     @RequestMapping(value = "/report/orderInformation",method = RequestMethod.POST)
     @ResponseBody
     public Result orderInformation(@RequestParam("diningTimeBegin") String diningTimeBegin,
                                    @RequestParam("diningTimeEnd") String diningTimeEnd,
                                    @RequestParam("cafeteriaId") Integer cafeteriaId,
                                    @RequestParam(value = "deptCode", required = false, defaultValue = "") String deptCode,
-                                   @RequestParam(value = "wardCode", required = false, defaultValue = "") String wardCode,
+                                   @RequestParam(value = "wardId", required = false, defaultValue = "") Integer wardId,
                                    @RequestParam(value = "mealIds", required = false, defaultValue = "") String mealIds,
                                    @RequestParam(value = "patientnName", required = false, defaultValue = "") String patientnName,
                                    @RequestParam(value = "inpNo", required = false, defaultValue = "") String inpNo,
@@ -372,9 +338,8 @@ public class ReportController extends BaseController {
             map.put("diningTimeBegin",diningTimeBegin);
             map.put("diningTimeEnd",diningTimeEnd);
             map.put("cafeteriaId",cafeteriaId);
-            map.put("wardCode",wardCode);
+            map.put("wardId",wardId);
             map.put("deptCode",deptCode);
-            map.put("wardCode",wardCode);
             map.put("mealIds",mealList);
             map.put("patientnName",patientnName);
             map.put("inpNo",inpNo);
@@ -382,6 +347,32 @@ public class ReportController extends BaseController {
             reportService.getOrderInformation(pageInfo);
             pageInfo.setTitle(getCafeteriaName(cafeteriaId)+"订餐信息查询");
             result.setData(pageInfo);
+            result.setMsg("success");
+            result.setState(1);
+        }catch (Exception e){
+            LOGGER.error("Server Exception：{}",e);
+            result.setState(0);
+            result.setMsg("Server Exception");
+        }
+        return result;
+    }
+    
+    //成本核算表（参考价）
+    @RequestMapping(value = "/report/getCost",method = RequestMethod.POST)
+    @ResponseBody
+    public Result getCost(@RequestParam("diningTime") String diningTime,
+                                   @RequestParam("cafeteriaId") Integer cafeteriaId,
+                                   @RequestParam(value = "deptCode", required = false, defaultValue = "") String deptCode,
+                                   @RequestParam(value = "wardId", required = false, defaultValue = "") Integer wardId,
+                                   @RequestParam(value = "mealIds", required = false, defaultValue = "") String mealIds){
+        Result result = getResultInstance();
+        try{
+        	
+        	List<String> mealList = new ArrayList<String>();
+        	if (mealIds != null && mealIds.length() > 0) {
+        		mealList = Arrays.asList(mealIds.split(",")); 
+        	}
+            result.setData(reportService.getCost(diningTime, cafeteriaId, mealList, deptCode, wardId));
             result.setMsg("success");
             result.setState(1);
         }catch (Exception e){
