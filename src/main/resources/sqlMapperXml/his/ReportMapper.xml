@@ -320,7 +320,7 @@
      group by patient.ward_code,patient.ward_name) B GROUP BY wardName
   </select>
   
-  <select id="selectOrderInformation"  resultType="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
+  <select id="selectOrderInformation"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
    SELECT
     patient.inp_no inpNo,patient.name patientName,oms.dining_time diningTime,detail.meal_name mealName,detail.goal_name goalName,
     sum(detail.goal_num) num,sum(detail.current_price)/sum(detail.goal_num) price,sum(detail.current_price) amount,oms.cafeteria_name cafeteriaName,
