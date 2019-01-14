@@ -55,5 +55,11 @@ public interface ReportMapper {
   	//原材料采购清单
   	List<ReportHisOms> getFoodPurchaseStat(@Param("diningTimeBegin")String diningTimeBegin,
   								   @Param("diningTimeEnd")String diningTimeEnd,@Param("cafeteriaId")Integer cafeteriaId, @Param("ovenCode")String ovenCode);
+  	
+  	 //科室营业情况表
+    List<ReportHisOms> getDeptIncome(PageInfo pageInfo);
+    
+    //科室营业情况表
+    List<ReportHisOms> getOvenRecords(PageInfo pageInfo);
 
 }

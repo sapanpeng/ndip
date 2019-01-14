@@ -66,12 +66,6 @@ public interface HisOmsMapper {
 
     int findBuinessWardCount(PageInfo pageInfo);
 
-    //查询餐次下结算金额
-    Double selectMealTimesAmount(@Param("wardId") Integer wardId,@Param("mealId") Integer mealId,@Param("startDate") String startDate,@Param("endDate") String endDate);
-
-    //查询灶类下结算金额
-    Double selectOvenAmount(@Param("wardId") Integer wardId,@Param("ovenId") Integer ovenId,@Param("startDate") String startDate,@Param("endDate") String endDate);
-
     // 根据病人ID和订单日期查询订单
     HisOms getHisOmsBy(@Param("patientId")String patientId, @Param("diningDate")Date diningTime);
 

@@ -19,9 +19,7 @@ import com.tenghong.ndip.controller.BaseController;
 import com.tenghong.ndip.core.Result;
 import com.tenghong.ndip.model.diet.DietMealTimes;
 import com.tenghong.ndip.model.his.ReportHisOms;
-import com.tenghong.ndip.model.vo.report.DeptIncomeVo;
 import com.tenghong.ndip.service.diet.MealTimesService;
-import com.tenghong.ndip.service.his.OmsService;
 import com.tenghong.ndip.service.his.ReportService;
 import com.tenghong.ndip.utils.PageInfo;
 
@@ -37,9 +35,6 @@ import com.tenghong.ndip.utils.PageInfo;
 public class ReportController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportController.class);
-
-    @Autowired
-    private OmsService omsService;
     
     @Autowired
     private ReportService reportService;
@@ -47,62 +42,6 @@ public class ReportController extends BaseController {
     @Autowired
     private MealTimesService mealTimesService;
 
-
-    //营业情况简表
-    @RequestMapping(value = "/report/buinessSituation",method = RequestMethod.POST)
-    @ResponseBody
-    public Result buinessSituation(@RequestParam("startDate") String startDate,
-                                  @RequestParam("endDate") String endDate,
-                                  @RequestParam("cafeteriaId") Integer cafeteriaId,
-                                  @RequestParam(value = "departmentId", required = false, defaultValue = "") String departmentId,
-                                  @RequestParam(value = "wardId", required = false, defaultValue = "") Integer wardId,
-                                  @RequestParam(value = "hisNo", required = false, defaultValue = "") String hisNo){
-        Result result = getResultInstance();
-        Map<String,Object> map = getQueryMap();
-        try{
-            PageInfo pageInfo = new PageInfo(1, 100, "ward.sort", "desc");
-            map.put("startDate",startDate);
-            map.put("endDate",endDate);
-            map.put("cafeteriaId",cafeteriaId);
-            map.put("departmentId",departmentId);
-            map.put("wardId",wardId);
-            map.put("hisNo",hisNo);
-            pageInfo.setCondition(map);
-            DeptIncomeVo vo = omsService.getDeptIncome(pageInfo);
-            vo.setTitle(getCafeteriaName(cafeteriaId)+"营业情况简表");
-            result.setData(vo);
-            result.setMsg("success");
-            result.setState(1);
-        }catch (Exception e){
-            LOGGER.error("Server Exception：{}",e);
-            result.setState(0);
-            result.setMsg("Server Exception");
-        }
-        return result;
-    }
-
-
-    //灶类明细统计表
-    @RequestMapping(value = "/report/ovenRecords",method = RequestMethod.POST)
-    @ResponseBody
-    public Result ovenRecords(@RequestParam("date") String date,
-                              @RequestParam(value = "ovenId", required = false, defaultValue = "") Integer ovenId,
-                                   @RequestParam("cafeteriaId") Integer cafeteriaId,
-                                   @RequestParam(value = "departmentId", required = false, defaultValue = "") String departmentId,
-                                   @RequestParam(value = "mealTimesId", required = false, defaultValue = "") Integer mealTimesId){
-        Result result = getResultInstance();
-        try{
-            result.setData(omsService.getOvenRecords(cafeteriaId,ovenId,date,departmentId,mealTimesId));
-            result.setMsg("success");
-            result.setState(1);
-        }catch (Exception e){
-            e.printStackTrace();
-            LOGGER.error("Server Exception：{}",e);
-            result.setState(0);
-            result.setMsg("Server Exception");
-        }
-        return result;
-    }
 
     //领餐情况表
     @RequestMapping(value = "/report/useMeals",method = RequestMethod.POST)
@@ -423,4 +362,77 @@ public class ReportController extends BaseController {
         }
         return result;
     }
+    
+    //营业情况简表
+    @RequestMapping(value = "/report/buinessSituation",method = RequestMethod.POST)
+    @ResponseBody
+    public Result buinessSituation(@RequestParam("diningTimeBegin") String diningTimeBegin,
+                                  @RequestParam("diningTimeEnd") String diningTimeEnd,
+                                  @RequestParam("cafeteriaId") Integer cafeteriaId,
+                                  @RequestParam(value = "deptCode", required = false, defaultValue = "") String deptCode,
+                                  @RequestParam(value = "wardId", required = false, defaultValue = "") Integer wardId) {
+        Result result = getResultInstance();
+        Map<String,Object> map = getQueryMap();
+        try{
+            PageInfo pageInfo = new PageInfo(1, 100000, "ward.sort", "desc");
+            map.put("diningTimeBegin",diningTimeBegin);
+            map.put("diningTimeEnd",diningTimeEnd);
+            map.put("cafeteriaId",cafeteriaId);
+            map.put("deptCode",deptCode);
+            map.put("wardId",wardId);
+            pageInfo.setCondition(map);
+            result.setData(reportService.getDeptIncome(pageInfo));
+            result.setMsg("success");
+            result.setState(1);
+        }catch (Exception e){
+            LOGGER.error("Server Exception：{}",e);
+            result.setState(0);
+            result.setMsg("Server Exception");
+        }
+        return result;
+    }
+
+
+    //灶类明细统计表
+    @RequestMapping(value = "/report/ovenRecords",method = RequestMethod.POST)
+    @ResponseBody
+    public Result ovenRecords(@RequestParam(value = "diningTime", required = false, defaultValue = "") String diningTime,
+            @RequestParam("cafeteriaId") Integer cafeteriaId,
+            @RequestParam(value = "deptCode", required = false, defaultValue = "") Integer deptCode,
+            @RequestParam(value = "wardId", required = false, defaultValue = "") Integer wardId,
+            @RequestParam(value = "ovenId", required = false, defaultValue = "") String ovenIds,
+            @RequestParam(value = "mealId", required = false, defaultValue = "") String mealIds,
+            @RequestParam(value = "inpNo", required = false, defaultValue = "") String inpNo) {
+    	 Result result = getResultInstance();
+         Map<String,Object> queryMap = getQueryMap();
+         PageInfo pageInfo = new PageInfo(1, 10000);
+         try{
+         	List<String> mealIdList = new ArrayList<String>();
+         	List<String> ovenIdList = new ArrayList<String>();
+         	if (ovenIds != null && ovenIds.length() > 0) {
+         		ovenIdList = Arrays.asList(ovenIds.split(",")); 
+         	}
+         	if (mealIds != null && mealIds.length() > 0) {
+         		mealIdList = Arrays.asList(mealIds.split(",")); 
+         	}
+         	queryMap.put("diningTime",diningTime);
+ 			queryMap.put("cafeteriaId",cafeteriaId);
+ 			queryMap.put("deptCode",deptCode);
+ 			queryMap.put("wardId",wardId);
+ 			queryMap.put("inpNo",inpNo);
+ 			queryMap.put("ovenId",ovenIdList);
+ 			queryMap.put("mealId",mealIdList);
+ 			pageInfo.setCondition(queryMap);
+            result.setData(reportService.getOvenRecords(pageInfo));
+            result.setMsg("success");
+            result.setState(1);
+        }catch (Exception e){
+            e.printStackTrace();
+            LOGGER.error("Server Exception：{}",e);
+            result.setState(0);
+            result.setMsg("Server Exception");
+        }
+        return result;
+    }
+
 }

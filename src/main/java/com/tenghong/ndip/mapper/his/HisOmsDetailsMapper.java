@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.tenghong.ndip.model.his.HisOmsDetails;
-import com.tenghong.ndip.model.vo.report.OvenCountVo;
 
 public interface HisOmsDetailsMapper {
     int deleteByPrimaryKey(Integer id);
@@ -29,12 +28,6 @@ public interface HisOmsDetailsMapper {
 
     //根据订单id查询订单详情
     List<HisOmsDetails> selectByOmsId(@Param("omsId") Integer omsId);
-
-    //查询某日某个餐次下订单明细
-    List<OvenCountVo> selectOmsDetailsForReport(@Param("date") String date,@Param("ovenId") Integer ovenId,@Param("mealId") Integer mealId);
-
-    //统计菜的数量
-    Integer getGoalNum(@Param("wardId") Integer wardId,@Param("ovenId") Integer ovenId,@Param("date") String date);
 
 	int updateBy(@Param("omsId")Integer omsId, @Param("userId")Integer userId, @Param("time")Date time);
 	

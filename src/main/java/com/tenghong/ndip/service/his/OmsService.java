@@ -50,12 +50,6 @@ public interface OmsService {
     //查询所有病区金额
     void getWardIncome(PageInfo pageInfo);
 
-    //科室营业情况表
-    DeptIncomeVo getDeptIncome(PageInfo pageInfo );
-
-    //灶类明细统计
-    List<OvenDetailsVo> getOvenRecords(Integer cafeteriaId, Integer ovenId, String date, String departmentId, Integer mealTimesId);
-
     //根据ID删除订单 
 	void deleteByPrimaryKey(Integer id);
 	

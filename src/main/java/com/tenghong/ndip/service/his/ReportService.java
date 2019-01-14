@@ -2,8 +2,6 @@ package com.tenghong.ndip.service.his;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-
 import com.tenghong.ndip.model.his.ReportHisOms;
 import com.tenghong.ndip.utils.PageInfo;
 
@@ -41,7 +39,7 @@ public interface ReportService {
   	List<ReportHisOms> getCost(String diningTime, Integer cafeteriaId, 
   				List<String> mealIdList,String deptCode, Integer wardId);
   	
-  //原材料统计
+  	//原材料统计
   	List<ReportHisOms> getFoodStat(String diningTimeBegin, String diningTimeEnd,Integer cafeteriaId, String ovenCode);
 
   	//原材料明细统计
@@ -49,5 +47,11 @@ public interface ReportService {
 
   	//原材料采购清单
   	List<ReportHisOms> getFoodPurchaseStat(String diningTimeBegin, String diningTimeEnd,Integer cafeteriaId, String ovenCode);
+  	
+  	//科室营业情况表
+    List<ReportHisOms> getDeptIncome(PageInfo pageInfo );
+    
+    //灶类明细统计
+	List<ReportHisOms> getOvenRecords(PageInfo pageInfo);
 
 }

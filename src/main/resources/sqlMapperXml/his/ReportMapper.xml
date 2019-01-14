@@ -819,4 +819,67 @@
         ORDER BY
         goalName
     </select>
+    
+    <select id="getDeptIncome"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
+     select oms.ward_id wardId,oms.ward_name wardName,detail.oven_id ovenId,detail.oven_name ovenName,
+       detail.meal_id mealId,detail.meal_name mealName,sum(detail.current_price) amount 
+	    FROM
+	     his_oms oms join his_oms_details detail on oms.id=detail.oms_id
+	 <where>
+      <if test="condition.cafeteriaId != null and condition.cafeteriaId != '' " >
+        and oms.cafeteria_id = #{condition.cafeteriaId}
+      </if>
+       <if test="condition.deptCode != null and condition.deptCode != '' " >
+        and patient.dept_code = #{condition.deptCode}
+      </if>
+      <if test="condition.wardId != null and condition.wardId!= '' " >
+        and oms.ward_id = #{condition.wardId}
+      </if>
+      <if test="condition.diningTimeBegin != null and condition.diningTimeBegin != '' " >
+        <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') >= #{condition.diningTimeBegin}]]>
+      </if>
+      <if test="condition.diningTimeEnd != null and condition.diningTimeEnd != '' " >
+        <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') <= #{condition.diningTimeEnd}]]>
+      </if>
+      and detail.oms_status=1
+    </where>
+	    group by oms.ward_id,detail.oven_id,detail.meal_id
+  </select>
+  
+   <select id="getOvenRecords"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
+     SELECT oms.ward_id wardId,oms.ward_name wardName,detail.oven_id ovenId,detail.oven_name ovenName,detail.meal_id mealId,detail.meal_name mealName,
+       detail.goal_name goalName,detail.goal_id goalId,sum(detail.goal_num) num FROM 
+	     his_patient patient join his_oms oms on patient.patient_id=oms.patient_id join his_oms_details detail on oms.id=detail.oms_id
+	 <where>
+      <if test="condition.ovenId.size()>0" >
+	      <foreach collection="condition.ovenId" open=" and detail.oven_id in (" close=")"
+	               item="id" separator=",">
+	        #{id}
+	      </foreach>
+      </if>
+      <if test="condition.mealId.size()>0" >
+	      <foreach collection="condition.mealId" open=" and detail.meal_id in (" close=")"
+	               item="id" separator=",">
+	        #{id}
+	      </foreach>
+      </if>
+      <if test="condition.diningTime != null and condition.diningTime != '' " >
+        <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) = #{condition.diningDate} ]]>
+      </if>
+      <if test="condition.cafeteriaId != null and condition.cafeteriaId != '' " >
+        and oms.cafeteria_id = #{condition.cafeteriaId}
+      </if>
+      <if test="condition.deptCode != null and condition.deptCode != '' " >
+        and patient.dept_code = #{condition.deptCode}
+      </if>
+      <if test="condition.wardId != null and condition.wardId != '' " >
+        and oms.ward_Id = #{condition.wardId}
+      </if>
+      <if test="condition.inpNo != null and condition.inpNo != '' " >
+        and patient.inp_no = #{condition.inpNo}
+      </if>
+      and detail.oms_status=1
+    </where>
+	    group by oms.ward_id,detail.oven_id,detail.meal_id,detail.goal_id
+  </select>
 </mapper>

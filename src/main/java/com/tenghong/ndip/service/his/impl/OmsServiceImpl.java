@@ -15,12 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.tenghong.ndip.core.constants.HisOmsEnum;
-import com.tenghong.ndip.mapper.diet.DietMealTimesMapper;
-import com.tenghong.ndip.mapper.diet.DietOvenMapper;
 import com.tenghong.ndip.mapper.his.HisCafeteriaMapper;
-import com.tenghong.ndip.mapper.his.HisInpatientAreaMapper;
 import com.tenghong.ndip.mapper.his.HisOmsDetailsEntityMapper;
-import com.tenghong.ndip.mapper.his.HisOmsDetailsMapper;
 import com.tenghong.ndip.mapper.his.HisOmsEntityMapper;
 import com.tenghong.ndip.mapper.his.HisOmsMapper;
 import com.tenghong.ndip.mapper.his.HisOmsStatusMapper;
@@ -30,7 +26,6 @@ import com.tenghong.ndip.mapper.his.HisPatientWalletRecordsMapper;
 import com.tenghong.ndip.model.bo.DeliverOrderBO;
 import com.tenghong.ndip.model.bo.ReceiveOrderBO;
 import com.tenghong.ndip.model.command.OrderReportCommand;
-import com.tenghong.ndip.model.diet.DietMealTimes;
 import com.tenghong.ndip.model.his.HisCafeteria;
 import com.tenghong.ndip.model.his.HisOms;
 import com.tenghong.ndip.model.his.HisOmsDetailsEntity;
@@ -42,13 +37,7 @@ import com.tenghong.ndip.model.his.HisPatient;
 import com.tenghong.ndip.model.his.HisPatientWallet;
 import com.tenghong.ndip.model.his.HisPatientWalletRecords;
 import com.tenghong.ndip.model.vo.DeliverOrderVO;
-import com.tenghong.ndip.model.vo.OvenIndexVo;
 import com.tenghong.ndip.model.vo.ReceiveOrderVO;
-import com.tenghong.ndip.model.vo.report.DeptIncomeVo;
-import com.tenghong.ndip.model.vo.report.DeptWardVo;
-import com.tenghong.ndip.model.vo.report.OvenCountVo;
-import com.tenghong.ndip.model.vo.report.OvenDetailsVo;
-import com.tenghong.ndip.model.vo.report.WardDto;
 import com.tenghong.ndip.model.vo.report.WardIncomeVo;
 import com.tenghong.ndip.service.his.OmsService;
 import com.tenghong.ndip.utils.DateUtil;
@@ -68,9 +57,6 @@ public class OmsServiceImpl implements OmsService {
 
     @Autowired
     private HisOmsMapper omsMapper;
-
-    @Autowired
-    private HisOmsDetailsMapper omsDetailsMapper;
 
     @Autowired
     private HisPatientWalletMapper patientWalletMapper;
@@ -95,15 +81,6 @@ public class OmsServiceImpl implements OmsService {
 
     @Autowired
     private SqlMapper sqlMapper;
-
-    @Autowired
-    private HisInpatientAreaMapper hisInpatientAreaMapper;
-
-    @Autowired
-    private DietMealTimesMapper dietMealTimesMapper;
-
-    @Autowired
-    private DietOvenMapper ovenMapper;
 
     @Override
     public void save(HisOms oms) {
@@ -297,83 +274,6 @@ public class OmsServiceImpl implements OmsService {
         }
         pageInfo.setRows(list);
         pageInfo.setRecords(omsMapper.findIncomeCount(pageInfo));
-    }
-
-    @Override
-    public DeptIncomeVo getDeptIncome(com.tenghong.ndip.utils.PageInfo pageInfo) {
-        int flag = 0;
-        List<String> titleList = new ArrayList<>();
-        DeptIncomeVo retVo = new DeptIncomeVo();
-        titleList.add("病区");
-        titleList.add("总金额");
-        List<DeptWardVo> list = omsMapper.findBuinessWard(pageInfo);
-        List<DietMealTimes> mealTimesList = dietMealTimesMapper.findDataByCafeteriaId((int)pageInfo.getCondition().get("cafeteriaId"));
-        List<OvenIndexVo> ovenList = ovenMapper.findOvenIndexVo((int)pageInfo.getCondition().get("cafeteriaId"));
-        for (DeptWardVo vo : list){
-            List<Double> doubelList = new ArrayList<>();
-            Double sumDouble = 0.00;
-            doubelList.add(sumDouble);
-            for (int i = 0;i < mealTimesList.size(); i ++){
-                Double mealTimesAmount = omsMapper.selectMealTimesAmount(vo.getWardId(),mealTimesList.get(i).getId(),pageInfo.getCondition().get("startDate").toString(),pageInfo.getCondition().get("endDate").toString());
-                doubelList.add(doubelList.size(),mealTimesAmount);
-                if (flag == 0)
-                titleList.add(mealTimesList.get(i).getMealTimeName());
-                sumDouble = sumDouble + mealTimesAmount;
-            }
-            for (int j = 0;j < ovenList.size(); j ++){
-                Double ovenAmount = omsMapper.selectOvenAmount(vo.getWardId(),ovenList.get(j).getOvenId(),pageInfo.getCondition().get("startDate").toString(),pageInfo.getCondition().get("endDate").toString());
-                doubelList.add(doubelList.size(),ovenAmount);
-                if (flag == 0)
-                titleList.add(ovenList.get(j).getOvenName());
-                sumDouble = sumDouble + ovenAmount;
-            }
-            doubelList.set(0,sumDouble);
-            vo.setList(doubelList);
-            flag = 1;
-        }
-        retVo.setThList(titleList);
-        retVo.setWardList(list);
-        return retVo;
-    }
-
-    @Override
-    public List<OvenDetailsVo> getOvenRecords(Integer cafeteriaId,Integer ovenId,String date,String departmentId,Integer mealTimesId) {
-        List<WardDto> wardList = hisInpatientAreaMapper.findWardDto(cafeteriaId);
-        List<DietMealTimes> mealList = dietMealTimesMapper.findDataByReq(cafeteriaId,mealTimesId);
-        List<OvenDetailsVo> retList = new ArrayList<>();
-        List<String> thList = new ArrayList<>();
-        for (DietMealTimes times : mealList){
-            Integer flag = 0;
-            OvenDetailsVo detailsVo = new OvenDetailsVo();
-            detailsVo.setTitle(getCafeteriaName(cafeteriaId)+"灶类明细统计表");
-            detailsVo.setDate(date);
-            detailsVo.setMealTimeName(times.getMealTimeName());
-            retList.add(detailsVo);
-            List<String> list = new ArrayList<>();
-            Integer sum = 0;
-            List<OvenCountVo> innerList = omsDetailsMapper.selectOmsDetailsForReport(date,ovenId,times.getId());
-            for (OvenCountVo vo : innerList){
-                List<Integer> numList = new ArrayList<>();
-                for (WardDto dto : wardList){
-                    if (flag == 0)
-                        list.add(dto.getWardName());
-                    Integer num = omsDetailsMapper.getGoalNum(dto.getWardId(),vo.getOvenId(),date);
-                    numList.add(num);
-                    sum += num;
-                }
-                flag = 1;
-                vo.setNumbers(numList);
-                vo.setSum(sum);
-            }
-            detailsVo.setList(innerList);
-            detailsVo.setWardNameList(list);
-            thList = list;
-        }
-        for (OvenDetailsVo vo : retList){
-            if (vo.getWardNameList().isEmpty() || null == vo.getWardNameList())
-                vo.setWardNameList(thList);
-        }
-        return retList;
     }
 
     protected String getCafeteriaName(Integer id){

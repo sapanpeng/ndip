@@ -625,44 +625,4 @@
       and ward.status = 1
     </where>
   </select>
-
-  <select id="selectMealTimesAmount" resultType="java.lang.Double">
-    SELECT
-    IFNULL(SUM(oms.price),0.00)
-    FROM
-    his_oms oms
-    LEFT JOIN
-    his_inpatient_area ward
-    ON
-    oms.ward_id = ward.id
-    <where>
-      ward.id = #{wardId}
-      and oms.meal_id = #{mealId}
-      <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') >= #{startDate}]]>
-      <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') <= #{endDate}]]>
-      and oms.oms_type = 2
-    </where>
-  </select>
-
-  <select id="selectOvenAmount" resultType="java.lang.Double">
-    SELECT
-    IFNULL(SUM(details.goal_price * goal_num),0.00)
-    FROM
-    his_oms oms
-    LEFT  JOIN
-    his_oms_details details
-    ON
-    oms.id = details.oms_id
-    LEFT JOIN
-    his_inpatient_area ward
-    ON
-    oms.ward_id = ward.id
-    <where>
-      ward.id = #{wardId}
-      and details.oven_id = #{ovenId}
-      <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') >= #{startDate}]]>
-      <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') <= #{endDate}]]>
-      and oms.oms_type = 2
-    </where>
-  </select>
 </mapper>

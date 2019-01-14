@@ -335,41 +335,6 @@
     from his_oms_details
     where oms_id = #{omsId}
   </select>
-
-  <select id="selectOmsDetailsForReport" resultType="com.tenghong.ndip.model.vo.report.OvenCountVo">
-    SELECT
-    details.goal_id as goalId,details.goal_type as goalType,details.oven_id as ovenId,details.oven_name as ovenName,
-    details.goal_name as `name`,details.meal_id
-    FROM
-    his_oms_details details
-    LEFT JOIN
-    (select id,meal_id from his_oms where <![CDATA[DATE_FORMAT(dining_time,'%Y-%m-%d') = #{date}]]>) oms
-    ON
-    oms.id = details.oms_id
-    GROUP BY
-    details.goal_id,details.goal_type
-    HAVING
-    details.meal_id = #{mealId}
-    <if test="ovenId != null and ovenId != ''">
-      and ovenId = #{ovenId}
-    </if>
-  </select>
-
-  <select id ="getGoalNum" resultType="java.lang.Integer">
-    select count(1)
-    from
-    his_oms_details details
-    left join
-    (select id,meal_id,ward_id,oms_type from his_oms where <![CDATA[DATE_FORMAT(dining_time,'%Y-%m-%d') = #{date}]]>) oms
-    ON
-    oms.id = details.oms_id
-    where
-    details.oven_id = #{ovenId}
-    and
-    oms.ward_id = #{wardId}
-    and
-    oms.oms_type = 2
-  </select>
   
   <select id="findOmsDetail"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
     SELECT

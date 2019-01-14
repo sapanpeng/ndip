@@ -3,7 +3,9 @@ package com.tenghong.ndip.model.his;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ReportHisOms
@@ -187,6 +189,24 @@ public class ReportHisOms implements Serializable {
     private List<ReportHisOms>  mealList;
     
     private List<ReportHisOms>  menuList;
+    
+    private List<String>  wardNameList;
+    
+    private List<Double>  wardValueList;
+    
+    private List<String>  mealNameList;
+    
+    private List<Double>  mealValueList;
+    
+    private List<String>  ovenNameList;
+    
+    private List<Double>  ovenValueList;
+    
+    private Map<String, Double>  ovenMap;
+    
+    private Map<String, Double>  mealMap;
+    
+    private Map<String, Double>  wardMap;
 
 	public String getPatientId() {
 		return patientId;
@@ -470,5 +490,94 @@ public class ReportHisOms implements Serializable {
 	public void setMenuList(List<ReportHisOms> menuList) {
 		this.menuList = menuList;
 	}
-	
+
+	public List<String> getWardNameList() {
+		if (wardNameList  == null)
+			wardNameList = new ArrayList<String>();
+		return wardNameList;
+	}
+
+	public void setWardNameList(List<String> wardNameList) {
+		this.wardNameList = wardNameList;
+	}
+
+	public List<Double> getWardValueList() {
+		if (wardValueList  == null)
+			wardValueList = new ArrayList<Double>();
+		return wardValueList;
+	}
+
+	public void setWardValueList(List<Double> wardValueList) {
+		this.wardValueList = wardValueList;
+	}
+
+	public List<String> getMealNameList() {
+		if (mealNameList  == null)
+			mealNameList = new ArrayList<String>();
+		return mealNameList;
+	}
+
+	public void setMealNameList(List<String> mealNameList) {
+		this.mealNameList = mealNameList;
+	}
+
+	public List<Double> getMealValueList() {
+		if (mealValueList  == null)
+			mealValueList = new ArrayList<Double>();
+		return mealValueList;
+	}
+
+	public void setMealValueList(List<Double> mealValueList) {
+		this.mealValueList = mealValueList;
+	}
+
+	public List<String> getOvenNameList() {
+		if (ovenNameList  == null)
+			ovenNameList = new ArrayList<String>();
+		return ovenNameList;
+	}
+
+	public void setOvenNameList(List<String> ovenNameList) {
+		this.ovenNameList = ovenNameList;
+	}
+
+	public List<Double> getOvenValueList() {
+		if (ovenValueList  == null)
+			ovenValueList = new ArrayList<Double>();
+		return ovenValueList;
+	}
+
+	public void setOvenValueList(List<Double> ovenValueList) {
+		this.ovenValueList = ovenValueList;
+	}
+
+	public Map<String, Double> getOvenMap() {
+		if (ovenMap == null)
+			ovenMap = new HashMap<String, Double>();
+		return ovenMap;
+	}
+
+	public void setOvenMap(Map<String, Double> ovenMap) {
+		this.ovenMap = ovenMap;
+	}
+
+	public Map<String, Double> getMealMap() {
+		if (mealMap == null)
+			mealMap = new HashMap<String, Double>();
+		return mealMap;
+	}
+
+	public void setMealMap(Map<String, Double> mealMap) {
+		this.mealMap = mealMap;
+	}
+
+	public Map<String, Double> getWardMap() {
+		if (wardMap == null)
+			wardMap = new HashMap<String, Double>();
+		return wardMap;
+	}
+
+	public void setWardMap(Map<String, Double> wardMap) {
+		this.wardMap = wardMap;
+	}
 }

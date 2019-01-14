@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.tenghong.ndip.mapper.diet.DietMealTimesMapper;
+import com.tenghong.ndip.mapper.diet.DietOvenMapper;
+import com.tenghong.ndip.mapper.his.HisInpatientAreaMapper;
 import com.tenghong.ndip.mapper.his.ReportMapper;
 import com.tenghong.ndip.model.his.ReportHisOms;
 import com.tenghong.ndip.service.his.ReportService;
@@ -29,6 +32,15 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private ReportMapper reportMapper;
+    
+    @Autowired
+    private DietMealTimesMapper dietMealTimesMapper;
+    
+    @Autowired
+    private HisInpatientAreaMapper hisInpatientAreaMapper;
+    
+    @Autowired
+    private DietOvenMapper ovenMapper;
 
 	@Override
 	public void getUseMeals(PageInfo pageInfo) {
@@ -179,4 +191,124 @@ public class ReportServiceImpl implements ReportService {
 	public List<ReportHisOms> getFoodPurchaseStat(String diningTimeBegin, String diningTimeEnd, Integer cafeteriaId, String ovenCode) {
 		return reportMapper.getFoodPurchaseStat(diningTimeBegin, diningTimeEnd, cafeteriaId, ovenCode);
 	}
+	
+	 @Override
+    public List<ReportHisOms> getDeptIncome(PageInfo pageInfo) {
+		Map<String, Double> mealTimesMap = new HashMap<String, Double>();
+		Map<String, Double> ovenMap = new HashMap<String, Double>();
+        List<ReportHisOms> list = reportMapper.getDeptIncome(pageInfo);
+//        List<DietMealTimes> mealTimesList = dietMealTimesMapper.findDataByCafeteriaId((int)pageInfo.getCondition().get("cafeteriaId"));
+//        List<OvenIndexVo> ovenList = ovenMapper.findOvenIndexVo((int)pageInfo.getCondition().get("cafeteriaId"));
+        for (ReportHisOms hisOms : list){
+        	//将订单信息按餐次+病区分类
+			Double mealAmount = mealTimesMap.get(hisOms.getWardName() + "_" +  hisOms.getMealName());
+			if (mealAmount == null) {
+				mealTimesMap.put(hisOms.getWardName() + "_" +  hisOms.getMealName(), hisOms.getAmount());
+			} else {
+				Double amount = hisOms.getAmount().doubleValue() + mealAmount.doubleValue();
+				mealTimesMap.put(hisOms.getWardName() + "_" + hisOms.getMealName(), amount);
+			}
+			
+			//将订单信息按灶类+病区分类
+			Double ovenAmount = ovenMap.get(hisOms.getWardName() + "_" + hisOms.getOvenName());
+			if (ovenAmount == null) {
+				ovenMap.put(hisOms.getWardName() + "_" + hisOms.getOvenName(), hisOms.getAmount());
+			} else {
+				Double amount = hisOms.getAmount().doubleValue() + ovenAmount.doubleValue();
+				ovenMap.put(hisOms.getWardName() + "_" + hisOms.getOvenName(), amount);
+			}
+        }
+        
+        //将餐次+病区信息解析成主子关系
+        List<ReportHisOms> reportHisOmsList = new ArrayList<>();
+        for (String key : mealTimesMap.keySet()) {
+        	int count = 0;
+        	String newKey = key.split("_")[0];
+        	for (ReportHisOms oms : reportHisOmsList) {
+        		if (newKey.equals(oms.getWardName())) {
+        			count = 1;
+        			oms.setAmount(oms.getAmount().doubleValue() + mealTimesMap.get(key).doubleValue());
+        			oms.getMealMap().put(key.split("_")[1], mealTimesMap.get(key));
+        		}
+        	}
+        	
+        	if (count == 0) {
+        		ReportHisOms oms = new ReportHisOms();
+        		oms.setWardName(newKey);
+        		oms.setAmount(mealTimesMap.get(key));
+        		oms.getMealMap().put(key.split("_")[1], mealTimesMap.get(key));
+        		reportHisOmsList.add(oms);
+        	}
+        }
+        
+        //将灶类+病区信息解析到餐次+病区信息的解析结果中
+        for (String key : ovenMap.keySet()) {
+        	String newKey = key.split("_")[0];
+        	for (ReportHisOms oms : reportHisOmsList) {
+        		if (newKey.equals(oms.getWardName())) {
+        			oms.getOvenMap().put(key.split("_")[1], ovenMap.get(key));
+        		}
+        	}
+        }
+        
+        for (ReportHisOms oms : reportHisOmsList)  {
+        	for (String mealName : oms.getMealMap().keySet()) {
+        		oms.getMealNameList().add(mealName);
+        		oms.getMealValueList().add(oms.getMealMap().get(mealName));
+        	}
+        	for (String ovenName : oms.getOvenMap().keySet()) {
+        		oms.getOvenNameList().add(ovenName);
+        		oms.getOvenValueList().add(oms.getOvenMap().get(ovenName));
+        	}
+        }
+        return reportHisOmsList;
+    }
+	 
+	 @Override
+    public List<ReportHisOms> getOvenRecords(PageInfo pageInfo) {
+	 Map<String, Double> map = new HashMap<String, Double>();
+        List<ReportHisOms> list = reportMapper.getOvenRecords(pageInfo);
+        for (ReportHisOms hisOms : list){
+        	//将订单信息按病区+(餐次+灶类+菜名)分类
+			Double mealNum = map.get(hisOms.getWardName() + "_" +  hisOms.getMealName() + "=" +  hisOms.getOvenName() + "=" + hisOms.getGoalName());
+			if (mealNum == null) {
+				map.put(hisOms.getWardName() + "_" +  hisOms.getMealName() + "=" +  hisOms.getOvenName() + "=" + hisOms.getGoalName(), hisOms.getNum());
+			} else {
+				Double num = hisOms.getNum().doubleValue() + mealNum.doubleValue();
+				map.put(hisOms.getWardName() + "_" +  hisOms.getMealName() + "=" +  hisOms.getOvenName() + "=" + hisOms.getGoalName(), num);
+			}
+        }
+        
+        //将订单信息按病区+(餐次+灶类+菜名)信息解析成主子关系
+        List<ReportHisOms> reportHisOmsList = new ArrayList<>();
+        for (String key : map.keySet()) {
+        	int count = 0;
+        	String newKey = key.split("_")[1];
+        	for (ReportHisOms oms : reportHisOmsList) {
+        		if (newKey.equals(oms.getMealName() + "=" +  oms.getOvenName() + "=" + oms.getGoalName())) {
+        			count = 1;
+        			oms.setNum(oms.getNum().doubleValue() + map.get(key).doubleValue());
+        			oms.getWardMap().put(key.split("_")[0], map.get(key));
+        		}
+        	}
+        	
+        	if (count == 0) {
+        		ReportHisOms oms = new ReportHisOms();
+        		oms.setMealName(newKey.split("=")[0]);
+        		oms.setOvenName(newKey.split("=")[1]);
+        		oms.setGoalName(newKey.split("=")[2]);
+        		oms.setNum(map.get(key));
+        		oms.getWardMap().put(key.split("_")[0], map.get(key));
+        		reportHisOmsList.add(oms);
+        	}
+        }
+        
+        for (ReportHisOms oms : reportHisOmsList)  {
+        	for (String wardName : oms.getWardMap().keySet()) {
+        		oms.getWardNameList().add(wardName);
+        		oms.getWardValueList().add(oms.getWardMap().get(wardName));
+        	}
+        }
+        return reportHisOmsList;
+    }
 }
