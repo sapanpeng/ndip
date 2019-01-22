@@ -411,11 +411,13 @@
   </select>
   
   <select id="getCost"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">
-  	select * from (select detail.meal_id,matl.id matlid,detail.meal_name mealName,detail.goal_name goalName,detail.goal_num num,detail.goal_price/detail.goal_num price,
-	detail.goal_price amount,matl.name matlName,relation2.re_goal_num matlNum,matl.unit,matl.price matlPrice,relation2.re_goal_num*matl.price matlAmount
-	from his_patient patient join his_oms oms on patient.patient_id=oms.patient_id join his_oms_details detail on oms.id=detail.oms_id join diet_dish_pkg pkg on detail.goal_id=pkg.id 
+  	select mealid,mealName,goalType,goalId,goalName,matlid,matlName,unit,price,matlprice,sum(num) num,sum(amount) amount,sum(matlNum) matlNum,sum(matlAmount) matlAmount
+	from (select detail.meal_id mealId,relation.re_parent_type goalType,CONCAT(CONCAT(dish.id,'tc'),matl.id) matlid,detail.meal_name mealName, detail.goal_id goalId,detail.goal_name goalName,
+	detail.goal_num num,detail.goal_price price, detail.current_price amount,matl.name matlName,relation2.re_goal_num matlNum,
+	matl.unit,matl.price matlPrice,relation2.re_goal_num*matl.price matlAmount from his_patient patient join his_oms oms on 
+	patient.patient_id=oms.patient_id join his_oms_details detail on oms.id=detail.oms_id join diet_dish_pkg pkg on detail.goal_id=pkg.id 
 	join diet_relation relation on relation.re_parent_id = pkg.id join diet_dish dish on relation.re_goal_id = dish.id 
-	join diet_relation relation2 on dish.id=relation2.re_parent_id join diet_matl matl on matl.id=relation2.re_goal_id
+	join diet_relation relation2 on dish.id=relation2.re_parent_id join diet_matl matl on matl.id=relation2.re_goal_id 
 	<where>
      <if test="list.size()>0" >
 	   <foreach collection="list" open=" and detail.meal_id in (" close=")"
@@ -435,13 +437,13 @@
       <if test="diningTime != null and diningTime != '' " >
         <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') = #{diningTime}]]>
       </if>
-      and detail.oms_status=1 and relation.re_parent_type=3
+      and detail.oms_status=1 and relation.re_parent_type=3 
      </where>
-	union all 
-	select detail.meal_id,matl.id matlid,detail.meal_name mealName,detail.goal_name goalName,detail.goal_num num,detail.goal_price/detail.goal_num price,
-	detail.goal_price amount,matl.name matlName,relation.re_goal_num matlNum,matl.unit,matl.price matlPrice,relation.re_goal_num*matl.price matlAmount
-	from his_patient patient join his_oms oms on patient.patient_id=oms.patient_id join his_oms_details detail on oms.id=detail.oms_id join diet_dish dish on detail.goal_id = dish.id 
-	join diet_relation relation on dish.id=relation.re_parent_id join diet_matl matl on matl.id=relation.re_goal_id
+	union all select detail.meal_id mealId,relation.re_parent_type goalType,matl.id matlid,detail.meal_name mealName,detail.goal_id goalId,detail.goal_name goalName,
+	detail.goal_num num,detail.goal_price price, detail.current_price amount,matl.name matlName,relation.re_goal_num matlNum,
+	matl.unit,matl.price matlPrice,relation.re_goal_num*matl.price matlAmount from his_patient patient join his_oms oms on 
+	patient.patient_id=oms.patient_id join his_oms_details detail on oms.id=detail.oms_id join diet_dish dish on detail.goal_id = dish.id 
+	join diet_relation relation on dish.id=relation.re_parent_id join diet_matl matl on matl.id=relation.re_goal_id 
 	<where>
      <if test="list.size()>0" >
 	   <foreach collection="list" open=" and detail.meal_id in (" close=")"
@@ -461,9 +463,9 @@
       <if test="diningTime != null and diningTime != '' " >
         <![CDATA[ and DATE_FORMAT(oms.dining_time,'%Y-%m-%d') = #{diningTime}]]>
       </if>
-      and detail.oms_status=1 and relation.re_parent_type=3
+      and detail.oms_status=1 and relation.re_parent_type=2
      </where>
-     ) b order by b.meal_id,b.matlid
+     ) b group by  mealid,mealName,goalId,goalName,matlid,matlName,price,matlprice order by b.mealId,b.goalId,b.matlid 
   </select>
   
   <select id="getFoodStat"  resultMap="BaseResultMap" parameterType="com.tenghong.ndip.utils.PageInfo">

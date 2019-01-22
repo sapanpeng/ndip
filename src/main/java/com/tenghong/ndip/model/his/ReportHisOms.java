@@ -158,6 +158,11 @@ public class ReportHisOms implements Serializable {
      */
     private Double totalAmount;
     
+    /**
+     * 利润
+     */
+    private Double profit;
+    
     
     /**
      * 原材料名称
@@ -429,6 +434,14 @@ public class ReportHisOms implements Serializable {
 
 	public void setTotalAmount(Double totalAmount) {
 		this.totalAmount = totalAmount;
+	}
+
+	public Double getProfit() {
+		return profit;
+	}
+
+	public void setProfit(Double profit) {
+		this.profit = profit;
 	}
 
 	public String getMatlName() {

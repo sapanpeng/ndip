@@ -174,7 +174,36 @@ public class ReportServiceImpl implements ReportService {
 	@Override
 	public List<ReportHisOms> getCost(String diningTime, Integer cafeteriaId, List<String> mealIdList, String deptCode,
 			Integer wardId) {
-		return reportMapper.getCost(diningTime, cafeteriaId, mealIdList, deptCode, wardId);
+		List<ReportHisOms> listReport = reportMapper.getCost(diningTime, cafeteriaId, mealIdList, deptCode, wardId);
+		List<ReportHisOms> result = new ArrayList<>();
+		result.addAll(listReport);
+		for (ReportHisOms oms1 : result) {
+			for (ReportHisOms oms3 : result) {
+				if (oms1.getMealId().intValue() == oms3.getMealId().intValue()
+						&& oms1.getGoalId().intValue() == oms3.getGoalId().intValue() && oms3.getProfit() != null) {
+					continue;
+				}
+			}
+			oms1.setProfit(oms1.getAmount());
+			for (ReportHisOms oms2 : listReport) {
+				if (oms1.getMealId().intValue() == oms2.getMealId().intValue()
+				 && oms1.getGoalId().intValue() == oms2.getGoalId().intValue()
+				 && oms1.getGoalType().equals(oms2.getGoalType())) {
+					oms1.setProfit(oms1.getProfit().doubleValue() - oms2.getMatlAmount());
+				}
+			}
+		}
+		
+		for (ReportHisOms oms : result) {
+			if (oms.getProfit().doubleValue() == oms.getAmount().doubleValue()) {
+				oms.setGoalId(null);
+				oms.setGoalName(null);
+				oms.setNum(null);
+				oms.setPrice(null);
+				oms.setAmount(null);
+			}
+		}
+		return result;
 	}
 	
 	@Override
