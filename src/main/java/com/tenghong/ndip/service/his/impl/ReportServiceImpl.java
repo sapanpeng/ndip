@@ -178,12 +178,16 @@ public class ReportServiceImpl implements ReportService {
 		List<ReportHisOms> result = new ArrayList<>();
 		result.addAll(listReport);
 		for (ReportHisOms oms1 : result) {
+			int icount = 0;
 			for (ReportHisOms oms3 : result) {
-				if (oms1.getMealId().intValue() == oms3.getMealId().intValue()
+				if (oms1.getMealId().intValue() == oms3.getMealId().intValue() && oms1.getGoalType().equals(oms3.getGoalType())
 						&& oms1.getGoalId().intValue() == oms3.getGoalId().intValue() && oms3.getProfit() != null) {
-					continue;
+					icount = 1;
+					break;
 				}
 			}
+			if (icount == 1)
+				continue;
 			oms1.setProfit(oms1.getAmount());
 			for (ReportHisOms oms2 : listReport) {
 				if (oms1.getMealId().intValue() == oms2.getMealId().intValue()
@@ -195,7 +199,8 @@ public class ReportServiceImpl implements ReportService {
 		}
 		
 		for (ReportHisOms oms : result) {
-			if (oms.getProfit().doubleValue() == oms.getAmount().doubleValue()) {
+			if (oms.getProfit() == null) {
+				oms.setGoalType(null);
 				oms.setGoalId(null);
 				oms.setGoalName(null);
 				oms.setNum(null);
