@@ -1,13 +1,8 @@
 package com.tenghong.ndip.controller.his;
 
-import com.alibaba.fastjson.JSONArray;
-import com.tenghong.ndip.controller.BaseController;
-import com.tenghong.ndip.core.NdipUtils;
-import com.tenghong.ndip.core.Result;
-import com.tenghong.ndip.model.dto.ImageDto;
-import com.tenghong.ndip.model.his.HisInpatientArea;
-import com.tenghong.ndip.service.his.InpatientAreaService;
-import com.tenghong.ndip.utils.PageInfo;
+import java.util.Date;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +13,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Date;
-import java.util.List;
+import com.alibaba.fastjson.JSONArray;
+import com.tenghong.ndip.controller.BaseController;
+import com.tenghong.ndip.core.NdipUtils;
+import com.tenghong.ndip.core.Result;
+import com.tenghong.ndip.model.dto.ImageDto;
+import com.tenghong.ndip.model.his.HisInpatientArea;
+import com.tenghong.ndip.service.his.InpatientAreaService;
+import com.tenghong.ndip.utils.PageInfo;
 
 /**
  * Created by IntelliJ IDEA.
@@ -86,6 +87,12 @@ public class InpatientAreaController extends BaseController {
                        @RequestParam(value = "wardMemo", required = false, defaultValue = "")String memo){
         Result result = getResultInstance();
         try{
+        	
+        	HisInpatientArea hisInpatientArea = inpatientAreaService.selectByCode(wardCode);
+        	if (hisInpatientArea != null && hisInpatientArea.getId() != null && hisInpatientArea.getId().intValue() != 0) {
+        		throw new Exception("HisInpatientAreaRepeat");
+        	}
+        	
             List<ImageDto> list = JSONArray.parseArray(wardPic, ImageDto.class);
             HisInpatientArea area = inpatientAreaService.select(wardId);
             area.setWardCode(wardCode);
@@ -99,9 +106,15 @@ public class InpatientAreaController extends BaseController {
             result.setMsg("success");
             result.setState(1);
         }catch (Exception e){
-            LOGGER.error("Server Exception：{}",e);
-            result.setState(0);
-            result.setMsg("Server Exception");
+        	if ("HisInpatientAreaRepeat".equals(e.getMessage())) {
+        		LOGGER.error("Server Exception：{}",e);
+        		result.setState(0);
+        		result.setMsg("病区编号重复，请确认。");
+        	} else {
+        		LOGGER.error("Server Exception：{}",e);
+        		result.setState(0);
+        		result.setMsg("Server Exception");
+        	}
         }
         return result;
     }
