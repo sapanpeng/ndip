@@ -89,7 +89,8 @@ public class InpatientAreaController extends BaseController {
         try{
         	
         	HisInpatientArea hisInpatientArea = inpatientAreaService.selectByCode(wardCode);
-        	if (hisInpatientArea != null && hisInpatientArea.getId() != null && hisInpatientArea.getId().intValue() != 0) {
+        	if (hisInpatientArea != null && hisInpatientArea.getId() != null
+        		&& hisInpatientArea.getId().intValue() != 0 && hisInpatientArea.getId().intValue() != wardId) {
         		throw new Exception("HisInpatientAreaRepeat");
         	}
         	
