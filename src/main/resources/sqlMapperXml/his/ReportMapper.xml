@@ -118,7 +118,7 @@
 	      </foreach>
       </if>
       <if test="condition.diningTime != null and condition.diningTime != '' " >
-        <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) = #{condition.diningDate} ]]>
+        <![CDATA[ and (DATE_FORMAT(oms.dining_time,'%Y-%m-%d')) = #{condition.diningTime} ]]>
       </if>
       <if test="condition.cafeteriaId != null and condition.cafeteriaId != '' " >
         and oms.cafeteria_id = #{condition.cafeteriaId}
