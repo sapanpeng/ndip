@@ -471,17 +471,13 @@
 
   <select id="findDataByIdList"  resultMap="BaseResultMap">
     SELECT
-    patient.*,wallet.total_wallet,if(count(oms.id) = 0,0,1) as flag,DATE_FORMAT(oms.dining_time,'%Y-%m-%d') as dining_date,orders.order_name
+    patient.*,wallet.total_wallet,patient_orders.order_name
     FROM
     his_patient patient
     LEFT JOIN
     his_patient_wallet wallet
     ON
     patient.patient_id = wallet.patient_id
-    LEFT JOIN
-    his_oms oms
-    ON
-    patient.patient_id = oms.patient_id
     LEFT JOIN
     his_inpatient_area ward
     ON
@@ -491,18 +487,12 @@
     ON
     ward.id = relation.ward_id
     LEFT JOIN
-    his_patient_orders orders
-    ON
-    patient.patient_id = orders.patient_id
-    <where>
-      <foreach collection="list" open=" and relation.cafeteria_id in (" close=")"
-               item="id" separator=",">
-        #{id}
-      </foreach>
-    </where>
-    and relation.user_id = #{userId}
-    and patient.out_status = 0
+    (select  patient_id,order_name from (SELECT * from his_patient_orders order by start_time desc) A  group by A.patient_id) patient_orders
+    ON patient.patient_id = patient_orders.patient_id
+    where INSTR(CONCAT(CONCAT(',',relation.user_id),','),CONCAT(CONCAT(',',#{userId}),','))>0
+    <![CDATA[ and ((DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= DATE_FORMAT(now(),'%Y-%m-%d') and patient.out_status=0) or (DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= DATE_FORMAT(now(),'%Y-%m-%d') and (DATE_FORMAT(patient.out_hos_date,'%Y-%m-%d') >= DATE_FORMAT(now(),'%Y-%m-%d') or patient.out_hos_date is null))) ]]>
     GROUP BY
     patient.patient_id
+    ORDER BY patient.id desc
   </select>
 </mapper>
