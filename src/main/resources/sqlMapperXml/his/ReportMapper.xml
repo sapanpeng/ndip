@@ -108,7 +108,7 @@
     detail.oven_id ovenId,detail.oven_name ovenName,detail.goal_id goalId,detail.goal_name goalName,sum(detail.goal_num) num,oms.user_id userId,oms.user_name userName
     FROM
     his_patient patient join his_oms oms on patient.patient_id = oms.patient_id join his_oms_details detail on oms.id=detail.oms_id
-    join  (select  patient_id,order_name from (SELECT * from his_patient_orders order by start_time desc) A  group by A.patient_id) patient_orders
+    join  (select  patient_id,order_name from (SELECT * from his_patient_orders order by start_time desc) A  group by A.patient_id,order_name) patient_orders
     on patient.patient_id = patient_orders.patient_id
     <where>
       <if test="condition.ovenId.size()>0" >

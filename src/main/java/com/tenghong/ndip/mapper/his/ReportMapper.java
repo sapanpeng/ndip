@@ -59,7 +59,7 @@ public interface ReportMapper {
   	 //科室营业情况表
     List<ReportHisOms> getDeptIncome(PageInfo pageInfo);
     
-    //科室营业情况表
+    //灶类明细统计
     List<ReportHisOms> getOvenRecords(PageInfo pageInfo);
 
 }

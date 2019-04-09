@@ -370,7 +370,9 @@
     ON
     ward.id = relation.ward_id
     LEFT JOIN
-    (select  patient_id,order_name from (SELECT * from his_patient_orders order by start_time desc) A  group by A.patient_id) patient_orders
+    (select  patient_id,order_name from his_patient_orders hpo
+    where hpo.start_time = (SELECT max(start_time) from his_patient_orders where start_time = hpo.start_time and patient_id = hpo.patient_id)
+    ) patient_orders
     ON patient.patient_id = patient_orders.patient_id
     LEFT JOIN
     (select * from his_oms where DATE_FORMAT(dining_time,'%Y-%m-%d') = #{condition.diningDate}) oms
@@ -409,9 +411,7 @@
       <if test="condition.order != null and condition.order == '2'.toString() " >
          and  oms.oms_type = 3
       </if>
-    </where>
-    GROUP BY
-    patient.patient_id
+    </where> 
     ORDER BY ${sort} ${order}
     LIMIT #{from}, #{size}
   </select>
@@ -487,12 +487,13 @@
     ON
     ward.id = relation.ward_id
     LEFT JOIN
-    (select  patient_id,order_name from (SELECT * from his_patient_orders order by start_time desc) A  group by A.patient_id) patient_orders
+    (select  patient_id,order_name from his_patient_orders hpo
+    where hpo.start_time = (SELECT max(start_time) from his_patient_orders where start_time = hpo.start_time and patient_id = hpo.patient_id)
+    ) patient_orders
     ON patient.patient_id = patient_orders.patient_id
     where INSTR(CONCAT(CONCAT(',',relation.user_id),','),CONCAT(CONCAT(',',#{userId}),','))>0
     <![CDATA[ and ((DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= DATE_FORMAT(now(),'%Y-%m-%d') and patient.out_status=0) or (DATE_FORMAT(patient.in_hos_date,'%Y-%m-%d') <= DATE_FORMAT(now(),'%Y-%m-%d') and (DATE_FORMAT(patient.out_hos_date,'%Y-%m-%d') >= DATE_FORMAT(now(),'%Y-%m-%d') or patient.out_hos_date is null))) ]]>
-    GROUP BY
-    patient.patient_id
+  
     ORDER BY patient.id desc
   </select>
 </mapper>
